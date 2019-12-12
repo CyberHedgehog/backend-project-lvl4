@@ -2,7 +2,7 @@ install:
 	npm install
 
 start:
-	npx babel-node index.js
+	npx gulp run
 
 lint:
 	npx eslint .
