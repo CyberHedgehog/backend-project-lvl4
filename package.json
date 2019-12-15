@@ -22,10 +22,6 @@
   },
   "homepage": "https://github.com/CyberHedgehog/backend-project-lvl4#readme",
   "devDependencies": {
-    "@babel/cli": "^7.7.4",
-    "@babel/core": "^7.7.4",
-    "@babel/node": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -35,6 +31,10 @@
     "jest": "^24.9.0"
   },
   "dependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/node": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
     "@babel/register": "^7.7.4",
     "autoprefixer": "^9.7.3",
     "babel-loader": "^8.0.6",
