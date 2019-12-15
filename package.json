@@ -40,6 +40,8 @@
     "bootstrap": "^4.4.1",
     "css-loader": "^3.3.0",
     "gulp": "^4.0.2",
+    "gulp-cli": "^2.2.0",
+    "gulp-util": "^3.0.8",
     "koa": "^2.11.0",
     "koa-logger": "^3.2.1",
     "koa-methodoverride": "^2.0.0",
