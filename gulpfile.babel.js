@@ -2,5 +2,5 @@ import gulp from 'gulp';
 import app from './index';
 
 gulp.task('run', () => {
-  app.listen(3000);
+  app.listen(process.env.PORT || 3000);
 });
