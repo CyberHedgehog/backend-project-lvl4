@@ -4,6 +4,7 @@ module.exports = {
       targets: {
         node: 'current',
       },
+      ignoreBrowserslistConfig: true,
     }],
   ],
 };

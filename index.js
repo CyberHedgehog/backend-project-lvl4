@@ -4,14 +4,14 @@ import Koa from 'koa';
 import Rollbar from 'rollbar';
 import router from 'koa-router';
 import Pug from 'koa-pug';
-import webpack from 'webpack';
 import koaWebpack from 'koa-webpack';
 import webpackConfig from './webpack.config';
 
 const app = new Koa();
-const compiler = webpack(webpackConfig);
-koaWebpack({ compiler })
-  .then((middleware) => app.use(middleware));
+
+if (process.env.NODE_ENV !== 'test') {
+  koaWebpack({ config: webpackConfig }).then((m) => app.use(m));
+}
 
 const pug = new Pug({
   viewPath: path.resolve(__dirname, 'views'),
@@ -26,13 +26,13 @@ pug.use(app);
 
 const appRouter = router();
 appRouter.get('/', async (ctx) => {
-  await ctx.render('index');
+  await ctx.render('startPage');
 });
 
 app.use(appRouter.routes());
 
 const rollbar = new Rollbar({
-  accessToken: '58e0ac379e6a4c0d9fde7f3fcc5fa802',
+  accessToken: process.env.ROLLBAR,
   captureUncaught: true,
   captureUnhandledRejections: true,
 });

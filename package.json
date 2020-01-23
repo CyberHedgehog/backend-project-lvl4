@@ -7,6 +7,9 @@
     "test": "jest",
     "start": "gulp run"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CyberHedgehog/backend-project-lvl4.git"
@@ -28,7 +31,9 @@
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.1.1",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "jest-supertest-matchers": "0.0.2",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "@babel/cli": "^7.7.4",
@@ -40,6 +45,7 @@
     "babel-loader": "^8.0.6",
     "bootstrap": "^4.4.1",
     "css-loader": "^3.3.0",
+    "dotenv": "^8.2.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.2.0",
     "gulp-util": "^3.0.8",
@@ -50,10 +56,14 @@
     "koa-router": "^7.4.0",
     "koa-webpack": "^5.2.4",
     "lodash": "^4.17.15",
+    "node-sass": "^4.13.1",
     "path": "^0.12.7",
     "postcss-loader": "^3.0.0",
+    "precss": "^4.0.0",
     "rollbar": "^2.14.4",
+    "sass-loader": "^8.0.2",
     "style-loader": "^1.0.1",
-    "webpack": "^4.41.2"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }
