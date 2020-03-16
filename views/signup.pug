@@ -1,0 +1,25 @@
+extends /layouts/main.pug
+
+block title
+  title Sign up
+block main
+  div(class="col-sm-6 mx-auto")
+    .text-center 
+      h2 Register
+    form(action="/users" method="POST")
+      .form-group
+        label(for="firstName") First name:
+        input(type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name")
+      .form-group
+        label(for="lastName") Last name:
+        input(type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter your last name")
+      .form-group
+        label(for="email") Email:
+        input(type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+      .form-group
+        label(for="password") Password:
+        input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
+      input(type="submit" class="btn btn-light" value="Register")
+    .text-center
+      p(class="pt-3") Already registered? Click 
+        a(href="/login") here

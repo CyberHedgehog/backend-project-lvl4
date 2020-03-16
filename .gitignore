@@ -4,3 +4,6 @@ dist
 .vscode
 coverage
 .env
+*.sqlite
+draft
+public/assets

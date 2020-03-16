@@ -1,19 +1,15 @@
-doctype html
-html(lang="en")
-  head
-    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
-    title TaskMan
-    script(src='/public/assets/main.js')
-body(class="bg-dark text-center text-light")
-  div(class="d-flex w-50 p-3 mx-auto flex-column")
-    header(class="mb-5")
-      div(class="inner")
-        h3(class="float-left") TaskManager
-    main
+extends /layouts/main.pug
+
+block title
+  title Welcome!
+
+block main
+  main(class="mx-auto text-center")
       h1 Welcome!
       p This is my fourth project on hexlet.io. There should be some text here
-      button(type="button" class="btn btn-light") Get started
-    footer(class="mt-auto fixed-bottom")
-      div(class="inner")
-        p Dmitriy Dobrenkiy. 
-          a(class="text-light" href="https://github.com/CyberHedgehog") My GitHub.
+      block text
+      if isSignedIn()
+        a(href="/tasks" class="btn btn-light") Go to tasks!
+        a(href=urlFor('session') data-method='delete' rel='nofollow' class="btn btn-danger") Logout
+      else  
+        a(href="/login" class="btn btn-light") Get started

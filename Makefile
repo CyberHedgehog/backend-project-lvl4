@@ -9,3 +9,6 @@ lint:
 
 test:
 	npm test
+
+watch:
+	npx jest --watch

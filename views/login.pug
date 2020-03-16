@@ -1,0 +1,20 @@
+extends /layouts/main.pug
+
+block title
+  title Login
+
+block main
+  div(class="col-sm-6 mx-auto")
+    .text-center
+      h2 Login
+    form(action="/login" method="POST") 
+      .form-group
+        label(for="email") Email:
+        input(type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+      .form-group
+        label(for="password") Password:
+        input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
+      button(type="submit" class="btn btn-light") Login
+    .text-center
+      p(class="pt-3") Not registered? Click 
+        a(href="/users/new") here

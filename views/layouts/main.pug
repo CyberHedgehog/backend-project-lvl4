@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  block head
+      meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+      block title
+      script(src='/assets/main.js')
+body(class="bg-dark text-light")
+  div(class="d-flex w-50 p-3 mx-auto flex-column")
+    header(class="mb-5")
+      div(class="inner")
+        a(href="/" class="text-light")
+          h3(class="float-left") TaskManager
+    block main
+    footer(class="mt-auto fixed-bottom text-center")
+      div(class="inner")
+        p Dmitriy Dobrenkiy. 
+          a(class="text-light" href="https://github.com/CyberHedgehog") My GitHub.
