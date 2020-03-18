@@ -17,9 +17,45 @@ export default (router) => {
         await ctx.render('signup');
       }
     })
-    .delete('users', '/users/:id', async (ctx) => {
-      console.log(`Session.id = ${ctx.session.userId}`);
-      User.destroy({ where: { id: ctx.params.id } });
+    .get('users', '/users/list', async (ctx) => {
+      if (ctx.session.userId) {
+        await ctx.render('list');
+        return;
+      }
+      ctx.flash.set('Not allowed');
       ctx.redirect(router.url('root'));
+    })
+    .get('users', '/users/edit', async (ctx) => {
+      if (!ctx.session.userId) {
+        ctx.flash.set('Not alowed!');
+        ctx.redirect(router.url('root'));
+        return;
+      }
+      ctx.render('edit');
+    })
+    .patch('users', '/users/edit', async (ctx) => {
+      if (!ctx.session.userId) {
+        ctx.flash.set('Not alowed!');
+        ctx.redirect(router.url('root'));
+        return;
+      }
+      const user = await User.findOne({ where: { id: ctx.session.userId } });
+      const { body } = ctx.request;
+      await user.update(body);
+      ctx.redirect(router.url('/users/edit'));
+    })
+    .delete('users', '/users/:id', async (ctx) => {
+      if (!ctx.session.userId) {
+        ctx.flash.set('Not allowed!');
+        ctx.redirect(router.url('root'));
+        return;
+      }
+      try {
+        User.destroy({ where: { id: ctx.params.id } });
+        ctx.redirect(router.url('root'));
+      } catch (err) {
+        ctx.flash.set('Something wrong..');
+        await ctx.render('users');
+      }
     });
 };

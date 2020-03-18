@@ -24,7 +24,7 @@ describe('Requests', () => {
   });
 
   it('302', async () => {
-    const result = await request.agent(server).delete('/test');
+    const result = await request.agent(server).delete('/session');
     expect(result).toHaveHTTPStatus(302);
   });
 

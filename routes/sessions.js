@@ -18,7 +18,7 @@ export default (router) => {
       ctx.flash.set('Wrong email or username!');
       await ctx.render('login');
     })
-    .delete('test', '/test', async (ctx) => {
+    .delete('session', '/session', async (ctx) => {
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });

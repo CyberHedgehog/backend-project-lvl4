@@ -15,11 +15,6 @@ describe('New user', () => {
   let server;
   const userData = generateFakeUser();
 
-  // beforeAll(async () => {
-  //   await db.sequelize.sync();
-  //   expect.extend(matchers);
-  // });
-
   beforeEach(() => {
     server = app().listen();
   });
@@ -46,10 +41,6 @@ describe('New user', () => {
     expect(result).toHaveHTTPStatus(200);
   });
 
-  afterAll(async () => {
-    // await db.sequelize.close();
-  });
-
   afterEach(async (done) => {
     server.close();
     done();
@@ -71,10 +62,11 @@ describe('Delete user', () => {
     const secondUser = db.User.build(secondUserData);
     await secondUser.save();
     const { email, password } = firstUserData;
-    await request.agent(server).post('/login').send({ email, password });
-    await request.agent(server).delete(`/users/${secondUser.id}`);
+    const agent = request.agent(server);
+    await agent.post('/login').send({ email, password });
+    await agent.delete(`/users/${secondUser.id}`);
     const result = await db.User.findOne({ where: { id: secondUser.id } });
-    expect(result).toBe(null);
+    expect(result).toBeNull();
   });
 
   it('Delete without signed user', async () => {
@@ -82,7 +74,47 @@ describe('Delete user', () => {
     await newUser.save();
     await request.agent(server).delete(`/users/${newUser.id}`);
     const result = await db.User.findOne({ where: { id: newUser.id } });
-    expect(result).toBe(null);
+    expect(result).not.toBeNull();
+  });
+
+  afterEach(async (done) => {
+    server.close();
+    done();
+  });
+});
+
+describe('Update user', () => {
+  let server;
+  const userData = generateFakeUser();
+  const dataToUpdate = generateFakeUser();
+
+  beforeEach(() => {
+    server = app().listen();
+  });
+
+  it('Update own data', async () => {
+    const user = db.User.build(userData);
+    await user.save();
+
+    const { email, password } = userData;
+    const agent = request.agent(server);
+    await agent.post('/login').send({ email, password });
+    const { firstName, lastName } = dataToUpdate;
+    await agent.patch('/users/edit').send({ firstName, lastName });
+    await agent.delete('/session');
+    const patсhedUser = await db.User.findOne({ where: { id: user.id } });
+
+    expect(patсhedUser.firstName).toBe(firstName);
+  });
+
+  it('Update without auth', async () => {
+    const user = await db.User.findOne({ where: { email: userData.email } });
+    const agent = request.agent(server);
+    const { firstName, lastName } = dataToUpdate;
+    await agent.patch('/users/edit').send({ firstName, lastName });
+    const result = await db.User.findOne({ where: { id: user.id } });
+
+    expect(result.firstName).toBe(user.firstName);
   });
 
   afterEach(async (done) => {
