@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "gulp run",
-    "build": "npx webpack -p --env production"
+    "build": "npx webpack -p --env production",
+    "debug": "DEBUG=app npx gulp run"
   },
   "jest": {
     "testEnvironment": "node"

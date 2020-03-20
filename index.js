@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Koa from 'koa';
 import bodyParser from 'koa-body-parser';
 import serve from 'koa-static';
+import koaLogger from 'koa-logger';
 import Router from 'koa-router';
 import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
@@ -11,7 +12,7 @@ import Rollbar from 'rollbar';
 import Pug from 'koa-pug';
 import koaWebpack from 'koa-webpack';
 import webpackConfig from './webpack.config';
-import container from './container';
+import log from './lib/logger';
 import addRoutes from './routes';
 
 require('dotenv').config();
@@ -21,7 +22,13 @@ export default () => {
   app.keys = [process.env.APPKEY];
   app.use(session(app));
   app.use(bodyParser());
-  app.use(methodOverride());
+  app.use(methodOverride((req) => {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      log(req.body._method) // eslint-disable-line
+      return req.body._method; // eslint-disable-line
+    }
+    return null;
+  }));
   app.use(flash());
   app.use(async (ctx, next) => {
     ctx.state = {
@@ -37,9 +44,10 @@ export default () => {
 
   app.use(serve(path.join(__dirname, 'public')));
 
+  app.use(koaLogger());
   const appRouter = new Router();
 
-  addRoutes(appRouter, container);
+  addRoutes(appRouter, log);
   app.use(appRouter.allowedMethods());
   app.use(appRouter.routes());
 

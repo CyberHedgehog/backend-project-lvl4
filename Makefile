@@ -4,6 +4,9 @@ install:
 start:
 	npx gulp run
 
+debug:
+	DEBUG=app npx gulp run
+
 lint:
 	npx eslint .
 

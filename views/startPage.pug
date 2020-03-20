@@ -10,6 +10,6 @@ block main
       block text
       if isSignedIn()
         a(href="/tasks" class="btn btn-light") Go to tasks!
-        a(href=urlFor('session') data-method='delete' rel='nofollow' class="btn btn-danger") Logout
+        a(href=urlFor('session') data-method='delete' rel="nofollow") Logout
       else  
         a(href="/login" class="btn btn-light") Get started
