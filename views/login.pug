@@ -15,6 +15,9 @@ block main
         label(for="password") Password:
         input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
       button(type="submit" class="btn btn-light") Login
+      - const [msg] = flash('error')
+      if msg
+        .alert.alert-danger.m-3.text-center= msg
     .text-center
       p(class="pt-3") Not registered? Click 
         a(href="/users/new") here

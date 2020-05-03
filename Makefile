@@ -7,6 +7,9 @@ start:
 debug:
 	DEBUG=app npx gulp run
 
+build:
+	npm run build
+
 lint:
 	npx eslint .
 

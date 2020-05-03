@@ -3,7 +3,7 @@ import { User } from '../models';
 export default (router) => {
   router
     .get('newUser', '/users/new', async (ctx) => {
-      await ctx.render('signup');
+      await ctx.render('users/signup');
     })
     .post('users', '/users', async (ctx) => {
       const { body } = ctx.request;

@@ -11,11 +11,11 @@ export default (router) => {
       const user = await User.findOne({ where: { email: body.email } });
       if (user && encrypt(body.password) === user.passwordDigest) {
         ctx.session.userId = user.id;
-        ctx.flash.set(`Welcome, ${user.firstName}!`);
+        ctx.flash('info', `Welcome, ${user.firstName}!`);
         ctx.redirect(router.url('root'));
         return;
       }
-      ctx.flash.set('Wrong email or username!');
+      ctx.flash('error', 'Wrong email or username!');
       await ctx.render('login');
     })
     .delete('session', '/session', async (ctx) => {

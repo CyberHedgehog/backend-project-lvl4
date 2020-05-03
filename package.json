@@ -34,7 +34,7 @@
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.1.1",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "jest-supertest-matchers": "0.0.2",
     "supertest": "^4.0.2",
     "supertest-session": "^4.0.0"
@@ -59,6 +59,7 @@
     "jquery": "^3.4.1",
     "jquery-ujs": "^1.2.2",
     "koa": "^2.11.0",
+    "koa-better-flash": "0.0.4",
     "koa-body-parser": "^1.1.2",
     "koa-flash-simple": "0.0.3",
     "koa-generic-session": "^2.0.4",

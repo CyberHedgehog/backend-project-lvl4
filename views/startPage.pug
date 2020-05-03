@@ -8,8 +8,11 @@ block main
       h1 Welcome!
       p This is my fourth project on hexlet.io. There should be some text here
       block text
+      - const [msg] = flash('info');
+      if msg
+        .alert.alert-info.m-3= msg
       if isSignedIn()
-        a(href="/tasks" class="btn btn-light") Go to tasks!
-        a(href=urlFor('session') data-method='delete' rel="nofollow") Logout
+        a(href="/tasks" class="btn btn-light mr-2") Go to tasks!
+        a(href=urlFor('session') data-method='delete' rel="nofollow" class="btn btn-danger ml-2") Logout
       else  
         a(href="/login" class="btn btn-light") Get started

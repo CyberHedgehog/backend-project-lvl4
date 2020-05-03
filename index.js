@@ -6,12 +6,12 @@ import serve from 'koa-static';
 import koaLogger from 'koa-logger';
 import Router from 'koa-router';
 import session from 'koa-generic-session';
-import flash from 'koa-flash-simple';
+import flash from 'koa-better-flash';
 import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
 import Pug from 'koa-pug';
-import koaWebpack from 'koa-webpack';
-import webpackConfig from './webpack.config';
+// import koaWebpack from 'koa-webpack';
+// import webpackConfig from './webpack.config';
 import log from './lib/logger';
 import addRoutes from './routes';
 
@@ -38,9 +38,9 @@ export default () => {
     await next();
   });
 
-  if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
-    koaWebpack({ config: webpackConfig }).then((m) => app.use(m));
-  }
+  // if (process.env.NODE_ENV !== 'test' && process.env.NODE_ENV !== 'production') {
+  //   koaWebpack({ config: webpackConfig }).then((m) => app.use(m));
+  // }
 
   app.use(serve(path.join(__dirname, 'public')));
 
