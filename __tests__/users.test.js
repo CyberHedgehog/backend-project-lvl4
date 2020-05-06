@@ -100,7 +100,7 @@ describe('Update user', () => {
     const agent = request.agent(server);
     await agent.post('/login').send({ email, password });
     const { firstName, lastName } = dataToUpdate;
-    await agent.patch('/users/edit').send({ firstName, lastName });
+    await agent.patch('/users').send({ firstName, lastName });
     await agent.delete('/session');
     const patсhedUser = await db.User.findOne({ where: { id: user.id } });
 
@@ -111,7 +111,7 @@ describe('Update user', () => {
     const user = await db.User.findOne({ where: { email: userData.email } });
     const agent = request.agent(server);
     const { firstName, lastName } = dataToUpdate;
-    await agent.patch('/users/edit').send({ firstName, lastName });
+    await agent.patch('/users').send({ firstName, lastName });
     const result = await db.User.findOne({ where: { id: user.id } });
 
     expect(result.firstName).toBe(user.firstName);

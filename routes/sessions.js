@@ -11,6 +11,7 @@ export default (router) => {
       const user = await User.findOne({ where: { email: body.email } });
       if (user && encrypt(body.password) === user.passwordDigest) {
         ctx.session.userId = user.id;
+        ctx.session.userName = `${user.firstName} ${user.lastName}`;
         ctx.flash('info', `Welcome, ${user.firstName}!`);
         ctx.redirect(router.url('root'));
         return;

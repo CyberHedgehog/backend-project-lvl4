@@ -1,60 +1,78 @@
+import _ from 'lodash';
 import { User } from '../models';
 
-export default (router) => {
+export default (router, log) => {
   router
     .get('newUser', '/users/new', async (ctx) => {
       await ctx.render('users/signup');
     })
-    .post('users', '/users', async (ctx) => {
+    .post('/users', async (ctx) => {
       const { body } = ctx.request;
       const user = User.build(body);
       try {
         await user.save();
-        ctx.flash.set('Success');
-        ctx.redirect(router.url('root'));
+        // ctx.flash('success', 'Success');
+        ctx.redirect(router.url('login'));
       } catch (err) {
-        ctx.flash.set('Something wrong..');
-        await ctx.render('signup');
+        console.log(err);
+        // ctx.flash('error', 'Something wrong..');
+        await ctx.render('users/signup');
       }
     })
-    .get('users', '/users/list', async (ctx) => {
+    .get('usersList', '/users/list', async (ctx) => {
       if (ctx.session.userId) {
-        await ctx.render('list');
+        const usersList = await User.findAll()
+          .map((u) => {
+            const { firstName, lastName, email, id } = u;
+            return { firstName, lastName, email, id };
+          });
+        console.log(usersList);
+        await ctx.render('users/list', { usersList });
         return;
       }
-      ctx.flash.set('Not allowed');
+      // ctx.flash('error', 'Not allowed');
       ctx.redirect(router.url('root'));
     })
     .get('users', '/users/edit', async (ctx) => {
       if (!ctx.session.userId) {
-        ctx.flash.set('Not alowed!');
+        // ctx.flash('error', 'Not alowed!');
         ctx.redirect(router.url('root'));
         return;
       }
-      ctx.render('edit');
+      log('Edit route');
+      const user = await User.findOne({ where: { id: ctx.session.userId } });
+      await ctx.render('users/edit', { user });
     })
-    .patch('users', '/users/edit', async (ctx) => {
+    .patch('users', '/users', async (ctx) => {
       if (!ctx.session.userId) {
-        ctx.flash.set('Not alowed!');
+        ctx.flash('error', 'Not alowed!');
         ctx.redirect(router.url('root'));
         return;
       }
       const user = await User.findOne({ where: { id: ctx.session.userId } });
-      const { body } = ctx.request;
-      await user.update(body);
-      ctx.redirect(router.url('/users/edit'));
+      const data = _.omit(ctx.request.body, ['_method']);
+      console.log(data);
+      try {
+        await user.update(data);
+        ctx.session.userName = `${user.firstName} ${user.lastName}`;
+        ctx.redirect('/users/list');
+      } catch (err) {
+        ctx.flash('error', 'Invalid data specified');
+        await ctx.render('users/edit', { user });
+      }
     })
     .delete('users', '/users/:id', async (ctx) => {
       if (!ctx.session.userId) {
-        ctx.flash.set('Not allowed!');
         ctx.redirect(router.url('root'));
         return;
       }
       try {
-        User.destroy({ where: { id: ctx.params.id } });
-        ctx.redirect(router.url('root'));
+        await User.destroy({ where: { id: ctx.params.id } });
+        if (ctx.session.userId.toString() === ctx.params.id) {
+          ctx.session = {};
+        }
+        ctx.redirect(router.url('usersList'));
       } catch (err) {
-        ctx.flash.set('Something wrong..');
         await ctx.render('users');
       }
     });

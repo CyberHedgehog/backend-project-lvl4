@@ -1,0 +1,9 @@
+mixin deleteConfirm(link)
+  .modal.fade(id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true")
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-body
+          h5 User will be deleted!
+        .modal-footer
+          button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+          a(href=link data-method="delete" class="btn btn-danger") Delete
