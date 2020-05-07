@@ -1,3 +1,5 @@
+include /mixins/messages.pug
+
 doctype html
 html(lang="en")
   block head
@@ -6,9 +8,9 @@ html(lang="en")
       script(src='/assets/main.js')
 body(class="bg-dark text-light")
   .container
-    header
+    header(class="mt-3 mb-5")
       nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-        .navbar-brand 
+        a.navbar-brand(href="/")
           h3 TaskManager
         button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
           span.navbar-toggler-icon

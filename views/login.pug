@@ -4,7 +4,7 @@ block title
   title Login
 
 block main
-  div(class="col-sm-6 mx-auto")
+  div(class="col-md-4 mx-auto")
     .text-center
       h2 Login
     form(action="/login" method="POST") 
@@ -17,7 +17,7 @@ block main
       button(type="submit" class="btn btn-light") Login
       - const [msg] = flash('error')
       if msg
-        .alert.alert-danger.m-3.text-center= msg
+        +alert('danger', msg)
     .text-center
       p(class="pt-3") Not registered? Click 
         a(href="/users/new") here

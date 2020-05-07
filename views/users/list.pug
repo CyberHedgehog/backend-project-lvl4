@@ -16,6 +16,9 @@ block main
       .p-3
         h1 Users list
     .row.justify-content-center
+      - const [msg] = flash('success')
+      if msg
+        +alert('success', msg)
       .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
         .table-responsive-sm
           table.table
@@ -32,5 +35,13 @@ block main
                   td= user.lastName
                   td= user.email
                   td(class="col-1")
-                    button(class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" value="Delete profile") Delete
-                    +deleteConfirm(`/users/${user.id}`)
+                    button(class="btn btn-danger" data-toggle="modal" data-target=`#delete-${user.id}` value="Delete profile") Delete
+                    - const link = `/users/${user.id}`
+                    .modal.fade(id=`delete-${user.id}` tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true")
+                      .modal-dialog(role="document")
+                        .modal-content
+                          .modal-body
+                            h5 User will be deleted!
+                          .modal-footer
+                            button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
+                            a(href=`${link}` data-method="delete" class="btn btn-danger") Delete

@@ -4,6 +4,9 @@ import encrypt from '../lib/secure';
 export default (router) => {
   router
     .get('login', '/login', async (ctx) => {
+      if (ctx.session.userId) {
+        ctx.redirect(router.url('root'));
+      }
       await ctx.render('login');
     })
     .post('login', '/login', async (ctx) => {
