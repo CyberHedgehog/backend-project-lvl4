@@ -1,2 +1,5 @@
+node_modules
 dist
-__tests__/__fixtures__
+public
+node_modules
+migrations
