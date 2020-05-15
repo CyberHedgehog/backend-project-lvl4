@@ -2,6 +2,10 @@ language: node_js
 node_js:
   - node
 
+before_script:
+  - export APPKEY=somekey
+  - export CRYPTOWORD=word
+
 script:
   - make lint
   - make test
