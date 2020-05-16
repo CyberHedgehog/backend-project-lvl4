@@ -8,6 +8,6 @@
     "dialect": "sqlite"
   },
   "production": {
-    "use_env_variable": "process.env.DATABASE_URL"
+    "url": "DATABASE_URL"
   }
 }
