@@ -8,7 +8,7 @@
     "dialect": "sqlite"
   },
   "production": {
-    "host": "process.env.DATABASE_URL",
+    "url": "process.env.DATABASE_URL",
     "dialect": "postgres"
   }
 }
