@@ -8,6 +8,7 @@
     "dialect": "sqlite"
   },
   "production": {
-    "url": "DATABASE_URL"
+    "url": "DATABASE_URL",
+    "dialect": "postgres"
   }
 }
