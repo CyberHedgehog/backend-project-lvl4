@@ -13,3 +13,4 @@ script:
 deploy:
   provider: heroku
   app: ch-taskman
+  api_key: HEROKU_API_KEY
