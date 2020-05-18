@@ -9,3 +9,7 @@ before_script:
 script:
   - make lint
   - make test
+
+deploy:
+  provider: heroku
+  app: ch-taskman
