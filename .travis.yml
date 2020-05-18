@@ -2,9 +2,11 @@ language: node_js
 node_js:
   - node
 
-before_script:
-  - export APPKEY=somekey
-  - export CRYPTOWORD=word
+cache: npm
+
+env:
+  - APPKEY=somekey
+  - CRYPTOWORD=word
 
 script:
   - make lint
@@ -13,4 +15,5 @@ script:
 deploy:
   provider: heroku
   app: ch-taskman
-  api_key: HEROKU_API_KEY
+  api_key:
+    secure: HEROKU_API_KEY
