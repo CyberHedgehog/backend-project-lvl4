@@ -4,10 +4,6 @@ node_js:
 
 cache: npm
 
-env:
-  - APPKEY=somekey
-  - CRYPTOWORD=word
-
 script:
   - make lint
   - make test
