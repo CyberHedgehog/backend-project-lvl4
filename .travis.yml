@@ -1,15 +1,12 @@
 language: node_js
 node_js:
-  - node
-
+- node
 cache: npm
-
 script:
-  - make lint
-  - make test
-
+- make lint
+- make test
 deploy:
   provider: heroku
   app: ch-taskman
   api_key:
-    secure: HEROKU_API_KEY
+    secure: e00+tGR5jZsdWpkVFyaFnw1t7ESqy9CaXA4FtyfNofn6V5IKe4LY6+UcsYUomMbPeEpzYik21eGgyIfbWJw2IHQCtV4pQBYQBe+7EJiQ0+IrjrZ/OR8E0PibDnBpb0hu65dhE4cond0qrIqbqhRmOsSg8hpWJJXBU9Ir84+5yFq9VS9/6LimN3sVd0aEJDXVJhxTLPNw0Tt3G5cH+/MiyKq3PnHdggsH/ehbaCnoOr15Zg/lvCoYHfiwJEthy3V8xDUxfdPrgEGR3L5fICHfb+VHKMECF18ORSBEQWhRrOHkir/yg/MUqLBlHzqUpdJrNp7678uD4z0GkJ1ttRqRaWl91cpKGU9H1+mTx5CDcGNYjrNQJJeMa6PhnunRHTycR6d/BwUK06wl9kSnFohO04zPcQZding7Czcn5bPD3aRaOcpoziND9fesU0Y2hUwcbUqAjPIN2pTm+KdkNUBcnZx810y/gEJ5GdZXfs7QYX1ZfAZxZ42fqOl5JfZLUBD2pNY/ED0xUgdQTfdxh2ZPROSYUy8tpBGg8gbt6KxKrQSnUGarytO6tA/2Em94z33rIytsWu9wTmhAGrVX4Ma1pSRy0446XWLJD4Umzd6XJNXwy7r2YKgmixkgJflgruktwL7HS+6eBMWIfRYLDOyUFiuC4425sOG7PS8ohnb9itI=
