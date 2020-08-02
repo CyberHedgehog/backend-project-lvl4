@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
   }, {});
-  // User.associate = function(models) {
-  //   // associations can be defined here
-  // };
+  User.associate = (models) => {
+    User.hasMany(models.Task);
+  };
   return User;
 };
