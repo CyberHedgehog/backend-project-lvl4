@@ -22,20 +22,21 @@ describe('Tasks', () => {
   const taskTitle = faker.random.word();
   const taskBody = faker.random.words();
 
+  it('Get tasks list', async () => {
+    const agent = request.agent(server);
+    await agent.post('/login').send({ email, password });
+    const response = await agent.get('/tasks');
+    expect(response).toHaveHTTPStatus(302);
+  });
+
   it('Create task', async () => {
     const agent = request.agent(server);
-    const firstUser = await db.User.findOne({ where: { firstName: firstUserData.firstName } });
     const secondUser = await db.User.findOne({ where: { firstName: secondUserData.firstName } });
     await agent.post('/login').send({ email, password });
-    await agent.post('/task').send({ name: taskTitle, description: taskBody, assignedTo: secondUser.id });
+    const response = await agent.post('/tasks/new').send({ name: taskTitle, description: taskBody, assignedTo: secondUser.id });
     const result = await db.Task.findOne({ where: { name: taskTitle } });
-    const expectedData = {
-      name: taskTitle,
-      description: taskBody,
-      creatorId: firstUser.id,
-      assignedUserId: secondUser.id,
-    };
-    expect(result).toEqual(expect.objectContaining(expectedData));
+    expect(response).toHaveHTTPStatus(302);
+    expect(result.name).toBe(taskTitle);
   });
 
   it('Delete task', async () => {
@@ -48,9 +49,24 @@ describe('Tasks', () => {
       assignedUserId: firstUser.id,
     });
     await task.save();
-    await agent.delete(`/task/${task.id}`).send({ email, password });
+    await agent.post('/login').send({ email, password });
+    await agent.delete(`/tasks/${task.id}`);
     const result = await db.Task.findOne({ where: { id: task.id } });
     expect(result).toBeNull();
+  });
+
+  it('Update task', async () => {
+    const agent = request.agent(server);
+    const task = await db.Task.create({
+      name: taskTitle,
+      description: taskBody,
+    });
+    await task.reload();
+    const newBody = faker.random.words();
+    await agent.post('/login').send({ email, password });
+    await agent.patch(`/tasks/${task.id}`).send({ description: newBody });
+    await task.reload();
+    expect(task.description).toBe(newBody);
   });
 
   afterEach(async (done) => {

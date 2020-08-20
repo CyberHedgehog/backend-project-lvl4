@@ -32,7 +32,6 @@ export default (router) => {
             };
             return result;
           });
-        console.log(usersList);
         await ctx.render('users/list', { usersList });
         return;
       }
