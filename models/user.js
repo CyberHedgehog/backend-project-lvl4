@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
   }, {});
-  User.associate = (models) => {
-    User.hasMany(models.Task);
-  };
+  // User.associate = (models) => {
+  //   User.hasMany(models.Task, { });
+  // };
   return User;
 };

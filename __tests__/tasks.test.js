@@ -26,7 +26,7 @@ describe('Tasks', () => {
     const agent = request.agent(server);
     await agent.post('/login').send({ email, password });
     const response = await agent.get('/tasks');
-    expect(response).toHaveHTTPStatus(302);
+    expect(response).toHaveHTTPStatus(200);
   });
 
   it('Create task', async () => {

@@ -1,4 +1,4 @@
-const statuses = ['new', 'in work', 'on testing', 'done'];
+const statuses = ['New', 'In progress', 'On testing', 'Done'];
 
 module.exports = (sequelize, DataTypes) => {
   const TaskStatus = sequelize.define('TaskStatus', {

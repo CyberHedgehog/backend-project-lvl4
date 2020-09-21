@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
   }, {});
   Tag.associate = (models) => {
-    Tag.belongsToMany(models.Task, { through: 'TaskTags', as: 'tasks', foreignKey: 'tagId' });
+    Tag.belongsToMany(models.Task, { through: 'TaskTags', as: 'tasks' });
   };
   return Tag;
 };

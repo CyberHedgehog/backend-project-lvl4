@@ -1,0 +1,22 @@
+extends /layouts/inner.pug
+
+block title
+  title Tasks
+
+block nav-links
+  li.nav-item
+    a(class="nav-link active" href="/tasks") Tasks
+  li.nav-item
+    a(class="nav-link" href="/users/list") Users
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+        a(class="btn btn-primary" href="/tasks/new") New task
+      
+    .row.justify-content-center
+      h1 Tasks list
+    .row.justify-content-center
+      each task in tasksList
+        task=task.name
