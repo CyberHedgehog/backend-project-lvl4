@@ -1,8 +1,11 @@
 install:
 	npm install
 
-start:
-	npx gulp run
+start-backend:
+	npx nodemon --exec npx babel-node server/bin/server.js
+
+start-frontend:
+	npx webpack-dev-server
 
 debug:
 	DEBUG=app npx gulp run
@@ -14,7 +17,7 @@ lint:
 	npx eslint .
 
 test:
-	npm test
+	npm run test
 
 watch:
 	npx jest --watch
