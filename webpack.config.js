@@ -1,13 +1,18 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
+  devtool: 'source-map',
   entry: ['./src/index.js'],
   output: {
-    path: path.join(__dirname, 'public', 'assets'),
+    path: path.join(__dirname, 'dist', 'public'),
     filename: 'main.js',
     publicPath: '/public/assets/',
+  },
+  devServer: {
+    host: 'localhost',
+    port: 5001,
   },
   module: {
     rules: [

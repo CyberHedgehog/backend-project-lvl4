@@ -10,7 +10,7 @@
     "build-server": "NODE_ENV=production babel server --out-dir dist/server --source-maps inline && npm run build-configs && cp -r server/views dist/server/views",
     "build-frontend": "NODE_ENV=production webpack -p",
     "build": "npx webpack -p --env production",
-    "debug": "DEBUG=app npx gulp run"
+    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
   },
   "jest": {
     "testEnvironment": "node"
@@ -47,12 +47,14 @@
     "jest-cli": "^26.4.2",
     "nodemon": "^2.0.4",
     "pino-pretty": "^4.2.1",
+    "sqlite3": "^5.0.0",
     "style-loader": "^1.2.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "bootstrap": "^4.5.2",
+    "dotenv": "^8.2.0",
     "fastify": "^3.4.1",
     "fastify-error-page": "^4.0.0",
     "fastify-flash": "^2.0.2",
@@ -63,13 +65,18 @@
     "fastify-secure-session": "^2.2.1",
     "fastify-static": "^3.2.0",
     "i18next": "^19.7.0",
-    "knex": "^0.21.5",
+    "jquery": "^3.5.1",
+    "knex": "^0.21.6",
     "lodash": "^4.17.20",
     "objection": "^2.2.3",
     "objection-unique": "^1.2.1",
+    "pg": "^8.3.3",
     "point-of-view": "^4.5.1",
+    "popper.js": "^1.16.1",
+    "postcss-loader": "^4.0.2",
     "pug": "^3.0.0",
-    "sqlite3": "^5.0.0",
+    "rollbar": "^2.19.3",
+    "sass-loader": "^10.0.2",
     "webpack": "^4.44.2"
   }
 }
