@@ -4,52 +4,49 @@ import fastifyErrorPage from 'fastify-error-page';
 import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
 import fastifyFlash from 'fastify-flash';
-import fastifyReverseRoutes from 'fastify-reverse-routes';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import path from 'path';
 import Pug from 'pug';
 import pointOfView from 'point-of-view';
-import webpackConfig from '../webpack.config';
+import dotenv from 'dotenv';
+import addRoutes from './routes';
 import knexConfig from './knexfile';
 import models from './models';
 
+dotenv.config();
+
 const mode = process.env.NODE_ENV || 'development';
+const port = process.env.PORT || 3000;
 const app = fastify({
-  logger: true,
+  logger: {
+    prettyPrint: mode === 'development',
+  },
 });
 
-const { devServer } = webpackConfig;
-const devHost = `http://${devServer.host}:${devServer.port}`;
-const domain = mode === 'development' ? devHost : '';
 app.register(pointOfView, {
   engine: {
     pug: Pug,
   },
   includeViewExtension: true,
-  defaultContext: {
-    assetPath: (filename) => `${domain}/assets/${filename}`,
+  root: path.join(__dirname, 'views'),
+  options: {
+    basedir: path.join(__dirname, 'views'),
   },
-  templates: path.join(__dirname, '..', 'server', 'views'),
 });
 
-app.decorateReply('render', function render(viewPath, locals) {
-  this.view(viewPath, { ...locals, reply: this });
-});
-
-const pathPublic = mode === 'production'
-  ? path.join(__dirname, '..', 'public')
-  : path.join(__dirname, '..', 'dist', 'public');
 app.register(fastifyStatic, {
-  root: pathPublic,
-  prefix: '/assets/',
+  root: process.env !== 'production'
+    ? path.join(__dirname, '..', 'dist', 'public')
+    : path.join(__dirname, 'public'),
 });
+
+addRoutes(app);
 
 app.register(fastifyErrorPage);
-app.register(fastifyReverseRoutes);
 app.register(fastifyFormbody);
 app.register(fastifySecureSession, {
-  secret: process.APPKEY,
+  secret: process.env.APPKEY,
   cookie: {
     path: '/',
   },
@@ -61,4 +58,4 @@ app.register(fastifyObjectionjs, {
   models,
 });
 
-export default app;
+app.listen(port, '0.0.0.0');
