@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "gulp run",
+    "start": "NODE_ENV=production node dist/server.js",
     "build-configs": "babel webpack.config.js --out-dir dist && cp knexfile.js dist",
-    "build-server": "NODE_ENV=production babel server --out-dir dist/server --source-maps inline && npm run build-configs && cp -r server/views dist/server/views",
-    "build-frontend": "NODE_ENV=production webpack -p",
-    "build": "npx webpack -p --env production",
-    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
+    "build-front": "npx webpack -p --env production",
+    "build-back": "npx babel server --out-dir dist && cp -r server/views dist/views",
+    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/index.js"
   },
   "jest": {
     "testEnvironment": "node"
@@ -38,7 +37,6 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
-    "css-loader": "^4.3.0",
     "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
@@ -48,12 +46,13 @@
     "nodemon": "^2.0.4",
     "pino-pretty": "^4.2.1",
     "sqlite3": "^5.0.0",
-    "style-loader": "^1.2.1",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "autoprefixer": "^10.0.1",
     "bootstrap": "^4.5.2",
+    "css-loader": "^4.3.0",
     "dotenv": "^8.2.0",
     "fastify": "^3.4.1",
     "fastify-error-page": "^4.0.0",
@@ -66,17 +65,22 @@
     "fastify-static": "^3.2.0",
     "i18next": "^19.7.0",
     "jquery": "^3.5.1",
+    "jquery-ujs": "^1.2.2",
     "knex": "^0.21.6",
     "lodash": "^4.17.20",
+    "node-sass": "^4.14.1",
     "objection": "^2.2.3",
     "objection-unique": "^1.2.1",
     "pg": "^8.3.3",
     "point-of-view": "^4.5.1",
     "popper.js": "^1.16.1",
+    "postcss": "^8.1.1",
     "postcss-loader": "^4.0.2",
+    "precss": "^4.0.0",
     "pug": "^3.0.0",
     "rollbar": "^2.19.3",
     "sass-loader": "^10.0.2",
+    "style-loader": "^1.2.1",
     "webpack": "^4.44.2"
   }
 }
