@@ -8,9 +8,10 @@ module.exports = {
   development: {
     client: 'sqlite3',
     connection: {
-      filename: './dev.sqlite',
+      filename: '../dev.sqlite',
     },
     migrations,
+    useNullAsDefault: true,
   },
 
   production: {
@@ -25,11 +26,13 @@ module.exports = {
       max: 10,
     },
     migrations,
+    useNullAsDefault: true,
   },
 
   test: {
     client: 'sqlite3',
     connection: ':memory:',
     migrations,
+    useNullAsDefault: true,
   },
 };
