@@ -17,7 +17,6 @@ import models from './models';
 dotenv.config();
 
 const mode = process.env.NODE_ENV || 'development';
-const port = process.env.PORT || 3000;
 const app = fastify({
   logger: {
     prettyPrint: mode === 'development',
@@ -58,4 +57,4 @@ app.register(fastifyObjectionjs, {
   models,
 });
 
-app.listen(port, '0.0.0.0');
+export default app;

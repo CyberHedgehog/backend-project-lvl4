@@ -1,27 +1,24 @@
-import request from 'supertest';
-import matchers from 'jest-supertest-matchers';
-// import session from 'supertest-session';
 import generateFakeUser from '../lib/fakeUser';
-import app from '..';
-import db from '../models';
-
-
-beforeAll(async () => {
-  await db.sequelize.sync();
-  expect.extend(matchers);
-});
+import app from '../server';
+import db from '../server/models';
 
 describe('New user', () => {
   let server;
   const userData = generateFakeUser();
+  const url = '/users';
+  const method = 'POST';
 
   beforeEach(() => {
-    server = app().listen();
+    server = app;
   });
 
   it('Success', async () => {
-    const result = await request.agent(server).post('/users').send(userData);
-    expect(result).toHaveHTTPStatus(302);
+    const response = await server.inject({
+      method,
+      url,
+      payload: userData,
+    });
+    expect(response.statusCode).toBe(302);
   });
 
   it('Failed with same data', async () => {
@@ -117,12 +114,7 @@ describe('Update user', () => {
     expect(result.firstName).toBe(user.firstName);
   });
 
-  afterEach(async (done) => {
+  afterEach(async () => {
     server.close();
-    done();
   });
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
 });
