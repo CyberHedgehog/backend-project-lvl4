@@ -17,6 +17,7 @@ import models from './models';
 dotenv.config();
 
 const mode = process.env.NODE_ENV || 'development';
+console.log(mode);
 const app = fastify({
   logger: {
     prettyPrint: mode === 'development',

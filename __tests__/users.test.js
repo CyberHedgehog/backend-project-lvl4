@@ -1,6 +1,7 @@
-import generateFakeUser from '../lib/fakeUser';
+import knex from 'knex';
+import knexConfig from '../server/knexfile';
 import app from '../server';
-import db from '../server/models';
+import generateFakeUser from '../server/lib/fakeUser';
 
 describe('New user', () => {
   let server;
@@ -8,8 +9,24 @@ describe('New user', () => {
   const url = '/users';
   const method = 'POST';
 
+  beforeAll(async () => {
+    const db = knex(knexConfig.test);
+    await db.migrate.latest();
+    console.log(app);
+    // const user = await User.fromJson(userData);
+    // await User.query().insert(user);
+  });
+
   beforeEach(() => {
     server = app;
+  });
+
+  it('Registration form', async () => {
+    const response = await server.inject({
+      method: 'GET',
+      url: '/users/new',
+    });
+    expect(response.statusCode).toBe(200);
   });
 
   it('Success', async () => {
@@ -22,8 +39,12 @@ describe('New user', () => {
   });
 
   it('Failed with same data', async () => {
-    const result = await request.agent(server).post('/users').send(userData);
-    expect(result).toHaveHTTPStatus(200);
+    const result = await server.inject({
+      method,
+      url,
+      payload: userData,
+    });
+    expect(result.statusCode).toBe(200);
   });
 
   it('Failed with wrong data', async () => {
@@ -35,11 +56,11 @@ describe('New user', () => {
       lastName,
     };
     const result = await request.agent(server).post('/users').send(wrongUserData);
-    expect(result).toHaveHTTPStatus(200);
+    expect(result.statusCode).toBe(200);
   });
 
   afterEach(async (done) => {
-    server.close();
+    // server.close();
     done();
   });
 });
