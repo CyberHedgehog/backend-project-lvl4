@@ -17,45 +17,46 @@ import models from './models';
 dotenv.config();
 
 const mode = process.env.NODE_ENV || 'development';
-console.log(mode);
-const app = fastify({
-  logger: {
-    prettyPrint: mode === 'development',
-  },
-});
 
-app.register(pointOfView, {
-  engine: {
-    pug: Pug,
-  },
-  includeViewExtension: true,
-  root: path.join(__dirname, 'views'),
-  options: {
-    basedir: path.join(__dirname, 'views'),
-  },
-});
+export default () => {
+  const app = fastify({
+    logger: {
+      prettyPrint: mode === 'development',
+    },
+  });
 
-app.register(fastifyStatic, {
-  root: process.env !== 'production'
-    ? path.join(__dirname, '..', 'dist', 'public')
-    : path.join(__dirname, 'public'),
-});
+  app.register(pointOfView, {
+    engine: {
+      pug: Pug,
+    },
+    includeViewExtension: true,
+    root: path.join(__dirname, 'views'),
+    options: {
+      basedir: path.join(__dirname, 'views'),
+    },
+  });
 
-addRoutes(app);
+  app.register(fastifyStatic, {
+    root: process.env !== 'production'
+      ? path.join(__dirname, '..', 'dist', 'public')
+      : path.join(__dirname, 'public'),
+  });
 
-app.register(fastifyErrorPage);
-app.register(fastifyFormbody);
-app.register(fastifySecureSession, {
-  secret: process.env.APPKEY,
-  cookie: {
-    path: '/',
-  },
-});
-app.register(fastifyFlash);
-app.register(fastifyMethodOverride);
-app.register(fastifyObjectionjs, {
-  knexConfig: knexConfig[mode],
-  models,
-});
+  addRoutes(app);
 
-export default app;
+  app.register(fastifyErrorPage);
+  app.register(fastifyFormbody);
+  app.register(fastifySecureSession, {
+    secret: process.env.APPKEY,
+    cookie: {
+      path: '/',
+    },
+  });
+  app.register(fastifyFlash);
+  app.register(fastifyMethodOverride);
+  app.register(fastifyObjectionjs, {
+    knexConfig: knexConfig[mode],
+    models,
+  });
+  return app;
+};

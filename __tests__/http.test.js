@@ -1,9 +1,9 @@
-import app from '../server/index';
+import getApp from '../server/index';
 
 describe('Requests', () => {
   let server;
   beforeEach(() => {
-    server = app;
+    server = getApp();
   });
 
   it('200', async () => {
@@ -20,9 +20,5 @@ describe('Requests', () => {
       url: '/wrongpath',
     });
     expect(response.statusCode).toBe(404);
-  });
-
-  afterEach(() => {
-    server.close();
   });
 });

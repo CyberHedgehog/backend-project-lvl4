@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "NODE_ENV=production node dist/server.js",
+    "start": "NODE_ENV=production node dist/bin/server.js",
     "build-configs": "babel webpack.config.js --out-dir dist && cp knexfile.js dist",
     "build-front": "npx webpack -p --env production",
     "build-back": "npx babel server --out-dir dist && cp -r server/views dist/views",
-    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/index.js"
+    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
   },
   "jest": {
     "testEnvironment": "node"

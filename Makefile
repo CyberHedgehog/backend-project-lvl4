@@ -7,11 +7,15 @@ start-backend:
 start-frontend:
 	npx webpack-dev-server
 
+start:
+	npm run start
+
 debug:
 	DEBUG=app npx gulp run
 
 build:
-	npm run build
+	npm run build-front
+	npm run build-back
 
 lint:
 	npx eslint .
