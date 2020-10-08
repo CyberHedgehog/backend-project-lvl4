@@ -68,18 +68,25 @@ describe('New user', () => {
 //   let server;
 //   const firstUserData = generateFakeUser();
 //   const secondUserData = generateFakeUser();
+//   let user;
 
-//   beforeEach(() => {
-//     server = app().listen();
+//   beforeAll(async () => {
+//     server = await getApp().ready();
+//     user = server.objection.models.user;
+//   })
+
+//   beforeEach(async () => {
+//     await server.objection.knex.migrate.latest();
 //   });
 
 //   it('Delete with signed user', async () => {
-//     const firstUser = db.User.build(firstUserData);
-//     await firstUser.save();
-//     const secondUser = db.User.build(secondUserData);
-//     await secondUser.save();
+//     const firstUser = await user.query().insert(firstUserData);
+//     const secondUser = await user.query().insert(secondUserData);
 //     const { email, password } = firstUserData;
-//     const agent = request.agent(server);
+//     await server.inject({
+//       method: 'POST',
+//       url: '/users'
+//     })
 //     await agent.post('/login').send({ email, password });
 //     await agent.delete(`/users/${secondUser.id}`);
 //     const result = await db.User.findOne({ where: { id: secondUser.id } });
