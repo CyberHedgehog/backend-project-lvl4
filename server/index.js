@@ -42,6 +42,14 @@ export default () => {
       : path.join(__dirname, 'public'),
   });
 
+  app.addHook('preHandler', async (request) => {
+    const userId = request.session.get('userId');
+    if (userId) {
+      request.currentUser = await app.objecton.models.user.query().findById(userId);
+      request.isSigned = true;
+    }
+  });
+
   addRoutes(app);
 
   app.register(fastifyErrorPage);

@@ -14,7 +14,7 @@ export default (app) => {
       });
     const password = encrypt(req.body.password);
     if (password === user.passwordDigest) {
-      req.session.set('cookie', user.id);
+      req.session.set('userId', user.id);
       reply.redirect('/');
     }
     reply.view('/login');

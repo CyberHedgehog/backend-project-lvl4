@@ -64,48 +64,45 @@ describe('New user', () => {
   });
 });
 
-// describe('Delete user', () => {
-//   let server;
-//   const firstUserData = generateFakeUser();
-//   const secondUserData = generateFakeUser();
-//   let user;
+describe('Delete user', () => {
+  let server;
+  const firstUserData = generateFakeUser();
+  const secondUserData = generateFakeUser();
+  let user;
 
-//   beforeAll(async () => {
-//     server = await getApp().ready();
-//     user = server.objection.models.user;
-//   })
+  beforeEach(async () => {
+    server = await getApp().ready();
+    user = server.objection.models.user;
+    await server.objection.knex.migrate.latest();
+  });
 
-//   beforeEach(async () => {
-//     await server.objection.knex.migrate.latest();
-//   });
+  it('Delete with signed user', async () => {
+    const firstUser = await user.query().insert(firstUserData);
+    const secondUser = await user.query().insert(secondUserData);
+    const { email, password } = firstUser;
+    await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password },
+    });
+    await server.inject({
+      method: 'DELETE',
+      url: `/users/${secondUser.id}`,
+    });
+    const result = await user.query().findById(secondUser.id);
+    expect(result).toBeUndefined();
+  });
 
-//   it('Delete with signed user', async () => {
-//     const firstUser = await user.query().insert(firstUserData);
-//     const secondUser = await user.query().insert(secondUserData);
-//     const { email, password } = firstUserData;
-//     await server.inject({
-//       method: 'POST',
-//       url: '/users'
-//     })
-//     await agent.post('/login').send({ email, password });
-//     await agent.delete(`/users/${secondUser.id}`);
-//     const result = await db.User.findOne({ where: { id: secondUser.id } });
-//     expect(result).toBeNull();
-//   });
-
-//   it('Delete without signed user', async () => {
-//     const newUser = db.User.build(secondUserData);
-//     await newUser.save();
-//     await request.agent(server).delete(`/users/${newUser.id}`);
-//     const result = await db.User.findOne({ where: { id: newUser.id } });
-//     expect(result).not.toBeNull();
-//   });
-
-//   afterEach(async (done) => {
-//     server.close();
-//     done();
-//   });
-// });
+  it('Delete without signed user', async () => {
+    const newUser = await user.query().insert(secondUserData);
+    await server.inject({
+      method: 'DELETE',
+      url: `/users/${newUser.id}`,
+    });
+    const result = await user.query().findById(newUser.id);
+    expect(result.email).toBe(newUser.email);
+  });
+});
 
 // describe('Update user', () => {
 //   let server;
