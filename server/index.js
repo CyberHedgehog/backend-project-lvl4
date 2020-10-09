@@ -42,19 +42,12 @@ export default () => {
       : path.join(__dirname, 'public'),
   });
 
-  app.addHook('preHandler', async (request) => {
-    const userId = request.session.get('userId');
-    if (userId) {
-      request.currentUser = await app.objecton.models.user.query().findById(userId);
-      request.isSigned = true;
-    }
-  });
-
   addRoutes(app);
 
   app.register(fastifyErrorPage);
   app.register(fastifyFormbody);
   app.register(fastifySecureSession, {
+    cookieName: 'session',
     secret: process.env.APPKEY,
     cookie: {
       path: '/',
@@ -66,5 +59,6 @@ export default () => {
     knexConfig: knexConfig[mode],
     models,
   });
+
   return app;
 };

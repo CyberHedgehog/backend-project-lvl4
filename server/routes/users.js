@@ -15,16 +15,32 @@ export default (app) => {
 
   app.delete('/users/:id', async (req, reply) => {
     const currentUserId = req.session.get('userId');
-    console.log(currentUserId);
     if (!currentUserId) {
-      reply.view('root');
+      reply.view('startPage');
       return;
     }
     try {
       await app.objection.models.user.query().deleteById(req.id);
-      reply.redirect('/users');
     } catch (e) {
-      reply.view('root');
+      reply.view('startPage');
+    }
+    reply.redirect('/');
+  });
+
+  app.patch('/users', async (req, reply) => {
+    const currentUserId = req.session.get('userId');
+    if (!currentUserId) {
+      reply.view('startPage');
+      return;
+    }
+    try {
+      const user = await app.objection.models.user
+        .query()
+        .findById(currentUserId);
+      await user.$query().update(req.body);
+      reply.redirect('startPage');
+    } catch (e) {
+      reply.view('startPage');
     }
   });
 };

@@ -77,17 +77,19 @@ describe('Delete user', () => {
   });
 
   it('Delete with signed user', async () => {
-    const firstUser = await user.query().insert(firstUserData);
+    await user.query().insert(firstUserData);
     const secondUser = await user.query().insert(secondUserData);
-    const { email, password } = firstUser;
-    await server.inject({
+    const { email, password } = firstUserData;
+    const loginResponse = await server.inject({
       method: 'POST',
       url: '/login',
       payload: { email, password },
     });
+    const resCookies = loginResponse.cookies[0];
     await server.inject({
       method: 'DELETE',
       url: `/users/${secondUser.id}`,
+      cookies: { session: resCookies.value },
     });
     const result = await user.query().findById(secondUser.id);
     expect(result).toBeUndefined();
@@ -104,41 +106,43 @@ describe('Delete user', () => {
   });
 });
 
-// describe('Update user', () => {
-//   let server;
-//   const userData = generateFakeUser();
-//   const dataToUpdate = generateFakeUser();
+describe('Update user', () => {
+  let server;
+  let user;
+  const userData = generateFakeUser();
+  const dataToUpdate = generateFakeUser();
 
-//   beforeEach(() => {
-//     server = app().listen();
-//   });
+  beforeEach(async () => {
+    server = await getApp().ready();
+    user = server.objection.models.user;
+    await server.objection.knex.migrate.latest();
+  });
 
-//   it('Update own data', async () => {
-//     const user = db.User.build(userData);
-//     await user.save();
+  it('Update user', async () => {
+    const newUser = await user.query().insert(userData);
+    const { email, password } = userData;
+    const loginResponse = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password },
+    });
+    const [resCookies] = loginResponse.cookies;
+    const { firstName, lastName } = dataToUpdate;
+    await server.inject({
+      method: 'PATCH',
+      url: '/users',
+      cookies: { session: resCookies.value },
+      payload: { firstName, lastName },
+    });
+    const patсhedUser = await user.query().findById(newUser.id);
+    expect(patсhedUser.firstName).toBe(firstName);
+  });
 
-//     const { email, password } = userData;
-//     const agent = request.agent(server);
-//     await agent.post('/login').send({ email, password });
-//     const { firstName, lastName } = dataToUpdate;
-//     await agent.patch('/users').send({ firstName, lastName });
-//     await agent.delete('/session');
-//     const patсhedUser = await db.User.findOne({ where: { id: user.id } });
-
-//     expect(patсhedUser.firstName).toBe(firstName);
-//   });
-
-//   it('Update without auth', async () => {
-//     const user = await db.User.findOne({ where: { email: userData.email } });
-//     const agent = request.agent(server);
-//     const { firstName, lastName } = dataToUpdate;
-//     await agent.patch('/users').send({ firstName, lastName });
-//     const result = await db.User.findOne({ where: { id: user.id } });
-
-//     expect(result.firstName).toBe(user.firstName);
-//   });
-
-//   afterEach(async () => {
-//     server.close();
-//   });
-// });
+  it('Update without auth', async () => {
+    const newUser = await user.query().insert(userData);
+    const { firstName, lastName } = dataToUpdate;
+    await server.inject().patch('/users').body({ firstName, lastName });
+    const result = await user.query().findById(newUser.id);
+    expect(result.firstName).toBe(newUser.firstName);
+  });
+});
