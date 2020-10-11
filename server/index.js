@@ -44,6 +44,17 @@ export default () => {
 
   addRoutes(app);
 
+  app.decorateRequest('currentUser', null);
+  app.decorateRequest('isSigned', false);
+
+  app.addHook('preHandler', async (request) => {
+    const userId = request.session.get('userId');
+    if (userId) {
+      request.currentUser = await app.objection.models.user.query().findById(userId);
+      request.isSigned = true;
+    }
+  });
+
   app.register(fastifyErrorPage);
   app.register(fastifyFormbody);
   app.register(fastifySecureSession, {
