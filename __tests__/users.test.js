@@ -7,9 +7,13 @@ describe('New user', () => {
   const url = '/users';
   const method = 'POST';
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     server = await getApp().ready();
     await server.objection.knex.migrate.latest();
+  });
+
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
   });
 
   it('Registration form', async () => {
@@ -70,10 +74,14 @@ describe('Delete user', () => {
   const secondUserData = generateFakeUser();
   let user;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     server = await getApp().ready();
     user = server.objection.models.user;
     await server.objection.knex.migrate.latest();
+  });
+
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
   });
 
   it('Delete with signed user', async () => {
@@ -112,10 +120,14 @@ describe('Update user', () => {
   const userData = generateFakeUser();
   const dataToUpdate = generateFakeUser();
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     server = await getApp().ready();
     user = server.objection.models.user;
     await server.objection.knex.migrate.latest();
+  });
+
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
   });
 
   it('Update user', async () => {
