@@ -2,7 +2,7 @@ import encrypt from '../lib/secure';
 
 export default (app) => {
   app.get('/login', { name: 'login' }, async (req, reply) => {
-    reply.view('login');
+    reply.view('login', { t: req.t });
   });
 
   app.post('/login', async (req, reply) => {

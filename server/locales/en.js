@@ -5,7 +5,7 @@ export default {
       layouts: {
         main: {
           logOut: 'Logout',
-          head: 'Welcome!',
+          title: 'Taskmanager',
           footer: {
             text: 'Dmitriy Dobrenkiy',
             ghLink: 'My Github',
@@ -18,6 +18,20 @@ export default {
           loggedButton: 'Go to tasks!',
           greeting: 'Welcome!',
           text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        },
+        login: {
+          title: 'Login',
+          email: 'Email:',
+          password: 'Password:',
+          notRegistered: 'Not registered?',
+        },
+        signup: {
+          title: 'Register',
+          email: 'Email:',
+          password: 'Password:',
+          firstName: 'Firstname:',
+          lastName: 'Lastname:',
+          registered: 'Already registered?',
         },
       },
     },

@@ -1,6 +1,6 @@
 export default (app) => {
   app.get('/users/new', { name: 'new' }, (req, reply) => {
-    reply.view('users/signup');
+    reply.view('users/signup', { t: req.t });
   });
 
   app.post('/users', async (request, reply) => {
