@@ -6,10 +6,13 @@ import fastifySecureSession from 'fastify-secure-session';
 import fastifyFlash from 'fastify-flash';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
-import path from 'path';
-import Pug from 'pug';
-import pointOfView from 'point-of-view';
 import dotenv from 'dotenv';
+import i18next from 'i18next';
+import i18mw from 'i18next-http-middleware';
+import path from 'path';
+import pointOfView from 'point-of-view';
+import Pug from 'pug';
+import en from './locales/en';
 import addRoutes from './routes';
 import knexConfig from './knexfile';
 import models from './models';
@@ -43,6 +46,19 @@ export default () => {
   });
 
   addRoutes(app);
+
+  i18next.use(i18mw.LanguageDetector).init({
+    lng: 'en',
+    debug: mode === 'development',
+    resources: {
+      en,
+    },
+    register: global,
+  });
+
+  app.register(i18mw.plugin, {
+    i18next,
+  });
 
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);

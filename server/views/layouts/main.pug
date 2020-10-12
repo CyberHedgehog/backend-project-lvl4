@@ -25,5 +25,5 @@ body(class="bg-dark text-light")
     block main
     footer(class="mt-auto fixed-bottom text-center")
       div(class="inner")
-        p Dmitriy Dobrenkiy. 
-          a(class="text-light" href="https://github.com/CyberHedgehog") My GitHub.
+        p= t('views.layouts.main.footer.text')
+          a(class="text-light" href="https://github.com/CyberHedgehog")= t('views.layouts.main.footer.ghLink')
