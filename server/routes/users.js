@@ -1,34 +1,36 @@
 export default (app) => {
-  app.get('/users/new', { name: 'new' }, (req, reply) => {
-    reply.view('users/signup', { t: req.t });
+  app.get('/users/new', { name: 'new' }, (request, reply) => {
+    // console.log(request.flash);
+    reply.render('users/signup');
   });
 
   app.post('/users', async (request, reply) => {
     try {
       const user = await app.objection.models.user.fromJson(request.body);
       await app.objection.models.user.query().insert(user);
-      reply.redirect('/root');
+      reply.redirect('/');
     } catch (e) {
-      reply.view('/users/new', { message: e });
+      request.flash('warning', e);
+      reply.render('users/signup');
     }
   });
 
   app.delete('/users/:id', async (request, reply) => {
     if (!request.isSigned) {
-      reply.view('startPage');
+      reply.render('startPage');
       return;
     }
     try {
       await app.objection.models.user.query().deleteById(request.id);
     } catch (e) {
-      reply.view('startPage');
+      reply.render('startPage');
     }
     reply.redirect('/');
   });
 
   app.patch('/users', async (request, reply) => {
     if (!request.isSigned) {
-      reply.view('startPage');
+      reply.render('startPage');
       return;
     }
     try {
@@ -38,7 +40,7 @@ export default (app) => {
       await user.$query().update(request.body);
       reply.redirect('startPage');
     } catch (e) {
-      reply.view('startPage');
+      reply.render('startPage');
     }
   });
 };

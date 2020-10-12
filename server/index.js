@@ -8,13 +8,12 @@ import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import dotenv from 'dotenv';
 import i18next from 'i18next';
-import i18mw from 'i18next-http-middleware';
 import path from 'path';
 import pointOfView from 'point-of-view';
 import Pug from 'pug';
 import en from './locales/en';
 import addRoutes from './routes';
-import knexConfig from './knexfile';
+import knexConfig from '../knexfile';
 import models from './models';
 
 dotenv.config();
@@ -28,15 +27,32 @@ export default () => {
     },
   });
 
+  i18next.init({
+    lng: 'en',
+    debug: mode === 'development',
+    resources: {
+      en,
+    },
+  });
+
   app.register(pointOfView, {
     engine: {
       pug: Pug,
     },
     includeViewExtension: true,
     root: path.join(__dirname, 'views'),
+    defaultContext: {
+      t(key) {
+        return i18next.t(key);
+      },
+    },
     options: {
       basedir: path.join(__dirname, 'views'),
     },
+  });
+
+  app.decorateReply('render', function render(viewPath, locals) {
+    this.view(viewPath, { ...locals, reply: this });
   });
 
   app.register(fastifyStatic, {
@@ -46,19 +62,6 @@ export default () => {
   });
 
   addRoutes(app);
-
-  i18next.use(i18mw.LanguageDetector).init({
-    lng: 'en',
-    debug: mode === 'development',
-    resources: {
-      en,
-    },
-    register: global,
-  });
-
-  app.register(i18mw.plugin, {
-    i18next,
-  });
 
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);

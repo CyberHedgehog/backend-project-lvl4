@@ -10,6 +10,7 @@ block main
       //- - const [msg] = flash('info');
       //- if msg
         +alert('success')
+      h1= reply.flash('warning')
       if isSigned
         a(href="/tasks" class="btn btn-light")= t('views.pages.startPage.loggedButton')
       else
