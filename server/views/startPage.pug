@@ -10,6 +10,7 @@ block main
       //- - const [msg] = flash('info');
       //- if msg
         +alert('success')
-        a(href="/tasks" class="btn btn-light mr-2") Go to tasks!
-      //- else  
-        a(href="/login" class="btn btn-light") Get started
+      if isSigned
+        a(href="/login" class="btn btn-light")= t('views.pages.startPage.loggedButton')
+      else
+        a(href="/tasks" class="btn btn-light mr-2")= t('views.pages.startPage.notLoggedButton')

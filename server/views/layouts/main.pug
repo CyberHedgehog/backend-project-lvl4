@@ -17,13 +17,13 @@ body(class="bg-dark text-light")
         .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
             block nav-links
-          //- if isSignedIn()
+          if isSigned
             div
               .my-2.my-lg-0
-                a.navbar-brand(href="/users/edit")= getUserName()
+                a.navbar-brand(href="/users/edit")= 'User'
                 a(href=urlFor('session') data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
     block main
     footer(class="mt-auto fixed-bottom text-center")
       div(class="inner")
         p= t('views.layouts.main.footer.text')
-        a(class="text-light" href="https://github.com/CyberHedgehog")= t('views.layouts.main.footer.ghLink')
+          a(class="text-light p-2" href="https://github.com/CyberHedgehog")= t('views.layouts.main.footer.ghLink')
