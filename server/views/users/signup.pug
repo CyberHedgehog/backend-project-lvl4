@@ -6,9 +6,6 @@ block main
   div(class="col-md-4 mx-auto")
     .text-center 
       h2= t('views.pages.signup.title')
-    - msg = reply.flash('warning')
-    if msg
-      div(class="alert allert-danger")= msg
     form(action="/users" method="POST")
       .form-group
         label(for="firstName")= t('views.pages.signup.firstName')

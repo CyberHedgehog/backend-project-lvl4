@@ -14,8 +14,8 @@ debug:
 	DEBUG=app npx gulp run
 
 build:
-	npm run build-front
-	npm run build-back
+	npm run build-frontend
+	npm run build-backend
 
 lint:
 	npx eslint .
