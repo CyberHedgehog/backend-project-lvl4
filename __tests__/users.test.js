@@ -1,6 +1,44 @@
 import getApp from '../server/index';
 import generateFakeUser from './lib/fakeUser';
 
+describe('List users', () => {
+  const userData = generateFakeUser();
+  let server;
+
+  beforeAll(async () => {
+    server = await getApp().ready();
+    await server.objection.knex.migrate.latest();
+    await server.objection.models.user.query().insert(userData);
+  });
+
+  it('Not logged', async () => {
+    const result = await server.inject({
+      method: 'GET',
+      url: '/users/list',
+    });
+
+    expect(result.statusCode).toBe(302);
+  });
+
+  it('Logged', async () => {
+    const login = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: {
+        email: userData.email,
+        password: userData.password,
+      },
+    });
+    console.log(login.cookies[0]);
+    const result = await server.inject({
+      method: 'GET',
+      url: '/users/list',
+      cookies: { session: login.cookies[0].value },
+    });
+    expect(result.statusCode).toBe(200);
+  });
+});
+
 describe('New user', () => {
   let server;
   const userData = generateFakeUser();

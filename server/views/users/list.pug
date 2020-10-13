@@ -14,9 +14,6 @@ block main
       .p-3
         h1 Users list
     .row.justify-content-center
-      - const [msg] = flash('success')
-      if msg
-        +alert('success', msg)
       .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
         .table-responsive-sm
           table.table
@@ -27,7 +24,7 @@ block main
                 th(scope="col") Email
                 th(scope="col" class="col-1")
             tbody
-              each user in usersList
+              each user in users
                 tr
                   td= user.firstName
                   td= user.lastName

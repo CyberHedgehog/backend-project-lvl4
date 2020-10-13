@@ -3,6 +3,16 @@ export default (app) => {
     reply.render('users/signup');
   });
 
+  app.get('/users/list', async (request, reply) => {
+    console.log(request.isSigned);
+    if (request.isSigned) {
+      const users = await app.objection.models.user.query();
+      reply.render('users/list', { users });
+      return;
+    }
+    reply.redirect('/');
+  });
+
   app.post('/users', async (request, reply) => {
     try {
       const user = await app.objection.models.user.fromJson(request.body);

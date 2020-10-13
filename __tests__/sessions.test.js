@@ -26,7 +26,6 @@ describe('Sessions', () => {
       url: '/login',
       payload: { email, password },
     });
-    console.log(result.headers);
     const cookie = result.headers['set-cookie'];
     expect(cookie).toBeDefined();
     expect(result.statusCode).toBe(302);
@@ -39,8 +38,23 @@ describe('Sessions', () => {
       url: '/login',
       payload: { email, password: 'wrongPassword' },
     });
-    const cookie = result.headers['set-cookie'];
-    expect(cookie).not.toBeDefined();
     expect(result.statusCode).toBe(200);
+  });
+
+  it('Delete', async () => {
+    const login = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email: userData.email, password: userData.password },
+    });
+    const cookie = login.cookies[0];
+
+    const result = await server.inject({
+      method: 'DELETE',
+      url: '/session',
+      cookies: { session: cookie.value },
+    });
+    expect(result.statusCode).toBe(302);
+    expect(result.cookies[0].value).toBe('');
   });
 });

@@ -1,22 +1,28 @@
 import encrypt from '../lib/secure';
 
 export default (app) => {
-  app.get('/login', { name: 'login' }, async (req, reply) => {
+  app.get('/login', async (reuest, reply) => {
     reply.render('login');
   });
 
-  app.post('/login', async (req, reply) => {
+  app.post('/login', async (request, reply) => {
     const [user] = await app.objection.models.user
       .query()
       .select()
       .where({
-        email: req.body.email,
+        email: request.body.email,
       });
-    const password = encrypt(req.body.password);
+    const password = encrypt(request.body.password);
     if (password === user.passwordDigest) {
-      req.session.set('userId', user.id);
+      request.session.set('userId', user.id);
       reply.redirect('/');
+      return;
     }
     reply.render('/login');
+  });
+
+  app.delete('/session', async (request, reply) => {
+    // request.session.delete();
+    reply.render('startPage');
   });
 };

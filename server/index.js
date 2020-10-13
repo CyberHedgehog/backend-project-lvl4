@@ -6,6 +6,7 @@ import fastifySecureSession from 'fastify-secure-session';
 import fastifyFlash from 'fastify-flash';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
+import fastifyReverseRoutes from 'fastify-reverse-routes';
 import dotenv from 'dotenv';
 import i18next from 'i18next';
 import path from 'path';
@@ -45,6 +46,8 @@ export default () => {
       t(key) {
         return i18next.t(key);
       },
+      isSigned: app.isSigned,
+      currentUser: app.currentUser,
     },
     options: {
       basedir: path.join(__dirname, 'views'),
@@ -61,8 +64,22 @@ export default () => {
       : path.join(__dirname, 'public'),
   });
 
-  addRoutes(app);
-
+  app.register(fastifyErrorPage);
+  app.register(fastifyReverseRoutes.plugin);
+  app.register(fastifyFormbody);
+  app.register(fastifySecureSession, {
+    cookieName: 'session',
+    secret: process.env.APPKEY,
+    cookie: {
+      path: '/',
+    },
+  });
+  app.register(fastifyFlash);
+  app.register(fastifyObjectionjs, {
+    knexConfig: knexConfig[mode],
+    models,
+  });
+  app.register(fastifyMethodOverride);
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
 
@@ -74,21 +91,6 @@ export default () => {
     }
   });
 
-  app.register(fastifyErrorPage);
-  app.register(fastifyFormbody);
-  app.register(fastifySecureSession, {
-    cookieName: 'session',
-    secret: process.env.APPKEY,
-    cookie: {
-      path: '/',
-    },
-  });
-  app.register(fastifyFlash);
-  app.register(fastifyMethodOverride);
-  app.register(fastifyObjectionjs, {
-    knexConfig: knexConfig[mode],
-    models,
-  });
-
+  addRoutes(app);
   return app;
 };

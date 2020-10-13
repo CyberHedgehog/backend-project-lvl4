@@ -1,0 +1,4 @@
+mixin methodButton(url, method)
+  form(action=url, method="post")
+    input(name="_method", type="hidden", value=method)
+    input(type="submit")
