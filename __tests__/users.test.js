@@ -19,7 +19,7 @@ describe('New user', () => {
   it('Registration form', async () => {
     const response = await server.inject({
       method: 'GET',
-      url: '/users/new',
+      url: '/users',
     });
     expect(response.statusCode).toBe(200);
   });

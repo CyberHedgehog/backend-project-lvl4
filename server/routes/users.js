@@ -1,6 +1,5 @@
 export default (app) => {
-  app.get('/users/new', { name: 'new' }, (request, reply) => {
-    // console.log(request.flash);
+  app.get('/users', (request, reply) => {
     reply.render('users/signup');
   });
 
@@ -10,7 +9,7 @@ export default (app) => {
       await app.objection.models.user.query().insert(user);
       reply.redirect('/');
     } catch (e) {
-      request.flash('warning', e);
+      request.flash('warning', 'Invalid email or password');
       reply.render('users/signup');
     }
   });
@@ -38,6 +37,7 @@ export default (app) => {
         .query()
         .findById(request.currentUser.id);
       await user.$query().update(request.body);
+      request.flash('success', 'Successfuly');
       reply.redirect('startPage');
     } catch (e) {
       reply.render('startPage');
