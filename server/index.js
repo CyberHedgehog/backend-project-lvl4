@@ -21,13 +21,7 @@ dotenv.config();
 
 const mode = process.env.NODE_ENV || 'development';
 
-export default () => {
-  const app = fastify({
-    logger: {
-      prettyPrint: mode === 'development',
-    },
-  });
-
+const setupFrontEnd = (app) => {
   i18next.init({
     lng: 'en',
     debug: mode === 'development',
@@ -46,6 +40,9 @@ export default () => {
       t(key) {
         return i18next.t(key);
       },
+      route(name) {
+        return app.reverse(name);
+      },
       isSigned: app.isSigned,
       currentUser: app.currentUser,
     },
@@ -63,8 +60,9 @@ export default () => {
       ? path.join(__dirname, '..', 'dist', 'public')
       : path.join(__dirname, 'public'),
   });
+};
 
-  app.register(fastifyErrorPage);
+const registerPlugins = (app) => {
   app.register(fastifyReverseRoutes.plugin);
   app.register(fastifyFormbody);
   app.register(fastifySecureSession, {
@@ -75,11 +73,15 @@ export default () => {
     },
   });
   app.register(fastifyFlash);
+  app.register(fastifyMethodOverride);
   app.register(fastifyObjectionjs, {
     knexConfig: knexConfig[mode],
     models,
   });
-  app.register(fastifyMethodOverride);
+  app.register(fastifyErrorPage);
+};
+
+const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
 
@@ -90,7 +92,19 @@ export default () => {
       request.isSigned = true;
     }
   });
+};
 
+export default () => {
+  const app = fastify({
+    logger: {
+      prettyPrint: mode === 'development',
+    },
+  });
+
+  setupFrontEnd(app);
+  registerPlugins(app);
   addRoutes(app);
+  addHooks(app);
+
   return app;
 };
