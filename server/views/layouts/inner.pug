@@ -19,5 +19,5 @@ html
           div
             .my-2.my-lg-0
               a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}` 
-              //- a(href=urlFor('session') data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
+              a(href='/session' data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
     block main

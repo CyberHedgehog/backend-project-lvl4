@@ -21,9 +21,8 @@ export default (app) => {
     reply.render('/login');
   });
 
-  app.delete('/session', { name: 'logout' }, async (request, reply) => {
+  app.delete('/session', async (request, reply) => {
     request.session.delete();
-    console.log('DELETE!!!!');
     reply.redirect('/');
   });
 };

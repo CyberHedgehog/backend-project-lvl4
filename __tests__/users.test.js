@@ -29,7 +29,6 @@ describe('List users', () => {
         password: userData.password,
       },
     });
-    console.log(login.cookies[0]);
     const result = await server.inject({
       method: 'GET',
       url: '/users/list',

@@ -4,7 +4,6 @@ export default (app) => {
   });
 
   app.get('/users/list', async (request, reply) => {
-    console.log(request.isSigned);
     if (request.isSigned) {
       const users = await app.objection.models.user.query();
       reply.render('users/list', { users });
