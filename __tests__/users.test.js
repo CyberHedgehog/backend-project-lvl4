@@ -14,7 +14,7 @@ describe('List users', () => {
   it('Not logged', async () => {
     const result = await server.inject({
       method: 'GET',
-      url: '/users/list',
+      url: '/users',
     });
 
     expect(result.statusCode).toBe(302);
@@ -31,7 +31,7 @@ describe('List users', () => {
     });
     const result = await server.inject({
       method: 'GET',
-      url: '/users/list',
+      url: '/users',
       cookies: { session: login.cookies[0].value },
     });
     expect(result.statusCode).toBe(200);
@@ -56,9 +56,9 @@ describe('New user', () => {
   it('Registration form', async () => {
     const response = await server.inject({
       method: 'GET',
-      url: '/users/new',
+      url: '/users',
     });
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(302);
   });
 
   it('Success', async () => {

@@ -40,8 +40,8 @@ const setupFrontEnd = (app) => {
       t(key) {
         return i18next.t(key);
       },
-      route(name) {
-        return app.reverse(name);
+      getUserName(user) {
+        return `${user.firstName} ${user.lastName}`;
       },
       isSigned: app.isSigned,
       currentUser: app.currentUser,

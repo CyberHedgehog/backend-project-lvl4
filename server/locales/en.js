@@ -33,6 +33,17 @@ export default {
           lastName: 'Lastname:',
           registered: 'Already registered?',
         },
+        users: {
+          title: 'Users',
+          header: 'Users list',
+          warning: 'User will be deleted!',
+          edit: {
+            title: 'Edit user',
+            header: 'Edit user: ',
+            submit: 'Update',
+            cancel: 'Cancel',
+          },
+        },
       },
     },
   },

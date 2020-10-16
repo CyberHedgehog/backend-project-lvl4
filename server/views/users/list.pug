@@ -1,19 +1,19 @@
 extends /layouts/inner.pug
 block title
-  title Users
+  title= t('views.pages.users.title')
 
 block main
   .container
     .row.justify-content-center
       .p-3
-        h1 Users list
+        h1= t('views.pages.users.header')
     .row.justify-content-center
       .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
         .table-responsive-sm
           table.table
             thead
               tr
-                th(scope="col") Firstname
+                th(scope="col") Firstname 
                 th(scope="col") LastName
                 th(scope="col") Email
                 th(scope="col" class="col-1")
@@ -29,7 +29,7 @@ block main
                       .modal-dialog(role="document")
                         .modal-content
                           .modal-body
-                            h5= `User will be deleted!`
+                            h5= t('views.pages.users.warning')
                           .modal-footer
                             button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
                             a(href=`/users/${user.id}` data-method="delete" class="btn btn-danger") Delete

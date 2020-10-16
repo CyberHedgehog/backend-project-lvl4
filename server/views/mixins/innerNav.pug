@@ -1,6 +1,5 @@
 - const links = ['Users', 'Tasks', 'Statuses', 'Tags']
-mixin innerNav(activeLink)
+mixin innerNav()
   each link in links
-    - const activeClass = activeLink === link ? 'active': ''
     li.nav-item
-      a(class=`nav-link ${activeClass}` href=`/${link.toLowerCase()}`)= link
+      a(class='nav-link active' href=`/${link.toLowerCase()}`)= link

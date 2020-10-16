@@ -16,7 +16,7 @@ html
           span.navbar-toggler-icon
         .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
-            +innerNav('Users')
+            +innerNav()
           div
             .my-2.my-lg-0
               a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}` 

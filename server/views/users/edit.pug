@@ -1,37 +1,28 @@
 extends /layouts/inner.pug
-
 block title
-  title Edit profile
-
-block nav-links
-  li.nav-item
-    a(class="nav-link" href="/tasks/list") Tasks
-  li.nav-item
-    a(class="nav-link" href="/users/list") Users
+  title= t('views.pages.users.edit.title')
 
 block main
   .container
+    - const user = reply.request.currentUser
     .row.justify-content-center
       .p-3
-        h1 Edit user: #{getUserName()}
+        h1= `${t('views.pages.users.edit.header')} ${getUserName(user)}`
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
         form(action="/users" method="POST")
           input(type="hidden" name="_method" value="PATCH")
           .form-group
-            label(for="firstName") First name:
+            label(for="firstName")= t('views.pages.signup.firstName')
             input(type="text" class="form-control" name="firstName" id="firstName" value= user.firstName)
           .form-group
-            label(for="lastName") Last name:
+            label(for="lastName")= t('views.pages.signup.lastName')
             input(type="text" class="form-control" name="lastName" id="lastName" value= user.lastName)
           .form-group
-            label(for="email") Email:
+            label(for="email")= t('views.pages.signup.email')
             input(type="text" class="form-control" name="email" id="email" value= user.email)
           .form-group
-            label(for="password") Password:
+            label(for="password")= t('views.pages.signup.password')
             input(type="password" class="form-control" name="password" id="firstName" placeholder="New password")
-          - const [msg] = flash('error');
-          if msg
-            .alert.alert-danger.mt-2.text-center= msg
           input(type="submit" class="btn btn-primary mr-2" data-method="PATCH" value="Submit")
-          a(href="/users/list" class="btn btn-light mr-2" value="Cancel") Cancel
+          a(href="/users" class="btn btn-light mr-2" value="Cancel") Cancel
