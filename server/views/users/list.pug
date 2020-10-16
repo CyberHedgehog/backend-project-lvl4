@@ -2,12 +2,6 @@ extends /layouts/inner.pug
 block title
   title Users
 
-block nav-links
-  li.nav-item
-    a(class="nav-link" href="/tasks") Tasks
-  li.nav-item
-    a(class="nav-link active" href="/users/list") Users
-
 block main
   .container
     .row.justify-content-center
@@ -31,12 +25,11 @@ block main
                   td= user.email
                   td(class="col-1")
                     button(class="btn btn-danger" data-toggle="modal" data-target=`#delete-${user.id}` value="Delete profile") Delete
-                    - const link = `/users/${user.id}`
                     .modal.fade(id=`delete-${user.id}` tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true")
                       .modal-dialog(role="document")
                         .modal-content
                           .modal-body
-                            h5 User will be deleted!
+                            h5= `User will be deleted!`
                           .modal-footer
                             button(type="button" class="btn btn-secondary" data-dismiss="modal") Close
-                            a(href=`${link}` data-method="delete" class="btn btn-danger") Delete
+                            a(href=`/users/${user.id}` data-method="delete" class="btn btn-danger") Delete

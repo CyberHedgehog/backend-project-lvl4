@@ -1,4 +1,5 @@
 include /mixins/messages.pug
+include /mixins/innerNav.pug
 
 doctype html
 html
@@ -15,9 +16,11 @@ html
           span.navbar-toggler-icon
         .collapse.navbar-collapse(id="navbarSupportedContent")
           ul.navbar-nav.mr-auto
-            block nav-links
+            +innerNav('Users')
           div
             .my-2.my-lg-0
               a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}` 
               a(href='/session' data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
+    - flash = reply.flash() || []
+    +alert(flash)
     block main

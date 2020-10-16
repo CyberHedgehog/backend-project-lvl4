@@ -13,12 +13,15 @@ export default (app) => {
         email: request.body.email,
       });
     const password = encrypt(request.body.password);
+    if (!user || password !== user.passwordDigest) {
+      request.flash('warning', 'Bad username or password');
+      reply.render('/login');
+    }
     if (password === user.passwordDigest) {
       request.session.set('userId', user.id);
+      request.flash('success', `Welcome, ${user.firstName}`);
       reply.redirect('/');
-      return;
     }
-    reply.render('/login');
   });
 
   app.delete('/session', async (request, reply) => {

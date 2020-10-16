@@ -9,7 +9,7 @@
     "build-configs": "babel webpack.config.js --out-dir dist && cp knexfile.js dist",
     "build-frontend": "npx webpack -p --env production",
     "build-back": "npx babel server --out-dir dist && cp -r server/views dist/views",
-    "develop": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
+    "dev": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
   },
   "jest": {
     "testEnvironment": "node"

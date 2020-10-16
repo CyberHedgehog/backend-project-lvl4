@@ -1,5 +1,5 @@
 export default (app) => {
-  app.get('/users', (request, reply) => {
+  app.get('/users/new', (request, reply) => {
     reply.render('users/signup');
   });
 
@@ -24,16 +24,18 @@ export default (app) => {
   });
 
   app.delete('/users/:id', async (request, reply) => {
+    console.log('ID: ', request.params.id);
     if (!request.isSigned) {
       reply.render('startPage');
-      return;
     }
     try {
-      await app.objection.models.user.query().deleteById(request.id);
+      await app.objection.models.user.query().deleteById(request.params.id);
+      request.flash('success', 'User deleted successfully');
+      reply.redirect('/users/list');
     } catch (e) {
+      request.flash('error', 'Delete error!');
       reply.render('startPage');
     }
-    reply.redirect('/');
   });
 
   app.patch('/users', async (request, reply) => {
