@@ -2,7 +2,7 @@ import faker from 'faker';
 import getApp from '../server/index';
 import generateFakeUser from './lib/fakeUser';
 
-describe('CRUD', () => {
+describe('Status', () => {
   let server;
   const userData = generateFakeUser();
   let sessionCookie;
