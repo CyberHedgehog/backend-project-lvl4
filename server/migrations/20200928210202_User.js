@@ -8,7 +8,7 @@ exports.up = function(knex) {
     table.string('last_name');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
-  }).then(console.log('Migrated'));
+  }).then(console.log('Users migrated'));
 };
 
 exports.down = function(knex) {
