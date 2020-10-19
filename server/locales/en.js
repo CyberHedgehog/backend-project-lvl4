@@ -44,6 +44,24 @@ export default {
             cancel: 'Cancel',
           },
         },
+        statuses: {
+          title: 'Statuses',
+          header: 'Statuses list',
+          edit: {
+            title: 'Edit status',
+            success: 'Status successfully edited',
+            error: 'Status edit error',
+          },
+          add: {
+            title: 'New status',
+            success: 'Status successfully added',
+            error: 'Error adding status',
+          },
+          delete: {
+            success: 'Status delete successfully',
+            error: 'Error deleting status',
+          },
+        },
       },
     },
   },
