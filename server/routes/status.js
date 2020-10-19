@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import _ from 'lodash';
 
 export default (app) => {
   app.get('/statuses', async (request, reply) => {
@@ -14,7 +15,7 @@ export default (app) => {
     reply.render('statuses/new');
   });
 
-  app.get('/statuses/:id/edit', async (request, reply) => {
+  app.get('/statuses/edit/:id', async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()
@@ -40,7 +41,7 @@ export default (app) => {
   app.delete('/statuses/:id', async (request, reply) => {
     try {
       await app.objection.models.status.query().deleteById(request.params.id);
-      request.flash('success', i18next.t('views.pages.statuses.delete.succes'));
+      request.flash('success', i18next.t('views.pages.statuses.delete.success'));
       reply.redirect('/statuses');
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.delete.error'));
@@ -48,13 +49,17 @@ export default (app) => {
   });
 
   app.patch('/statuses/:id', async (request, reply) => {
+    const data = _.omitBy(request.body, (e) => e === 'PATCH');
     try {
-      const status = await app.objection.models.status.query().findById(request.params.id);
-      await status.$query().update(request.body);
+      const status = await app.objection.models.status
+        .query()
+        .findById(request.params.id);
+      await status.$query().update(data);
       request.flash('success', i18next.t('views.pages.statuses.edit.success'));
       reply.redirect('/statuses');
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.edit.error'));
+      reply.redirect(`/statuses/edit/${request.params.id}`);
     }
   });
 };

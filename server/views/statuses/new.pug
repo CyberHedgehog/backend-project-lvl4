@@ -1,0 +1,17 @@
+extends /layouts/inner.pug
+block title
+  title= t('views.pages.statuses.add.title')
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+          h1= t('views.pages.statuses.add.header')
+    .row.justify-content-center
+      .shadow-sm.p-3.mb-5.bg-white.rounded
+        form(action="/statuses" method="POST")
+          .form-group
+            label(for="name")= t('views.pages.statuses.form.name')
+            input(type="text" class="form-control" name="name" id="name" placeholder= t('views.pages.statuses.form.placeholderName'))
+          input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
+          a(href="/statuses" class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

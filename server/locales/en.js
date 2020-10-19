@@ -47,6 +47,10 @@ export default {
         statuses: {
           title: 'Statuses',
           header: 'Statuses list',
+          form: {
+            name: 'Name:',
+            placeholderName: 'Enter name',
+          },
           edit: {
             title: 'Edit status',
             success: 'Status successfully edited',
@@ -56,13 +60,21 @@ export default {
             title: 'New status',
             success: 'Status successfully added',
             error: 'Error adding status',
+            header: 'Create new status',
           },
           delete: {
             success: 'Status delete successfully',
             error: 'Error deleting status',
           },
+          buttonCreate: 'Create new status',
         },
       },
+    },
+    buttons: {
+      edit: 'Edit',
+      delete: 'Delete',
+      save: 'Save',
+      cancel: 'Cancel',
     },
   },
 };
