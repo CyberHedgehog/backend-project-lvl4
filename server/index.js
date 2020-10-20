@@ -84,7 +84,12 @@ const registerPlugins = (app) => {
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
-
+  app.decorate('authCheck', (request, reply, done) => {
+    if (!request.isSigned) {
+      reply.redirect('/');
+    }
+    done();
+  });
   app.addHook('preHandler', async (request) => {
     const userId = request.session.get('userId');
     if (userId) {
@@ -105,6 +110,5 @@ export default () => {
   registerPlugins(app);
   addRoutes(app);
   addHooks(app);
-
   return app;
 };

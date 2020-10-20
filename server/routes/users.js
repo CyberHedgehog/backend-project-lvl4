@@ -5,16 +5,12 @@ export default (app) => {
     reply.render('users/signup');
   });
 
-  app.get('/users', async (request, reply) => {
-    if (request.isSigned) {
-      const users = await app.objection.models.user.query();
-      reply.render('users/list', { users });
-      return;
-    }
-    reply.redirect('/');
+  app.get('/users', { preHandler: app.authCheck }, async (request, reply) => {
+    const users = await app.objection.models.user.query();
+    reply.render('users/list', { users });
   });
 
-  app.get('/users/edit', async (request, reply) => {
+  app.get('/users/edit', { preHandler: app.authCheck }, async (request, reply) => {
     if (request.isSigned) {
       reply.render('users/edit');
       return;
@@ -22,7 +18,7 @@ export default (app) => {
     reply.redirect('/');
   });
 
-  app.post('/users', async (request, reply) => {
+  app.post('/users', { preHandler: app.authCheck }, async (request, reply) => {
     try {
       const user = await app.objection.models.user.fromJson(request.body);
       await app.objection.models.user.query().insert(user);
@@ -33,7 +29,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/users/:id', async (request, reply) => {
+  app.delete('/users/:id', { preHandler: app.authCheck }, async (request, reply) => {
     console.log('ID: ', request.params.id);
     if (!request.isSigned) {
       reply.render('startPage');
@@ -49,7 +45,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/users', async (request, reply) => {
+  app.patch('/users', { preHandler: app.authCheck }, async (request, reply) => {
     if (!request.isSigned) {
       reply.render('startPage');
       return;
