@@ -46,12 +46,7 @@ export default (app) => {
   });
 
   app.patch('/users', { preHandler: app.authCheck }, async (request, reply) => {
-    if (!request.isSigned) {
-      reply.render('startPage');
-      return;
-    }
     const data = _.omitBy(request.body, (e) => e === 'PATCH' || e === '');
-    console.log(data);
     try {
       const user = await app.objection.models.user
         .query()

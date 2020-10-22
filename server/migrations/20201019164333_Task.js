@@ -7,7 +7,7 @@ exports.up = function(knex) {
     table.integer('status_id').notNullable();
     table.integer('creator_id').notNullable();
     table.integer('executor_id');
-  })
+  }).then(console.log('Tasks migrated'))
 };
 
 exports.down = function(knex) {

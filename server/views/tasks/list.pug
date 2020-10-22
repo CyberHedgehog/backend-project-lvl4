@@ -3,12 +3,6 @@ extends /layouts/inner.pug
 block title
   title Tasks
 
-block nav-links
-  li.nav-item
-    a(class="nav-link active" href="/tasks") Tasks
-  li.nav-item
-    a(class="nav-link" href="/users/list") Users
-
 block main
   .container
     .row.justify-content-center
@@ -18,5 +12,5 @@ block main
     .row.justify-content-center
       h1 Tasks list
     .row.justify-content-center
-      each task in tasksList
+      each task in tasks
         task=task.name

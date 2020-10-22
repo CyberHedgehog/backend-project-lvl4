@@ -23,7 +23,7 @@ describe('Tasks', () => {
       .insert(secondUserData);
     status = await server.objection.models.status
       .query()
-      .insert('in progress');
+      .insert({ name: 'in progress' });
     task = server.objection.models.task;
     const login = await server.inject({
       method: 'POST',

@@ -4,7 +4,7 @@ import User from './User';
 
 export default class Task extends Model {
   static get tableName() {
-    return 'users';
+    return 'tasks';
   }
 
   static get jsonSchema() {

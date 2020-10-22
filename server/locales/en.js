@@ -68,6 +68,20 @@ export default {
           },
           buttonCreate: 'Create new status',
         },
+        tasks: {
+          title: 'Tasks',
+          header: 'Tasks list',
+          add: {
+            title: 'New task',
+            success: 'Task created successfully',
+            error: 'Task adding error',
+          },
+          edit: {
+            title: 'Edit task',
+            success: 'Task successfully edited',
+            error: 'Task edit error',
+          },
+        },
       },
     },
     buttons: {
