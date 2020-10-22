@@ -6,6 +6,7 @@ export default (app) => {
   });
 
   app.get('/users', { preHandler: app.authCheck }, async (request, reply) => {
+    console.log('Here');
     const users = await app.objection.models.user.query();
     reply.render('users/list', { users });
   });

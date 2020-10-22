@@ -42,6 +42,12 @@ export default {
             header: 'Edit user: ',
             submit: 'Update',
             cancel: 'Cancel',
+            success: 'User successfully edited',
+            error: 'User edit error',
+          },
+          add: {
+            success: 'Successful registration',
+            error: 'Invalid data',
           },
         },
         statuses: {
