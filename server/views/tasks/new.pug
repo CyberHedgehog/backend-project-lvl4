@@ -3,12 +3,6 @@ extends /layouts/inner.pug
 block title
   title New task
 
-block nav-links
-  li.nav-item
-    a(class="nav-link" href="/tasks") Tasks
-  li.nav-item
-    a(class="nav-link" href="/users/list") Users
-
 block main
   .container
     .row.justify-content-center
@@ -17,28 +11,30 @@ block main
     .row.justify-content-center
       .col-md-5
         .shadow-sm.p-3.mb-5.bg-white.rounded
-          form(action="/tasks/new" method="POST")
+          form(action="/tasks" method="POST")
+            input(name="creatorId" type="hidden", value=reply.request.currentUser.id)
             .form-group
               label(for="name") Name:
               input(type="text" class="form-control" name="name" id="name")
             .form-group
               label(for="status") Status:
-              select(class="form-control" id="status")
+              select(class="form-control" id="statusId" name="statusId")
                 each status in statuses
-                  option(value=status)=status
+                  option(value=status.id)=status.name
             .form-group
               label(for="assigned") Assigned to:
-              select(class="form-control" id="status")
-                each user in usersList 
+              select(class="form-control" id="assigned" name='executorId')
+                each user in users
                   option(value=user.id)=`${user.firstName} ${user.lastName}`
             .form-group
               label(for="description") Description
-              textarea(class="form-control" id="description" rows="5")
-            .form-group
-              each tag in tagsList
-                .form-check.form-check-inline
-                  input(class="form-check-input" type="checkbox" id=tag.id value=tag.id)
-                  label(class="form-check-label" for=tag.id)=tag.name
+              textarea(class="form-control" id="description" name="description" rows="5")
+            
+            //- .form-group
+            //-   each tag in tagsList
+            //-     .form-check.form-check-inline
+            //-       input(class="form-check-input" type="checkbox" id=tag.id value=tag.id)
+            //-       label(class="form-check-label" for=tag.id)=tag.name
             .form-group
               button(type="submit" class="btn btn-primary") Submit
               a(class="ml-2 btn btn-secondary" href="/tasks" role="button") Cancel

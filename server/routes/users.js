@@ -5,8 +5,7 @@ export default (app) => {
     reply.render('users/signup');
   });
 
-  app.get('/users', { preHandler: app.authCheck }, async (request, reply) => {
-    console.log('Here');
+  app.get('/users', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     reply.render('users/list', { users });
   });
@@ -19,7 +18,7 @@ export default (app) => {
     reply.redirect('/');
   });
 
-  app.post('/users', { preHandler: app.authCheck }, async (request, reply) => {
+  app.post('/users', async (request, reply) => {
     try {
       const user = await app.objection.models.user.fromJson(request.body);
       await app.objection.models.user.query().insert(user);
@@ -30,8 +29,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/users/:id', { preHandler: app.authCheck }, async (request, reply) => {
-    console.log('ID: ', request.params.id);
+  app.delete('/users/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     if (!request.isSigned) {
       reply.render('startPage');
       return;
@@ -46,7 +44,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/users', { preHandler: app.authCheck }, async (request, reply) => {
+  app.patch('/users', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const data = _.omitBy(request.body, (e) => e === 'PATCH' || e === '');
     try {
       const user = await app.objection.models.user

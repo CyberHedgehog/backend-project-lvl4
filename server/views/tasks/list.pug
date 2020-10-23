@@ -1,16 +1,38 @@
 extends /layouts/inner.pug
 
 block title
-  title Tasks
+  title= t('views.pages.tasks.title')
 
 block main
-  .container
+  .container  
     .row.justify-content-center
       .p-3
-        a(class="btn btn-primary" href="/tasks/new") New task
-      
+        h1= t('views.pages.tasks.header')
     .row.justify-content-center
-      h1 Tasks list
+        a(class="btn btn-primary" href="/tasks/new")= t('views.pages.tasks.buttonCreate')
     .row.justify-content-center
-      each task in tasks
-        task=task.name
+      .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
+        .table-responsice-sm
+          table.table
+            thead
+              tr
+                th(scope="col")= t('views.pages.tasks.name')
+                th(scope="col")= t('views.pages.tasks.description')
+                th(scope="col")= t('views.pages.tasks.status')
+                th(scope="col")= t('views.pages.tasks.creator')
+                th(scope="col")= t('views.pages.tasks.executor')
+                th(scope="col")
+                th(scope="col")
+              each task in tasks
+                tr
+                  td= task.name
+                  td= task.description
+                  td= task.statusName
+                  td= `${task.creatorFirstName} ${task.creatorLastName}`
+                  td= `${task.executorFirstName} ${task.executorLastName}`
+                  td
+                    a(href=`/tasks/edit/${task.id}` class="btn btn-secondary")
+                      = t('buttons.edit')
+                  td
+                    a(href=`/tasks/${task.id}` data-method="delete" class="btn btn-danger")
+                      = t('buttons.delete')

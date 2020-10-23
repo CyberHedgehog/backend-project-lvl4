@@ -77,6 +77,12 @@ export default {
         tasks: {
           title: 'Tasks',
           header: 'Tasks list',
+          buttonCreate: 'Create new task',
+          name: 'Name',
+          description: 'Description',
+          status: 'Status',
+          creator: 'Creator',
+          executor: 'Executor',
           add: {
             title: 'New task',
             success: 'Task created successfully',
@@ -86,6 +92,11 @@ export default {
             title: 'Edit task',
             success: 'Task successfully edited',
             error: 'Task edit error',
+            header: 'Edit task',
+          },
+          delete: {
+            success: 'Task delete successfully',
+            error: 'Error deleting task',
           },
         },
       },

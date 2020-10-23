@@ -1,0 +1,40 @@
+extends /layouts/inner.pug
+
+block title
+  title= t('views.pages.tasks.edit.title')
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+        h1= t('views.pages.tasks.edit.header')
+    .row.justify-content-center
+      .col-md-5
+        .shadow-sm.p-3.mb-5.bg-white.rounded
+          form(action=`/tasks/${task.id}` method="POST")
+            input(type="hidden" name="_method" value="PATCH")
+            .form-group
+              label(for="name")= t('views.pages.tasks.name')
+              input(type="text" class="form-control" name="name" id="name" value=task.name)
+            .form-group
+              label(for="status")= t('views.pages.tasks.status')
+              select(class="form-control" id="statusId" name="statusId")
+                each status in statuses
+                  option(value=status.id selected=status.id === task.statusId)=status.name
+            .form-group
+              label(for="assigned")= t('views.pages.tasks.executor')
+              select(class="form-control" id="assigned" name='executorId')
+                each user in users
+                  option(value=user.id selected=user.id === task.executorId)=`${user.firstName} ${user.lastName}`
+            .form-group
+              label(for="description")= t('views.pages.tasks.description')
+              textarea(class="form-control" id="description" name="description" rows="5" task.description)= task.description
+            
+            //- .form-group
+            //-   each tag in tagsList
+            //-     .form-check.form-check-inline
+            //-       input(class="form-check-input" type="checkbox" id=tag.id value=tag.id)
+            //-       label(class="form-check-label" for=tag.id)=tag.name
+            .form-group
+              button(type="submit" class="btn btn-primary") Submit
+              a(class="ml-2 btn btn-secondary" href="/tasks" role="button") Cancel

@@ -84,7 +84,7 @@ const registerPlugins = (app) => {
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
-  app.decorate('authCheck', (request, reply, done) => {
+  app.decorate('authCheck', async (request, reply, done) => {
     if (!request.isSigned) {
       reply.redirect('/');
     }
