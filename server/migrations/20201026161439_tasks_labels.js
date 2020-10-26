@@ -1,6 +1,6 @@
 
 exports.up = function(knex) {
-  return knex,schema,createTable('tasks_labels', (table) => {
+  return knex.schema.createTable('tasks_labels', (table) => {
     table.increments('id').primary();
     table.string('taskId');
     table.string('labelId');
