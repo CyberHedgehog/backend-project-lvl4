@@ -20,10 +20,10 @@ block main
               label(for="status")= t('views.pages.tasks.status')
               select(class="form-control" id="statusId" name="statusId")
                 each status in statuses
-                  option(value=status.id selected=status.id === task.statusId)=status.name
+                  option(type="number" value=status.id selected=status.id === task.statusId)=status.name
             .form-group
               label(for="assigned")= t('views.pages.tasks.executor')
-              select(class="form-control" id="assigned" name='executorId')
+              select(type="number" class="form-control" id="assigned" name='executorId')
                 each user in users
                   option(value=user.id selected=user.id === task.executorId)=`${user.firstName} ${user.lastName}`
             .form-group

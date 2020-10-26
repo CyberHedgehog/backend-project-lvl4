@@ -14,7 +14,7 @@ export default (app) => {
       });
     const password = encrypt(request.body.password);
     if (!user || password !== user.passwordDigest) {
-      request.flash('warning', 'Bad username or password');
+      request.flash('error', 'Bad username or password');
       reply.render('/login');
     }
     if (password === user.passwordDigest) {

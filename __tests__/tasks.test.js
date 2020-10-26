@@ -1,6 +1,6 @@
 import faker from 'faker';
 import getApp from '../server/index';
-import generateFakeUser from './lib/fakeUser';
+import generateFakeUser from '../server/lib/fakeUser';
 
 describe('Tasks', () => {
   const firstUserData = generateFakeUser();
@@ -54,8 +54,7 @@ describe('Tasks', () => {
       name: faker.lorem.word(),
       description: faker.lorem.words(),
       statusId: status.id,
-      creatorId: firstUser.id,
-      executor: secondUser.id,
+      executorId: secondUser.id,
     };
     await server.inject({
       method: 'POST',
@@ -73,14 +72,14 @@ describe('Tasks', () => {
       description: faker.lorem.words(),
       statusId: status.id,
       creatorId: firstUser.id,
-      executor: secondUser.id,
+      executorId: secondUser.id,
     };
     const newTask = await task.query().insert(taskData);
     const newDescription = faker.lorem.words();
     await server.inject({
       method: 'PATCH',
       url: `/tasks/${newTask.id}`,
-      payload: { description: newDescription },
+      payload: { ...taskData, description: newDescription },
       cookies,
     });
     const result = await task.query().findById(newTask.id);
@@ -103,5 +102,26 @@ describe('Tasks', () => {
     });
     const result = await task.query().findById(newTask.id);
     expect(result).toBeUndefined();
+  });
+
+  it('Only creator can delete', async () => {
+    const taskData = {
+      name: faker.lorem.word(),
+      description: faker.lorem.words(),
+      statusId: status.id,
+      creatorId: secondUser.id,
+      executor: firstUser.id,
+    };
+
+    const newTask = await task.query().insert(taskData);
+
+    await server.inject({
+      method: 'DELETE',
+      url: `/tasks/${newTask.id}`,
+      cookies,
+    });
+
+    const result = await task.query().findById(newTask.id);
+    expect(result).toBeDefined();
   });
 });

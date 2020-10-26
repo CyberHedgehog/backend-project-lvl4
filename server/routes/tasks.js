@@ -2,7 +2,7 @@ import _ from 'lodash';
 import i18next from 'i18next';
 
 export default (app) => {
-  app.get('/tasks', { preHandler: app.authCheck }, async (request, reply) => {
+  app.get('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const tasks = await app.objection.models.task
       .query()
       .select(
@@ -20,13 +20,13 @@ export default (app) => {
     reply.render('tasks/list', { tasks });
   });
 
-  app.get('/tasks/new', { preHandler: app.authCheck }, async (request, reply) => {
+  app.get('/tasks/new', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
     reply.render('tasks/new', { users, statuses });
   });
 
-  app.get('/tasks/edit/:id', { preHandler: app.authCheck }, async (request, reply) => {
+  app.get('/tasks/edit/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
@@ -35,12 +35,12 @@ export default (app) => {
     reply.render('tasks/edit', { task, users, statuses });
   });
 
-  app.post('/tasks', { preHandler: app.authCheck }, async (request, reply) => {
+  app.post('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const { body } = request;
     const data = {
       name: body.name,
       description: body.description,
-      creatorId: parseInt(body.creatorId, 10),
+      creatorId: request.currentUser.id,
       statusId: parseInt(body.statusId, 10),
       executorId: parseInt(body.executorId, 10),
     };
@@ -55,13 +55,12 @@ export default (app) => {
     }
   });
 
-  app.patch('/tasks/:id', { preHandler: app.authCheck }, async (request, reply) => {
-    const filterdData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
+  app.patch('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+    const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
     const data = {
-      name: filterdData.name,
-      description: filterdData.description,
-      statusId: parseInt(filterdData.statusId, 10),
-      executorId: parseInt(filterdData.executorId, 10),
+      ...filteredData,
+      executorId: _.parseInt(filteredData.executorId),
+      statusId: _.parseInt(filteredData.statusId),
     };
     try {
       await app.objection.models.task
@@ -71,13 +70,18 @@ export default (app) => {
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect('/tasks');
     } catch (e) {
-      request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
       reply.redirect(`/tasks/edit/${request.params.id}`);
     }
   });
 
-  app.delete('/tasks/:id', { preHandler: app.authCheck }, async (request, reply) => {
+  app.delete('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+    const targetTask = await app.objection.models.task.query().findById(request.params.id);
+    if (request.currentUser.id !== targetTask.creatorId) {
+      request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));
+      reply.redirect('/tasks');
+      return;
+    }
     try {
       await app.objection.models.task
         .query()

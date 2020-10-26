@@ -1,5 +1,5 @@
 import getApp from '../server';
-import generateFakeUser from './lib/fakeUser';
+import generateFakeUser from '../server/lib/fakeUser';
 
 describe('Sessions', () => {
   let server;

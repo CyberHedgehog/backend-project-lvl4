@@ -1,5 +1,5 @@
 import getApp from '../server/index';
-import generateFakeUser from './lib/fakeUser';
+import generateFakeUser from '../server/lib/fakeUser';
 
 describe('List users', () => {
   const userData = generateFakeUser();

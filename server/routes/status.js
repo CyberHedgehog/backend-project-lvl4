@@ -22,7 +22,7 @@ export default (app) => {
         .findById(request.params.id);
       reply.render('statuses/edit', { status });
     } catch {
-      request.flash('warning', i18next.t('views.pages.statuses.edit.error'));
+      request.flash('error', i18next.t('views.pages.statuses.edit.error'));
       reply.redirect('/statuses');
     }
   });

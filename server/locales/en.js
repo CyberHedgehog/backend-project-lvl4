@@ -100,6 +100,9 @@ export default {
           },
         },
       },
+      messages: {
+        notLogged: 'User not logged in. Please login',
+      },
     },
     buttons: {
       edit: 'Edit',

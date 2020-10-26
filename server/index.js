@@ -84,11 +84,11 @@ const registerPlugins = (app) => {
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
-  app.decorate('authCheck', async (request, reply, done) => {
+  app.decorate('authCheck', async (request, reply) => {
     if (!request.isSigned) {
+      request.flash('error', i18next.t('views.messages.notLogged'));
       reply.redirect('/');
     }
-    done();
   });
   app.addHook('preHandler', async (request) => {
     const userId = request.session.get('userId');

@@ -24,7 +24,7 @@ export default (app) => {
       await app.objection.models.user.query().insert(user);
       reply.redirect('/');
     } catch (e) {
-      request.flash('warning', 'Invalid email or password');
+      request.flash('error', 'Invalid email or password');
       reply.render('users/signup');
     }
   });
@@ -55,7 +55,7 @@ export default (app) => {
       reply.redirect('users/edit');
     } catch (e) {
       console.log(e);
-      request.flash('warning', 'Invalid data');
+      request.flash('error', 'Invalid data');
       reply.redirect('users/edit');
     }
   });

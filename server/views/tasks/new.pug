@@ -12,7 +12,6 @@ block main
       .col-md-5
         .shadow-sm.p-3.mb-5.bg-white.rounded
           form(action="/tasks" method="POST")
-            input(name="creatorId" type="hidden", value=reply.request.currentUser.id)
             .form-group
               label(for="name") Name:
               input(type="text" class="form-control" name="name" id="name")
