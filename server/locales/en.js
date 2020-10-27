@@ -99,6 +99,26 @@ export default {
             error: 'Error deleting task',
           },
         },
+        labels: {
+          title: 'Labels',
+          header: 'Labels list',
+          buttonCreate: 'Create new label',
+          name: 'Label name:',
+          add: {
+            title: 'New label',
+            success: 'Label created successfully',
+            delete: 'Label adding error',
+          },
+          delete: {
+            success: 'Label delete successfully',
+            error: 'Error deleting label',
+          },
+          edit: {
+            title: 'Edit label',
+            error: 'Label edit error',
+            success: 'Label edited successfully',
+          },
+        },
       },
       messages: {
         notLogged: 'User not logged in. Please login',
