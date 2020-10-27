@@ -1,4 +1,5 @@
 import { Model } from 'objection';
+import Label from './Label';
 import Status from './Status';
 import User from './User';
 
@@ -45,6 +46,18 @@ export default class Task extends Model {
       join: {
         from: 'tasks.executor_id',
         to: 'users.id',
+      },
+    },
+    labels: {
+      relation: Model.ManyToManyRelation,
+      modelClass: Label,
+      join: {
+        from: 'tasks.id',
+        through: {
+          from: 'tasks_labels.taskId',
+          to: 'tasks_labels.labelId',
+        },
+        to: 'labels.id',
       },
     },
   }

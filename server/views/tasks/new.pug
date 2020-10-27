@@ -29,11 +29,12 @@ block main
               label(for="description") Description
               textarea(class="form-control" id="description" name="description" rows="5")
             
-            //- .form-group
-            //-   each tag in tagsList
-            //-     .form-check.form-check-inline
-            //-       input(class="form-check-input" type="checkbox" id=tag.id value=tag.id)
-            //-       label(class="form-check-label" for=tag.id)=tag.name
+            .form-group.border.bg-light.p-1
+              label(for="labels") Labels
+              select(class="form-control" id="labels" name="labels" multiple)
+                each label in labels
+                  option(value=label.id)= label.name
+            
             .form-group
               button(type="submit" class="btn btn-primary") Submit
               a(class="ml-2 btn btn-secondary" href="/tasks" role="button") Cancel

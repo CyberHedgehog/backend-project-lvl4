@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { parseInt } from 'lodash';
 import i18next from 'i18next';
 
 export default (app) => {
@@ -17,26 +17,43 @@ export default (app) => {
       .join('statuses as status', 'tasks.statusId', 'status.id')
       .join('users as creator', 'tasks.creatorId', 'creator.id')
       .join('users as executor', 'tasks.executorId', 'executor.id');
-    reply.render('tasks/list', { tasks });
+    const promises = tasks.map(async (t) => {
+      const labels = await t.$relatedQuery('labels');
+      return { ...t, labels };
+    });
+    const tasksWithLabels = await Promise.all(promises);
+    reply.render('tasks/list', { tasks: tasksWithLabels });
   });
 
   app.get('/tasks/new', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
-    reply.render('tasks/new', { users, statuses });
+    const labels = await app.objection.models.label.query();
+    reply.render('tasks/new', { users, statuses, labels });
   });
 
   app.get('/tasks/edit/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
+    const labels = await app.objection.models.label.query();
+    const taskLabels = await task.$relatedQuery('labels');
+    console.log(taskLabels);
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
-    reply.render('tasks/edit', { task, users, statuses });
+    reply.render('tasks/edit', {
+      task,
+      users,
+      statuses,
+      labels,
+      taskLabels,
+    });
   });
 
   app.post('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const { body } = request;
+    console.log(body);
+    const labels = [...body.labels];
     const data = {
       name: body.name,
       description: body.description,
@@ -45,7 +62,9 @@ export default (app) => {
       executorId: parseInt(body.executorId, 10),
     };
     try {
-      await app.objection.models.task.query().insert(data);
+      const task = await app.objection.models.task.query().insert(data);
+      const relations = labels.map((l) => task.$relatedQuery('labels').relate(l));
+      await Promise.all(relations);
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
       reply.redirect('/tasks');
     } catch (e) {
@@ -57,19 +76,24 @@ export default (app) => {
 
   app.patch('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
+    const labels = [...request.body.labels];
     const data = {
       ...filteredData,
       executorId: _.parseInt(filteredData.executorId),
       statusId: _.parseInt(filteredData.statusId),
     };
     try {
-      await app.objection.models.task
+      const task = await app.objection.models.task
         .query()
-        .findById(request.params.id)
-        .patch(data);
+        .findById(request.params.id);
+      await task.$query().patch(data);
+      await task.$relatedQuery('labels').unrelate();
+      const relatePromises = labels.map((l) => task.$relatedQuery('labels').relate(l));
+      await Promise.all(relatePromises);
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect('/tasks');
     } catch (e) {
+      console.log(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
       reply.redirect(`/tasks/edit/${request.params.id}`);
     }

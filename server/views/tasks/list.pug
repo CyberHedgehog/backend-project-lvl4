@@ -21,6 +21,7 @@ block main
                 th(scope="col")= t('views.pages.tasks.status')
                 th(scope="col")= t('views.pages.tasks.creator')
                 th(scope="col")= t('views.pages.tasks.executor')
+                th(scope="col") Labels
                 th(scope="col")
                 th(scope="col")
               each task in tasks
@@ -30,6 +31,9 @@ block main
                   td= task.statusName
                   td= `${task.creatorFirstName} ${task.creatorLastName}`
                   td= `${task.executorFirstName} ${task.executorLastName}`
+                  td.d-flex.flex-wrap
+                    each l in task.labels
+                      .badge.badge-primary.text-wrap.m-1=l.name
                   td
                     a(href=`/tasks/edit/${task.id}` class="btn btn-secondary")
                       = t('buttons.edit')
