@@ -79,6 +79,8 @@ export default {
           header: 'Tasks list',
           buttonCreate: 'Create new task',
           name: 'Name',
+          label: 'Label',
+          labels: 'Labels',
           description: 'Description',
           status: 'Status',
           creator: 'Creator',
@@ -97,6 +99,11 @@ export default {
           delete: {
             success: 'Task delete successfully',
             error: 'Error deleting task',
+          },
+          filter: {
+            filter: 'Filter',
+            clear: 'Clear',
+            myTasks: 'My tasks',
           },
         },
         labels: {
