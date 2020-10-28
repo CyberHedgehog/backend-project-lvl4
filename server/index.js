@@ -1,5 +1,6 @@
 import fastify from 'fastify';
 import fastifyStatic from 'fastify-static';
+import _ from 'lodash';
 import fastifyErrorPage from 'fastify-error-page';
 import fastifyFormbody from 'fastify-formbody';
 import fastifySecureSession from 'fastify-secure-session';
@@ -43,6 +44,7 @@ const setupFrontEnd = (app) => {
       getUserName(user) {
         return `${user.firstName} ${user.lastName}`;
       },
+      _,
       isSigned: app.isSigned,
       currentUser: app.currentUser,
     },

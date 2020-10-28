@@ -12,28 +12,32 @@ block main
         a(class="btn btn-primary" href="/tasks/new")= t('views.pages.tasks.buttonCreate')
     .row.justify-content-center
       .col-10.shadow-sm.p-3.mb-2.bg-white.rounded
+        - const filter = reply.request.session.get('filter'); 
         form.form-inline(action="/filter" method="POST")
           .form-group.mr-4
             label.mr-2(for="my-tasks")= t('views.pages.tasks.filter.myTasks')
-            input(type="checkbox" id="my-tasks" name="my-tasks")
+            input(type="checkbox" id="my-tasks" name="my-tasks" checked= _.has(filter, 'my-tasks'))
           .form-group.mr-4
             label.mr-2(for="status-filter")= t('views.pages.tasks.status')
             select.custom-select(type="number" class="form-control" id="status-filter" name="status")
               each s in statuses
-                option(value=s.id)= s.name
-              option(value=null) none
+                - const isSelected = _.get(filter, 'status', null) == s.id;
+                option(value=s.id selected=isSelected)= s.name 
+              option(value="false" selected=_.get(filter, 'status') === 'false') none
           .form-group.mr-4
             label.mr-2(for="executor-filter")= t('views.pages.tasks.executor')
             select.custom-select(type="number" class="form-control" id="executor-filter" name="executor")
               each u in users
-                option(value=u.id)= getUserName(u)
-              option(value=null) none
+                - const isSelected = _.get(filter, 'executor', null) == u.id;
+                option(value=u.id selected=isSelected)= getUserName(u)
+              option(value="false" selected=_.get(filter, 'executor') === 'false') none
           .form-group.mr-4
             label.mr-2(for="label-filter")= t('views.pages.tasks.label')
             select.custom-select(type="number" class="form-control" id="label-filter" name="label")
               each l in labels
-                option(value=l.id)= l.name
-              option(value=null) none
+                - const isSelected = _.get(filter, 'label', null) == l.id;
+                option(value=l.id selected=isSelected)= l.name
+              option(value='false' selected=_.get(filter, 'label') === 'false') none
           input(type="submit" class="btn btn-primary mr-2" value= t('views.pages.tasks.filter.filter'))
           a(href="/filter" data-method="delete" class="btn btn-secondary mr-2" value="Cancel")= t('views.pages.tasks.filter.clear')
     .row.justify-content-center
