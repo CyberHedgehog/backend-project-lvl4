@@ -22,7 +22,15 @@ export default (app) => {
       return { ...t, labels };
     });
     const tasksWithLabels = await Promise.all(promises);
-    reply.render('tasks/list', { tasks: tasksWithLabels });
+    const statuses = await app.objection.models.status.query();
+    const labels = await app.objection.models.label.query();
+    const users = await app.objection.models.user.query();
+    reply.render('tasks/list', {
+      tasks: tasksWithLabels,
+      statuses,
+      users,
+      labels,
+    });
   });
 
   app.get('/tasks/new', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
