@@ -38,7 +38,6 @@ export default (app) => {
       .findById(request.params.id);
     const labels = await app.objection.models.label.query();
     const taskLabels = await task.$relatedQuery('labels');
-    console.log(taskLabels);
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
     reply.render('tasks/edit', {
@@ -52,8 +51,7 @@ export default (app) => {
 
   app.post('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const { body } = request;
-    console.log(body);
-    const labels = [...body.labels];
+    const labels = _.has(body, 'labels') ? [...body.labels] : [];
     const data = {
       name: body.name,
       description: body.description,
@@ -76,7 +74,7 @@ export default (app) => {
 
   app.patch('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
-    const labels = [...request.body.labels];
+    const labels = _.has(request.body, 'labels') ? [...request.body.labels] : [];
     const data = {
       ...filteredData,
       executorId: _.parseInt(filteredData.executorId),
@@ -93,7 +91,7 @@ export default (app) => {
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect('/tasks');
     } catch (e) {
-      console.log(e);
+      request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
       reply.redirect(`/tasks/edit/${request.params.id}`);
     }
