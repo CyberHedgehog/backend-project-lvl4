@@ -12,7 +12,7 @@ body(class="bg-dark text-light")
     header(class="mt-3 mb-5")
       nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         a.navbar-brand(href="/")
-          h3 TaskManager
+          h3= t('views.layouts.main.header')
         button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
           span.navbar-toggler-icon
         .collapse.navbar-collapse(id="navbarSupportedContent")
@@ -22,7 +22,7 @@ body(class="bg-dark text-light")
             div
               .my-2.my-lg-0
                 a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}`
-                a(href="session" data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
+                a(href="session" data-method='delete' rel="nofollow" class="btn btn-light ml-2")= t('views.layouts.main.logOut')
     - flash = reply.flash() || []
     +alert(flash)
     block main

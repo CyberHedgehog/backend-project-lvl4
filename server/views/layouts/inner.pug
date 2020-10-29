@@ -10,7 +10,7 @@ html
   body
     header
       nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-        a.navbar-brand(href="/") TaskManager
+        a.navbar-brand(href="/")= t('views.layouts.main.title')
         
         button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
           span.navbar-toggler-icon
@@ -20,7 +20,7 @@ html
           div
             .my-2.my-lg-0
               a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}` 
-              a(href='/session' data-method='delete' rel="nofollow" class="btn btn-light ml-2") Logout
+              a(href='/session' data-method='delete' rel="nofollow" class="btn btn-light ml-2")= t('views.layouts.inner.logout')
     - flash = reply.flash() || []
     +alert(flash)
     block main

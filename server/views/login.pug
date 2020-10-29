@@ -15,7 +15,6 @@ block main
         label(for="password")= t('views.pages.login.password')
         input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
       button(type="submit" class="btn btn-light")= t('views.pages.login.title')
-      //- - const [msg] = flash('error')
     .text-center
       p(class="pt-3")
         a(class="text-light" href="/users/new")= t('views.pages.login.notRegistered')

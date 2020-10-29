@@ -38,5 +38,5 @@ block main
                   option(value=label.id selected=activeLabels.includes(label.name))= label.name
 
             .form-group
-              button(type="submit" class="btn btn-primary") Submit
-              a(class="ml-2 btn btn-secondary" href="/tasks" role="button") Cancel
+              button(type="submit" class="btn btn-primary")= t('buttons.submit')
+              a(class="ml-2 btn btn-secondary" href="/tasks" role="button")= t('buttons.cancel')

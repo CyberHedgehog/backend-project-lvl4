@@ -7,10 +7,7 @@ block main
   main(class="mx-auto text-center col-md-6")
       h1= t('views.pages.startPage.greeting')
       p= t('views.pages.startPage.text')
-      //- - const [msg] = flash('info');
-      //- if msg
-        +alert('success')
-      h1= reply.flash('warning')
+      h1= reply.request.flash('error')
       if reply.request.isSigned
         a(href="/tasks" class="btn btn-light")= t('views.pages.startPage.loggedButton')
       else

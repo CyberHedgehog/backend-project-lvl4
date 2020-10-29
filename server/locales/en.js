@@ -6,10 +6,14 @@ export default {
         main: {
           logOut: 'Logout',
           title: 'Taskmanager',
+          header: 'TaskManager',
           footer: {
             text: 'Dmitriy Dobrenkiy',
             ghLink: 'My Github',
           },
+        },
+        inner: {
+          logout: 'Logout',
         },
       },
       pages: {
@@ -45,6 +49,10 @@ export default {
             success: 'User successfully edited',
             error: 'User edit error',
           },
+          firstName: 'Firstname',
+          lastName: 'Lastname',
+          email: 'Email',
+          password: 'Password',
           add: {
             success: 'Successful registration',
             error: 'Invalid data',
@@ -53,6 +61,7 @@ export default {
         statuses: {
           title: 'Statuses',
           header: 'Statuses list',
+          name: 'Name',
           form: {
             name: 'Name:',
             placeholderName: 'Enter name',
@@ -135,6 +144,7 @@ export default {
       edit: 'Edit',
       delete: 'Delete',
       save: 'Save',
+      submit: 'Submit',
       cancel: 'Cancel',
     },
   },
