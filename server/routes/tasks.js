@@ -1,8 +1,10 @@
-import _, { parseInt } from 'lodash';
+import _ from 'lodash';
 import i18next from 'i18next';
+import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
   app.get('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+    const filter = request.session.get('filter');
     const tasks = await app.objection.models.task
       .query()
       .select(
@@ -16,12 +18,16 @@ export default (app) => {
       )
       .join('statuses as status', 'tasks.statusId', 'status.id')
       .join('users as creator', 'tasks.creatorId', 'creator.id')
-      .join('users as executor', 'tasks.executorId', 'executor.id');
-    const promises = tasks.map(async (t) => {
+      .join('users as executor', 'tasks.executorId', 'executor.id')
+      .leftOuterJoin('tasks_labels', 'tasks.id', 'tasks_labels.task_id')
+      .modify(makeModifiers(filter))
+      .groupBy('tasks.id');
+    const addLabels = tasks.map(async (t) => {
       const labels = await t.$relatedQuery('labels');
       return { ...t, labels };
     });
-    const tasksWithLabels = await Promise.all(promises);
+    const tasksWithLabels = await Promise.all(addLabels);
+    console.log(tasks);
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     const users = await app.objection.models.user.query();

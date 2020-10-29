@@ -16,28 +16,28 @@ block main
         form.form-inline(action="/filter" method="POST")
           .form-group.mr-4
             label.mr-2(for="my-tasks")= t('views.pages.tasks.filter.myTasks')
-            input(type="checkbox" id="my-tasks" name="my-tasks" checked= _.has(filter, 'my-tasks'))
+            input(type="checkbox" id="my-tasks" name="creatorId" value=reply.request.currentUser.id checked= _.has(filter, 'creatorId'))
           .form-group.mr-4
             label.mr-2(for="status-filter")= t('views.pages.tasks.status')
-            select.custom-select(type="number" class="form-control" id="status-filter" name="status")
+            select.custom-select(type="number" class="form-control" id="status-filter" name="statusId")
+              option(value="null" selected=_.get(filter, 'statusId') === 'null')
               each s in statuses
-                - const isSelected = _.get(filter, 'status', null) == s.id;
+                - const isSelected = _.get(filter, 'statusId', 'null') == s.id;
                 option(value=s.id selected=isSelected)= s.name 
-              option(value="false" selected=_.get(filter, 'status') === 'false') none
           .form-group.mr-4
             label.mr-2(for="executor-filter")= t('views.pages.tasks.executor')
-            select.custom-select(type="number" class="form-control" id="executor-filter" name="executor")
+            select.custom-select(type="number" class="form-control" id="executor-filter" name="executorId")
+              option(value="null" selected=_.get(filter, 'executorId') === 'null')
               each u in users
-                - const isSelected = _.get(filter, 'executor', null) == u.id;
+                - const isSelected = _.get(filter, 'executorId', null) == u.id;
                 option(value=u.id selected=isSelected)= getUserName(u)
-              option(value="false" selected=_.get(filter, 'executor') === 'false') none
           .form-group.mr-4
             label.mr-2(for="label-filter")= t('views.pages.tasks.label')
-            select.custom-select(type="number" class="form-control" id="label-filter" name="label")
+            select.custom-select(type="number" class="form-control" id="label-filter" name="labelId")
+              option(value='null' selected=_.get(filter, 'labelId') === 'null')
               each l in labels
-                - const isSelected = _.get(filter, 'label', null) == l.id;
+                - const isSelected = _.get(filter, 'labelId', null) == l.id;
                 option(value=l.id selected=isSelected)= l.name
-              option(value='false' selected=_.get(filter, 'label') === 'false') none
           input(type="submit" class="btn btn-primary mr-2" value= t('views.pages.tasks.filter.filter'))
           a(href="/filter" data-method="delete" class="btn btn-secondary mr-2" value="Cancel")= t('views.pages.tasks.filter.clear')
     .row.justify-content-center
