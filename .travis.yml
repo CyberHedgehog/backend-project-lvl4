@@ -1,6 +1,9 @@
 language: node_js
 node_js:
 - node
+env:
+  - APPKEY=GNS5x1q27jf0HS32U3yaeUyjcNa8YA1j
+  - CRYPTOWORD=TRAVIS
 cache: npm
 script:
 - make lint
