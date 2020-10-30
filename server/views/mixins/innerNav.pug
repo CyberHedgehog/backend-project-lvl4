@@ -1,0 +1,5 @@
+- const links = ['Users', 'Tasks', 'Statuses', 'Labels']
+mixin innerNav()
+  each link in links
+    li.nav-item
+      a(class='nav-link active' href=`/${link.toLowerCase()}`)= link

@@ -1,0 +1,28 @@
+extends /layouts/inner.pug
+block title
+  title= t('views.pages.users.edit.title')
+
+block main
+  .container
+    - const user = reply.request.currentUser
+    .row.justify-content-center
+      .p-3
+        h1= `${t('views.pages.users.edit.header')} ${getUserName(user)}`
+    .row.justify-content-center
+      .shadow-sm.p-3.mb-5.bg-white.rounded
+        form(action="/users" method="POST")
+          input(type="hidden" name="_method" value="PATCH")
+          .form-group
+            label(for="firstName")= t('views.pages.signup.firstName')
+            input(type="text" class="form-control" name="firstName" id="firstName" value= user.firstName)
+          .form-group
+            label(for="lastName")= t('views.pages.signup.lastName')
+            input(type="text" class="form-control" name="lastName" id="lastName" value= user.lastName)
+          .form-group
+            label(for="email")= t('views.pages.signup.email')
+            input(type="text" class="form-control" name="email" id="email" value= user.email)
+          .form-group
+            label(for="password")= t('views.pages.signup.password')
+            input(type="password" class="form-control" name="password" id="firstName" placeholder="New password")
+          input(type="submit" class="btn btn-primary mr-2" data-method="PATCH" value=t('buttons.submit'))
+          a(href="/users" class="btn btn-light mr-2" value="Cancel")= t('buttons.cancel')

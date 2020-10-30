@@ -1,0 +1,28 @@
+extends /layouts/inner.pug
+block title
+  title= t('views.pages.labels.title')
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+        h1= t('views.pages.labels.header')
+    .row.justify-content-center
+        a(href='/labels/new' class="btn btn-primary")= t('views.pages.labels.buttonCreate')
+    .row.justify-content-center
+      .col-5.shadow-sm.p-3.mb-5.bg-white.rounded
+        .table-responsive-sm
+          table.table
+            thead
+              tr
+                th(scope="col")= t('views.pages.labels.name')
+                th(scope="col")
+                th(scope="col")
+            tbody
+              each label in labels
+                tr
+                  td.col= label.name
+                  td.col-1
+                    a(href=`/labels/edit/${label.id}` class="btn btn-secondary")= t('buttons.edit')
+                  td.col-1
+                    a(href=`/labels/${label.id}` data-method="delete" class="btn btn-danger")= t('buttons.delete')

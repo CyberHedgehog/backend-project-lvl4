@@ -1,0 +1,42 @@
+extends /layouts/inner.pug
+
+block title
+  title= t('views.pages.tasks.edit.title')
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+        h1= t('views.pages.tasks.edit.header')
+    .row.justify-content-center
+      .col-md-5
+        .shadow-sm.p-3.mb-5.bg-white.rounded
+          form(action=`/tasks/${task.id}` method="POST")
+            input(type="hidden" name="_method" value="PATCH")
+            .form-group
+              label(for="name")= t('views.pages.tasks.name')
+              input(type="text" class="form-control" name="name" id="name" value=task.name)
+            .form-group
+              label(for="status")= t('views.pages.tasks.status')
+              select(class="form-control" id="statusId" name="statusId")
+                each status in statuses
+                  option(type="number" value=status.id selected=status.id === task.statusId)=status.name
+            .form-group
+              label(for="assigned")= t('views.pages.tasks.executor')
+              select(type="number" class="form-control" id="assigned" name='executorId')
+                each user in users
+                  option(value=user.id selected=user.id === task.executorId)=`${user.firstName} ${user.lastName}`
+            .form-group
+              label(for="description")= t('views.pages.tasks.description')
+              textarea(class="form-control" id="description" name="description" rows="5" task.description)= task.description
+            
+            .form-group
+              label(for="labels") Labels
+              select(class="form-control" id="labels" name="labels" multiple)
+                - const activeLabels = taskLabels.map((l) => l.name)
+                each label in labels
+                  option(value=label.id selected=activeLabels.includes(label.name))= label.name
+
+            .form-group
+              button(type="submit" class="btn btn-primary")= t('buttons.submit')
+              a(class="ml-2 btn btn-secondary" href="/tasks" role="button")= t('buttons.cancel')

@@ -1,0 +1,20 @@
+extends /layouts/main.pug
+
+block title
+  title= t('views.pages.login.title')
+
+block main
+  div(class="col-md-4 mx-auto")
+    .text-center
+      h2= t('views.pages.login.title')
+    form(action="/login" method="POST") 
+      .form-group
+        label(for="email")= t('views.pages.login.email')
+        input(type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+      .form-group
+        label(for="password")= t('views.pages.login.password')
+        input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
+      button(type="submit" class="btn btn-light")= t('views.pages.login.title')
+    .text-center
+      p(class="pt-3")
+        a(class="text-light" href="/users/new")= t('views.pages.login.notRegistered')

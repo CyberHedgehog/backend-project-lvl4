@@ -1,44 +1,64 @@
-import request from 'supertest';
-import matchers from 'jest-supertest-matchers';
-import generateFakeUser from '../lib/fakeUser';
-import app from '..';
-import db from '../models';
+import getApp from '../server';
+import generateFakeUser from '../server/lib/fakeUser';
 
 describe('Sessions', () => {
   let server;
   const userData = generateFakeUser();
 
   beforeAll(async () => {
-    await db.sequelize.sync();
-    const user = db.User.build(userData);
-    await user.save();
-    expect.extend(matchers);
+    server = await getApp().ready();
+    await server.objection.knex.migrate.latest();
+    await server.objection.models.user.query().insert(userData);
   });
 
-  beforeEach(() => {
-    server = app().listen();
+  it('view', async () => {
+    const result = await server.inject({
+      method: 'GET',
+      url: '/login',
+    });
+    expect(result.statusCode).toBe(200);
   });
 
   it('new', async () => {
     const { email, password } = userData;
-    const result = await request.agent(server).post('/login').send({ email, password });
-    const cookie = result.res.headers['set-cookie'];
+    const result = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password },
+    });
+    const cookie = result.headers['set-cookie'];
     expect(cookie).toBeDefined();
-    expect(result).toHaveHTTPStatus(302);
+    expect(result.statusCode).toBe(302);
   });
 
   it('Failed login', async () => {
     const { email } = userData;
-    const result = await request.agent(server).post('/login').send({ email, password: 'wrongPassword' });
-    expect(result).toHaveHTTPStatus(200);
+    const result = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password: 'wrongPassword' },
+    });
+    const { location } = result.headers;
+    expect(location).toBe('/login');
+    expect(result.statusCode).toBe(302);
   });
 
-  afterAll(async () => {
-    await db.sequelize.close();
+  it('Delete', async () => {
+    const login = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email: userData.email, password: userData.password },
+    });
+    const cookie = login.cookies[0];
+
+    const result = await server.inject({
+      method: 'DELETE',
+      url: '/session',
+      cookies: { session: cookie.value },
+    });
+    expect(result.statusCode).toBe(302);
+    expect(result.cookies[0].value).toBe('');
   });
 
-  afterEach((done) => {
-    server.close();
-    done();
-  });
+  afterAll(async () => server.close());
 });

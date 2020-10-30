@@ -1,35 +1,26 @@
-import request from 'supertest';
-import matchers from 'jest-supertest-matchers';
-import app from '..';
+import getApp from '../server/index';
 
 describe('Requests', () => {
   let server;
-
-  beforeAll(() => {
-    expect.extend(matchers);
-  });
-
   beforeEach(() => {
-    server = app().listen();
+    server = getApp();
   });
 
-  test.each(['/', '/login', '/users/new'])('200', async (path) => {
-    const result = await request.agent(server).get(path);
-    expect(result).toHaveHTTPStatus(200);
+  it('200', async () => {
+    const response = await server.inject({
+      method: 'GET',
+      url: '/',
+    });
+    expect(response.statusCode).toBe(200);
   });
 
   it('404', async () => {
-    const result = await request.agent(server).get('/wrongpath');
-    expect(result).toHaveHTTPStatus(404);
+    const response = await server.inject({
+      method: 'GET',
+      url: '/wrongpath',
+    });
+    expect(response.statusCode).toBe(404);
   });
 
-  it('302', async () => {
-    const result = await request.agent(server).delete('/session');
-    expect(result).toHaveHTTPStatus(302);
-  });
-
-  afterEach((done) => {
-    server.close();
-    done();
-  });
+  afterAll(async () => server.close());
 });

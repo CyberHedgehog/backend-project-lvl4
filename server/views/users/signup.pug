@@ -1,0 +1,25 @@
+extends /layouts/main.pug
+
+block title
+  title= t('views.pages.signup.title')
+block main
+  div(class="col-md-4 mx-auto")
+    .text-center 
+      h2= t('views.pages.signup.title')
+    form(action="/users" method="POST")
+      .form-group
+        label(for="firstName")= t('views.pages.signup.firstName')
+        input(type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name")
+      .form-group
+        label(for="lastName")= t('views.pages.signup.lastName')
+        input(type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter your last name")
+      .form-group
+        label(for="email")= t('views.pages.signup.email')
+        input(type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+      .form-group
+        label(for="password")= t('views.pages.signup.password')
+        input(type="password" class="form-control" name="password" id="password" placeholder="Enter password")
+      input(type="submit" class="btn btn-light" value="Register")
+    .text-center
+      p(class="pt-3")
+        a(class="text-light" href="/login")= t('views.pages.signup.registered')

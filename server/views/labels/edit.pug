@@ -1,0 +1,18 @@
+extends /layouts/inner.pug
+block title
+  title= t('views.pages.labels.add.title')
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+          h1= t('views.pages.labels.add.header')
+    .row.justify-content-center
+      .shadow-sm.p-3.mb-5.bg-white.rounded
+        form(action= `/labels/${label.id}` method="POST")
+          input(name="_method", type="hidden", value="PATCH")
+          .form-group
+            label(for="name")= t('views.pages.labels.form.name')
+            input(type="text" value= label.name class="form-control" name="name" id="name")
+          input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
+          a(href="/labels" class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

@@ -1,32 +1,93 @@
-import request from 'supertest';
-import matchers from 'jest-supertest-matchers';
-// import session from 'supertest-session';
-import generateFakeUser from '../lib/fakeUser';
-import app from '..';
-import db from '../models';
+import getApp from '../server/index';
+import generateFakeUser from '../server/lib/fakeUser';
 
+describe('List users', () => {
+  const userData = generateFakeUser();
+  let server;
 
-beforeAll(async () => {
-  await db.sequelize.sync();
-  expect.extend(matchers);
+  beforeAll(async () => {
+    server = await getApp().ready();
+    await server.objection.knex.migrate.latest();
+    await server.objection.models.user.query().insert(userData);
+  });
+
+  it('Not logged', async () => {
+    const result = await server.inject({
+      method: 'GET',
+      url: '/users',
+    });
+
+    expect(result.statusCode).toBe(302);
+  });
+
+  it('Logged', async () => {
+    const login = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: {
+        email: userData.email,
+        password: userData.password,
+      },
+    });
+    const result = await server.inject({
+      method: 'GET',
+      url: '/users',
+      cookies: { session: login.cookies[0].value },
+    });
+    expect(result.statusCode).toBe(200);
+  });
+
+  afterAll(async () => server.close());
 });
 
 describe('New user', () => {
   let server;
   const userData = generateFakeUser();
+  const url = '/users';
+  const method = 'POST';
 
-  beforeEach(() => {
-    server = app().listen();
+  beforeAll(async () => {
+    server = await getApp().ready();
+    await server.objection.knex.migrate.latest();
+  });
+
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
+  });
+
+  it('Registration form', async () => {
+    const response = await server.inject({
+      method: 'GET',
+      url: '/users',
+    });
+    expect(response.statusCode).toBe(302);
   });
 
   it('Success', async () => {
-    const result = await request.agent(server).post('/users').send(userData);
-    expect(result).toHaveHTTPStatus(302);
+    const response = await server.inject({
+      method,
+      url,
+      payload: userData,
+    });
+    const users = await server.objection.models.user.query()
+      .select('email')
+      .where({ email: userData.email });
+    expect(response.statusCode).toBe(302);
+    expect(users.length).toBe(1);
   });
 
   it('Failed with same data', async () => {
-    const result = await request.agent(server).post('/users').send(userData);
-    expect(result).toHaveHTTPStatus(200);
+    await server.inject({
+      method,
+      url,
+      payload: userData,
+    });
+    const result = await server.inject({
+      method,
+      url,
+      payload: userData,
+    });
+    expect(result.statusCode).toBe(200);
   });
 
   it('Failed with wrong data', async () => {
@@ -37,92 +98,108 @@ describe('New user', () => {
       firstName,
       lastName,
     };
-    const result = await request.agent(server).post('/users').send(wrongUserData);
-    expect(result).toHaveHTTPStatus(200);
+    const result = await server.inject({
+      method,
+      url,
+      payload: wrongUserData,
+    });
+    expect(result.statusCode).toBe(200);
   });
 
-  afterEach(async (done) => {
-    server.close();
-    done();
-  });
+  afterAll(async () => server.close());
 });
 
 describe('Delete user', () => {
   let server;
   const firstUserData = generateFakeUser();
   const secondUserData = generateFakeUser();
+  let user;
 
-  beforeEach(() => {
-    server = app().listen();
+  beforeAll(async () => {
+    server = await getApp().ready();
+    user = server.objection.models.user;
+    await server.objection.knex.migrate.latest();
+  });
+
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
   });
 
   it('Delete with signed user', async () => {
-    const firstUser = db.User.build(firstUserData);
-    await firstUser.save();
-    const secondUser = db.User.build(secondUserData);
-    await secondUser.save();
+    await user.query().insert(firstUserData);
+    const secondUser = await user.query().insert(secondUserData);
     const { email, password } = firstUserData;
-    const agent = request.agent(server);
-    await agent.post('/login').send({ email, password });
-    await agent.delete(`/users/${secondUser.id}`);
-    const result = await db.User.findOne({ where: { id: secondUser.id } });
-    expect(result).toBeNull();
+    const loginResponse = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password },
+    });
+    const resCookies = loginResponse.cookies[0];
+    await server.inject({
+      method: 'DELETE',
+      url: `/users/${secondUser.id}`,
+      cookies: { session: resCookies.value },
+    });
+    const result = await user.query().findById(secondUser.id);
+    expect(result).toBeUndefined();
   });
 
   it('Delete without signed user', async () => {
-    const newUser = db.User.build(secondUserData);
-    await newUser.save();
-    await request.agent(server).delete(`/users/${newUser.id}`);
-    const result = await db.User.findOne({ where: { id: newUser.id } });
-    expect(result).not.toBeNull();
+    const newUser = await user.query().insert(secondUserData);
+    await server.inject({
+      method: 'DELETE',
+      url: `/users/${newUser.id}`,
+    });
+    const result = await user.query().findById(newUser.id);
+    expect(result.email).toBe(newUser.email);
   });
 
-  afterEach(async (done) => {
-    server.close();
-    done();
-  });
+  afterAll(async () => server.close());
 });
 
 describe('Update user', () => {
   let server;
+  let user;
   const userData = generateFakeUser();
   const dataToUpdate = generateFakeUser();
 
-  beforeEach(() => {
-    server = app().listen();
+  beforeAll(async () => {
+    server = await getApp().ready();
+    user = server.objection.models.user;
+    await server.objection.knex.migrate.latest();
   });
 
-  it('Update own data', async () => {
-    const user = db.User.build(userData);
-    await user.save();
+  beforeEach(async () => {
+    await server.objection.knex('users').truncate();
+  });
 
+  it('Update user', async () => {
+    const newUser = await user.query().insert(userData);
     const { email, password } = userData;
-    const agent = request.agent(server);
-    await agent.post('/login').send({ email, password });
+    const loginResponse = await server.inject({
+      method: 'POST',
+      url: '/login',
+      payload: { email, password },
+    });
+    const [resCookies] = loginResponse.cookies;
     const { firstName, lastName } = dataToUpdate;
-    await agent.patch('/users').send({ firstName, lastName });
-    await agent.delete('/session');
-    const patсhedUser = await db.User.findOne({ where: { id: user.id } });
-
+    await server.inject({
+      method: 'PATCH',
+      url: '/users',
+      cookies: { session: resCookies.value },
+      payload: { firstName, lastName },
+    });
+    const patсhedUser = await user.query().findById(newUser.id);
     expect(patсhedUser.firstName).toBe(firstName);
   });
 
   it('Update without auth', async () => {
-    const user = await db.User.findOne({ where: { email: userData.email } });
-    const agent = request.agent(server);
+    const newUser = await user.query().insert(userData);
     const { firstName, lastName } = dataToUpdate;
-    await agent.patch('/users').send({ firstName, lastName });
-    const result = await db.User.findOne({ where: { id: user.id } });
-
-    expect(result.firstName).toBe(user.firstName);
+    await server.inject().patch('/users').body({ firstName, lastName });
+    const result = await user.query().findById(newUser.id);
+    expect(result.firstName).toBe(newUser.firstName);
   });
 
-  afterEach(async (done) => {
-    server.close();
-    done();
-  });
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
+  afterAll(async () => server.close());
 });

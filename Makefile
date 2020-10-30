@@ -2,19 +2,20 @@ install:
 	npm install
 
 start:
-	npx gulp run
+	npm run start
 
-debug:
-	DEBUG=app npx gulp run
+dev:
+	npm run dev
 
 build:
-	npm run build
+	npm run build-frontend
+	npm run build-backend
 
 lint:
 	npx eslint .
 
 test:
-	npm test
+	npm run test
 
 watch:
 	npx jest --watch

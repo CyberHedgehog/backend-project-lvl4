@@ -1,0 +1,26 @@
+include /mixins/messages.pug
+include /mixins/innerNav.pug
+
+doctype html
+html
+  block head
+    meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    block title
+    script(src='/assets/main.js')
+  body
+    header
+      nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+        a.navbar-brand(href="/")= t('views.layouts.main.title')
+        
+        button(class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse")
+          span.navbar-toggler-icon
+        .collapse.navbar-collapse(id="navbarSupportedContent")
+          ul.navbar-nav.mr-auto
+            +innerNav()
+          div
+            .my-2.my-lg-0
+              a.navbar-brand(href="/users/edit")= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}` 
+              a(href='/session' data-method='delete' rel="nofollow" class="btn btn-light ml-2")= t('views.layouts.inner.logout')
+    - flash = reply.flash() || []
+    +alert(flash)
+    block main
