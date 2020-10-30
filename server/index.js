@@ -13,6 +13,7 @@ import i18next from 'i18next';
 import path from 'path';
 import pointOfView from 'point-of-view';
 import Pug from 'pug';
+import Rollbar from 'rollbar';
 import en from './locales/en';
 import addRoutes from './routes';
 import knexConfig from '../knexfile';
@@ -21,6 +22,11 @@ import models from './models';
 dotenv.config();
 
 const mode = process.env.NODE_ENV || 'development';
+const rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR,
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+});
 
 const setupFrontEnd = (app) => {
   i18next.init({
@@ -80,7 +86,7 @@ const registerPlugins = (app) => {
     knexConfig: knexConfig[mode],
     models,
   });
-  app.register(fastifyErrorPage);
+  if (process.env.NODE_ENV !== 'production') app.register(fastifyErrorPage);
 };
 
 const addHooks = (app) => {
@@ -107,10 +113,13 @@ export default () => {
       prettyPrint: mode === 'development',
     },
   });
-
   setupFrontEnd(app);
   registerPlugins(app);
   addRoutes(app);
   addHooks(app);
+  app.setErrorHandler((error, req, reply) => {
+    rollbar.error(error);
+    reply.send('some error');
+  });
   return app;
 };
