@@ -57,4 +57,6 @@ describe('Sessions', () => {
     expect(result.statusCode).toBe(302);
     expect(result.cookies[0].value).toBe('');
   });
+
+  afterAll(async () => server.close());
 });

@@ -21,4 +21,6 @@ describe('Requests', () => {
     });
     expect(response.statusCode).toBe(404);
   });
+
+  afterAll(async () => server.close());
 });

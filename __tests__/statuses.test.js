@@ -77,4 +77,6 @@ describe('Status', () => {
       .findById(status.id);
     expect(result).toBeUndefined();
   });
+
+  afterAll(async () => server.close());
 });

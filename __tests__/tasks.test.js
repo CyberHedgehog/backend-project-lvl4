@@ -124,4 +124,6 @@ describe('Tasks', () => {
     const result = await task.query().findById(newTask.id);
     expect(result).toBeDefined();
   });
+
+  afterAll(async () => server.close());
 });

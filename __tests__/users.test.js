@@ -36,6 +36,8 @@ describe('List users', () => {
     });
     expect(result.statusCode).toBe(200);
   });
+
+  afterAll(async () => server.close());
 });
 
 describe('New user', () => {
@@ -103,6 +105,8 @@ describe('New user', () => {
     });
     expect(result.statusCode).toBe(200);
   });
+
+  afterAll(async () => server.close());
 });
 
 describe('Delete user', () => {
@@ -149,6 +153,8 @@ describe('Delete user', () => {
     const result = await user.query().findById(newUser.id);
     expect(result.email).toBe(newUser.email);
   });
+
+  afterAll(async () => server.close());
 });
 
 describe('Update user', () => {
@@ -194,4 +200,6 @@ describe('Update user', () => {
     const result = await user.query().findById(newUser.id);
     expect(result.firstName).toBe(newUser.firstName);
   });
+
+  afterAll(async () => server.close());
 });

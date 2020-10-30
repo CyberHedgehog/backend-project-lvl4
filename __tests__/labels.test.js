@@ -79,4 +79,6 @@ describe('Label', () => {
       .findById(label.id);
     expect(result).toBeUndefined();
   });
+
+  afterAll(async () => server.close());
 });
