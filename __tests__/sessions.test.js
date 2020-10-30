@@ -38,7 +38,9 @@ describe('Sessions', () => {
       url: '/login',
       payload: { email, password: 'wrongPassword' },
     });
-    expect(result.statusCode).toBe(200);
+    const { location } = result.headers;
+    expect(location).toBe('/login');
+    expect(result.statusCode).toBe(302);
   });
 
   it('Delete', async () => {
