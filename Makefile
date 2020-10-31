@@ -8,8 +8,10 @@ dev:
 	npm run dev
 
 build:
+	rm -rf dist
 	npm run build-frontend
 	npm run build-backend
+	npm run build-configs
 
 lint:
 	npx eslint .
