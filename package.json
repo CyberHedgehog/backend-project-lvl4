@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "NODE_ENV=production node dist/bin/server.js",
+    "start": "NODE_ENV=production node ./dist/bin/server.js",
     "build-configs": "babel webpack.config.js --out-dir dist && cp knexfile.js dist",
     "build-frontend": "npx webpack -p --env production",
     "build-backend": "npx babel server --out-dir dist && cp -r server/views dist/views",
