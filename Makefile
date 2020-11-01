@@ -1,9 +1,6 @@
 install:
 	npm install
 
-start:
-	npm run start
-
 dev:
 	npm run dev
 
@@ -12,6 +9,10 @@ build:
 	npm run build-frontend
 	npm run build-backend
 	npm run build-configs
+
+start:
+	make build
+	npm run start
 
 lint:
 	npx eslint .
