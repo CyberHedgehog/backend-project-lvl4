@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
-      APPKEY: GITHUB_APPKEY
-      CRYPTOWORD: GITHUB_CRYPTOWORD
+      APPKEY: ${{secrets.APPKEY}}
+      CRYPTOWORD: ${{secrets.CRYPTOWORD}}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
