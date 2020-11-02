@@ -15,7 +15,7 @@ export default (app) => {
     reply.render('statuses/new');
   });
 
-  app.get('/statuses/edit/:id', async (request, reply) => {
+  app.get('/statuses/:id/edit', async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()

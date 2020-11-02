@@ -121,6 +121,7 @@ export default {
           buttonCreate: 'Create new label',
           name: 'Label name:',
           add: {
+            header: 'New label',
             title: 'New label',
             success: 'Label created successfully',
             delete: 'Label adding error',
@@ -130,6 +131,7 @@ export default {
             error: 'Error deleting label',
           },
           edit: {
+            header: 'Edit label',
             title: 'Edit label',
             error: 'Label edit error',
             success: 'Label edited successfully',

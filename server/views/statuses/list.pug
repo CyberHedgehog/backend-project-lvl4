@@ -23,6 +23,6 @@ block main
                 tr
                   td.col= stat.name
                   td.col-1
-                    a(href=`/statuses/edit/${stat.id}` class="btn btn-secondary")= t('buttons.edit')
+                    a(href=`/statuses/${stat.id}/edit` class="btn btn-secondary")= t('buttons.edit')
                   td.col-1
                     a(href=`/statuses/${stat.id}` data-method="delete" class="btn btn-danger")= t('buttons.delete')

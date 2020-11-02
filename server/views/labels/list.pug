@@ -23,6 +23,6 @@ block main
                 tr
                   td.col= label.name
                   td.col-1
-                    a(href=`/labels/edit/${label.id}` class="btn btn-secondary")= t('buttons.edit')
+                    a(href=`/labels/${label.id}/edit` class="btn btn-secondary")= t('buttons.edit')
                   td.col-1
                     a(href=`/labels/${label.id}` data-method="delete" class="btn btn-danger")= t('buttons.delete')

@@ -6,13 +6,13 @@ block main
   .container
     .row.justify-content-center
       .p-3
-          h1= t('views.pages.labels.add.header')
+          h1= t('views.pages.labels.edit.header')
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
         form(action= `/labels/${label.id}` method="POST")
           input(name="_method", type="hidden", value="PATCH")
           .form-group
-            label(for="name")= t('views.pages.labels.form.name')
+            label(for="name")= t('views.pages.labels.name')
             input(type="text" value= label.name class="form-control" name="name" id="name")
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
           a(href="/labels" class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

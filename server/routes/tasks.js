@@ -53,7 +53,7 @@ export default (app) => {
     reply.render('tasks/new', { users, statuses, labels });
   });
 
-  app.get('/tasks/edit/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks/:id/edit', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);

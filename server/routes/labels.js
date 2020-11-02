@@ -11,7 +11,7 @@ export default (app) => {
     reply.render('labels/new');
   });
 
-  app.get('/labels/edit/:id', { preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.get('/labels/:id/edit', { preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
     try {
       const label = await app.objection.models.label.query().findById(req.params.id);
       reply.render('labels/edit', { label });
@@ -44,7 +44,7 @@ export default (app) => {
       reply.redirect('/labels');
     } catch (e) {
       req.flash('error', i18next.t('views.pages.labels.edit.error'));
-      reply.redirect(`/labels/edit/${req.params.id}`);
+      reply.redirect(`/labels/${req.params.id}/edit`);
     }
   });
 
