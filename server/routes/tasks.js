@@ -19,15 +19,23 @@ export default (app) => {
       .join('statuses as status', 'tasks.statusId', 'status.id')
       .join('users as creator', 'tasks.creatorId', 'creator.id')
       .join('users as executor', 'tasks.executorId', 'executor.id')
-      .leftOuterJoin('tasks_labels', 'tasks.id', 'tasks_labels.task_id')
+      .leftJoin('tasks_labels', 'tasks.id', 'tasks_labels.task_id')
       .modify(makeModifiers(filter))
-      .groupBy('tasks.id');
+      .groupBy(
+        'tasks.id',
+        'statusName',
+        'creatorFirstName',
+        'creatorLastName',
+        'executorFirstName',
+        'executorLastName',
+      )
+      .orderBy('tasks.id');
+    console.log(tasks);
     const addLabels = tasks.map(async (t) => {
       const labels = await t.$relatedQuery('labels');
       return { ...t, labels };
     });
     const tasksWithLabels = await Promise.all(addLabels);
-    console.log(tasks);
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     const users = await app.objection.models.user.query();

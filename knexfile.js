@@ -1,4 +1,6 @@
 // Update with your config settings.
+require('dotenv').config();
+
 const migrations = {
   directory: './server/migrations',
 };
@@ -6,10 +8,8 @@ const migrations = {
 module.exports = {
 
   development: {
-    client: 'sqlite3',
-    connection: {
-      filename: './dev.sqlite',
-    },
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
     migrations,
     useNullAsDefault: true,
   },
@@ -24,7 +24,7 @@ module.exports = {
   test: {
     client: 'sqlite3',
     connection: ':memory:',
-    migrations: { directory: './server/migrations' },
+    migrations,
     useNullAsDefault: true,
   },
 };

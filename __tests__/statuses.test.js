@@ -48,20 +48,20 @@ describe('Status', () => {
   });
 
   it('Update', async () => {
-    const newName = faker.lorem.word();
+    const newStatusName = faker.lorem.word();
     const status = await server.objection.models.status
       .query()
       .insert({ name: statusName });
     await server.inject({
       method: 'PATCH',
       url: `/statuses/${status.id}`,
-      body: { name: newName },
+      body: { name: newStatusName },
       cookies: { session: sessionCookie.value },
     });
     const result = await server.objection.models.status
       .query()
       .findById(status.id);
-    expect(result.name).toBe(newName);
+    expect(result.name).toBe(newStatusName);
   });
 
   it('Delete', async () => {

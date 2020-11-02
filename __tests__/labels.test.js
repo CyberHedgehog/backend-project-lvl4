@@ -49,20 +49,20 @@ describe('Label', () => {
   });
 
   it('Update', async () => {
-    const newName = faker.lorem.word();
+    const newLabelName = faker.lorem.word();
     const label = await server.objection.models.label
       .query()
       .insert({ name: labelName });
     await server.inject({
       method: 'PATCH',
       url: `/labels/${label.id}`,
-      payload: { name: newName },
+      payload: { name: newLabelName },
       cookies: { session: sessionCookies.value },
     });
     const result = await server.objection.models.label
       .query()
       .findById(label.id);
-    expect(result.name).toBe(newName);
+    expect(result.name).toBe(newLabelName);
   });
 
   it('Delete', async () => {
