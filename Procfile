@@ -1,1 +1,1 @@
-build: make build
+web: make start

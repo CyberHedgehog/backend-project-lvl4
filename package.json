@@ -9,6 +9,7 @@
     "build-configs": "babel webpack.config.js --out-dir dist && cp knexfile.js dist",
     "build-frontend": "npx webpack -p --env production",
     "build-backend": "npx babel server --out-dir dist && cp -r server/views dist/views",
+    "build": "rm -rf dist && npm run build-frontend && npm run build-backend && npm run build-configs",
     "dev": "npx nodemon --exec DEBUG=application:* npx babel-node server/bin/server.js"
   },
   "jest": {
