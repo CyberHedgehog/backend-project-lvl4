@@ -2,8 +2,8 @@
 exports.up = function(knex) {
   return knex.schema.createTable('tasks_labels', (table) => {
     table.increments('id').primary();
-    table.string('task_id');
-    table.string('label_id');
+    table.integer('task_id');
+    table.integer('label_id');
   }).then(console.log('Tasks_labels migrated'));
 };
 
