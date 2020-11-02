@@ -119,7 +119,7 @@ export default () => {
   addHooks(app);
   app.setErrorHandler((error, req, reply) => {
     rollbar.error(error);
-    reply.send('some error');
+    reply.send(error);
   });
   return app;
 };
