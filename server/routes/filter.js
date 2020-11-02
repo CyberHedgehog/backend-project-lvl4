@@ -1,6 +1,5 @@
 export default (app) => {
   app.post('/filter', async (req, reply) => {
-    console.log(req.body);
     req.session.set('filter', req.body);
     reply.redirect('/tasks');
   });

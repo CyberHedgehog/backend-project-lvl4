@@ -43,7 +43,6 @@ export default (app) => {
       req.flash('success', i18next.t('views.pages.labels.edit.success'));
       reply.redirect('/labels');
     } catch (e) {
-      console.log(e);
       req.flash('error', i18next.t('views.pages.labels.edit.error'));
       reply.redirect(`/labels/edit/${req.params.id}`);
     }

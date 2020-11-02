@@ -30,7 +30,6 @@ export default (app) => {
         'executorLastName',
       )
       .orderBy('tasks.id');
-    console.log(tasks);
     const addLabels = tasks.map(async (t) => {
       const labels = await t.$relatedQuery('labels');
       return { ...t, labels };

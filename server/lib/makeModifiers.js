@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 export default (filterObject) => {
   const keys = _.keys(filterObject);
-  console.log(filterObject);
   const modifiers = keys.reduce((acc, key) => {
     if (filterObject[key] === 'null') {
       return acc;

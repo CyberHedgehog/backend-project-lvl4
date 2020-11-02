@@ -54,7 +54,6 @@ export default (app) => {
       request.flash('success', 'User updated successfuly');
       reply.redirect('users/edit');
     } catch (e) {
-      console.log(e);
       request.flash('error', 'Invalid data');
       reply.redirect('users/edit');
     }
