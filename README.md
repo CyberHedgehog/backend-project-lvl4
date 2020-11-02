@@ -2,7 +2,8 @@
 ## Task manager
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/a8b89eb69d6513285356/maintainability)](https://codeclimate.com/github/CyberHedgehog/backend-project-lvl4/maintainability) 
-[![Build Status](https://travis-ci.com/CyberHedgehog/backend-project-lvl4.svg?branch=master)](https://travis-ci.com/CyberHedgehog/backend-project-lvl4)  
+[![Build Status](https://travis-ci.com/CyberHedgehog/backend-project-lvl4.svg?branch=master)](https://travis-ci.com/CyberHedgehog/backend-project-lvl4)
+![CI](https://github.com/CyberHedgehog/backend-project-lvl4/workflows/CI/badge.svg)  
 
 ### Installing
 Type `make install` to install packages
