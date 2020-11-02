@@ -11,7 +11,6 @@ build:
 	npm run build-configs
 
 start:
-	make build
 	npm run start
 
 lint:
