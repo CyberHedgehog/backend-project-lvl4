@@ -12,6 +12,7 @@ describe('Tasks', () => {
   let status;
   let task;
   let cookies;
+  let newTask;
 
   beforeAll(async () => {
     server = await getApp().ready();
@@ -31,14 +32,28 @@ describe('Tasks', () => {
 
   beforeEach(async () => {
     await server.objection.knex('tasks').truncate();
+    const taskData = {
+      name: faker.lorem.word(),
+      description: faker.lorem.words(),
+      statusId: status.id,
+      creatorId: firstUser.id,
+      executorId: secondUser.id,
+    };
+    newTask = await task.query().insert(taskData);
   });
 
   it('List', async () => {
-    const result = await server.inject({
-      method: 'GET',
-      url: '/tasks',
-      cookies,
-    });
+    const result = await server.inject().get('/tasks').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('New task view', async () => {
+    const result = await server.inject().get('/tasks/new').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('Edit task view', async () => {
+    const result = await server.inject().get(`/tasks/${newTask.id}/edit`).cookies(cookies);
     expect(result.statusCode).toBe(200);
   });
 
@@ -61,19 +76,11 @@ describe('Tasks', () => {
   });
 
   it('Update', async () => {
-    const taskData = {
-      name: faker.lorem.word(),
-      description: faker.lorem.words(),
-      statusId: status.id,
-      creatorId: firstUser.id,
-      executorId: secondUser.id,
-    };
-    const newTask = await task.query().insert(taskData);
     const newDescription = faker.lorem.words();
     const response = await server.inject({
       method: 'PATCH',
       url: `/tasks/${newTask.id}`,
-      payload: { ...taskData, description: newDescription },
+      payload: { ...newTask, description: newDescription },
       cookies,
     });
     const result = await task.query().findById(newTask.id);
@@ -82,14 +89,6 @@ describe('Tasks', () => {
   });
 
   it('Delete', async () => {
-    const taskData = {
-      name: faker.lorem.word(),
-      description: faker.lorem.words(),
-      statusId: status.id,
-      creatorId: firstUser.id,
-      executor: secondUser.id,
-    };
-    const newTask = await task.query().insert(taskData);
     const response = await server.inject({
       method: 'DELETE',
       url: `/tasks/${newTask.id}`,
@@ -101,16 +100,7 @@ describe('Tasks', () => {
   });
 
   it('Only creator can delete', async () => {
-    const taskData = {
-      name: faker.lorem.word(),
-      description: faker.lorem.words(),
-      statusId: status.id,
-      creatorId: secondUser.id,
-      executor: firstUser.id,
-    };
-
-    const newTask = await task.query().insert(taskData);
-
+    cookies = await getCookies(server, secondUser);
     const response = await server.inject({
       method: 'DELETE',
       url: `/tasks/${newTask.id}`,

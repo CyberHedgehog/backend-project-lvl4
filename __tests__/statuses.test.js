@@ -21,11 +21,18 @@ describe('Status', () => {
   });
 
   it('List', async () => {
-    const result = await server.inject({
-      method: 'GET',
-      url: '/statuses',
-      cookies,
-    });
+    const result = await server.inject().get('/statuses').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('New status view', async () => {
+    const result = await server.inject().get('/statuses/new').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('Edit status view', async () => {
+    const newStatus = await server.objection.models.status.query().insert({ name: statusName });
+    const result = await server.inject().get(`/statuses/${newStatus.id}/edit`).cookies(cookies);
     expect(result.statusCode).toBe(200);
   });
 

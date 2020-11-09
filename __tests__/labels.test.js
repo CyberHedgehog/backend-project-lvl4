@@ -21,11 +21,18 @@ describe('Label', () => {
   });
 
   it('List', async () => {
-    const result = await server.inject({
-      method: 'GET',
-      url: '/labels',
-      cookies,
-    });
+    const result = await server.inject().get('/labels').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('New label view', async () => {
+    const result = await server.inject().get('/labels/new').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('Edit label view', async () => {
+    const newLabel = await server.objection.models.label.query().insert({ name: labelName });
+    const result = await server.inject().get(`/labels/${newLabel.id}/edit`).cookies(cookies);
     expect(result.statusCode).toBe(200);
   });
 

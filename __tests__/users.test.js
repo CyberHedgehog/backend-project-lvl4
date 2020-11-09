@@ -2,7 +2,7 @@ import getApp from '../server/index';
 import generateFakeUser from '../server/lib/fakeUser';
 import getCookies from '../server/lib/getCookies';
 
-describe('List users', () => {
+describe('Views', () => {
   const userData = generateFakeUser();
   let server;
   let cookies;
@@ -14,21 +14,23 @@ describe('List users', () => {
     cookies = await getCookies(server, userData);
   });
 
-  it('Not logged', async () => {
-    const result = await server.inject({
-      method: 'GET',
-      url: '/users',
-    });
+  it('List logged', async () => {
+    const result = await server.inject().get('/users').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
 
+  it('List not logged', async () => {
+    const result = await server.inject().get('/users');
     expect(result.statusCode).toBe(302);
   });
 
-  it('Logged', async () => {
-    const result = await server.inject({
-      method: 'GET',
-      url: '/users',
-      cookies,
-    });
+  it('New', async () => {
+    const result = await server.inject().get('/users/new').cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
+  it('Edit', async () => {
+    const result = await server.inject().get('/users/edit').cookies(cookies);
     expect(result.statusCode).toBe(200);
   });
 
