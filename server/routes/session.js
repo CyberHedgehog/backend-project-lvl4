@@ -1,7 +1,7 @@
 import encrypt from '../lib/secure';
 
 export default (app) => {
-  app.get('/login', async (reuest, reply) => {
+  app.get('/login', { name: 'login' }, async (reuest, reply) => {
     reply.render('login');
   });
 
@@ -16,21 +16,21 @@ export default (app) => {
       const password = encrypt(request.body.password);
       if (!user || password !== user.passwordDigest) {
         request.flash('error', 'Bad username or password');
-        reply.redirect('/login');
+        reply.redirect(app.reverse('/login'));
       }
       if (password === user.passwordDigest) {
         request.session.set('userId', user.id);
         request.flash('success', `Welcome, ${user.firstName}`);
-        reply.redirect('/');
+        reply.redirect(app.reverse('root'));
       }
     } catch {
       request.flash('error', 'Login error!');
-      reply.redirect('/login');
+      reply.redirect(app.reverse('/login'));
     }
   });
 
   app.delete('/session', async (request, reply) => {
     request.session.delete();
-    reply.redirect('/');
+    reply.redirect(app.reverse('root'));
   });
 };

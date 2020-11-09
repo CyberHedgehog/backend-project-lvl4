@@ -4,7 +4,7 @@ import _ from 'lodash';
 export default (app) => {
   app.get('/statuses', async (request, reply) => {
     if (!request.isSigned) {
-      reply.redirect('/');
+      reply.redirect(app.reverse('root'));
       return;
     }
     const statuses = await app.objection.models.status.query();

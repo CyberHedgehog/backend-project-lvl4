@@ -65,7 +65,7 @@ block main
                     each l in task.labels
                       .badge.badge-primary.text-wrap.m-1=l.name
                   td
-                    a(href=`/tasks/${task.id}/edit` class="btn btn-secondary")
+                    a(href=urlFor('editTask', { id: task.id }) class="btn btn-secondary")
                       = t('buttons.edit')
                   td
                     a(href=`/tasks/${task.id}` data-method="delete" class="btn btn-danger")

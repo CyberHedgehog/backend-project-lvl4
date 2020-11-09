@@ -1,5 +1,5 @@
 export default (app) => {
-  app.get('/', (req, reply) => {
+  app.get('/', { name: 'root' }, (req, reply) => {
     reply.render('startPage');
   });
 };

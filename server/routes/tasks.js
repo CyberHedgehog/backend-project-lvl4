@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
-  app.get('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks', { name: 'tasks', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const filter = request.session.get('filter');
     const tasks = await app.objection.models.task
       .query()
@@ -46,14 +46,14 @@ export default (app) => {
     });
   });
 
-  app.get('/tasks/new', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks/new', { name: 'newTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     reply.render('tasks/new', { users, statuses, labels });
   });
 
-  app.get('/tasks/:id/edit', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
@@ -70,7 +70,7 @@ export default (app) => {
     });
   });
 
-  app.post('/tasks', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.post('/tasks', { name: 'addTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const { body } = request;
     const labels = _.has(body, 'labels') ? [...body.labels] : [];
     const data = {
@@ -85,15 +85,15 @@ export default (app) => {
       const relations = labels.map((l) => task.$relatedQuery('labels').relate(l));
       await Promise.all(relations);
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
-      reply.redirect('/tasks');
+      reply.redirect(app.reverse('tasks'));
     } catch (e) {
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.add.error'));
-      reply.redirect('/tasks/new');
+      reply.redirect(app.reverse('newTask'));
     }
   });
 
-  app.patch('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.patch('/tasks/:id', { name: 'updateTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
     const labels = _.has(request.body, 'labels') ? [...request.body.labels] : [];
     const data = {
@@ -110,19 +110,19 @@ export default (app) => {
       const relatePromises = labels.map((l) => task.$relatedQuery('labels').relate(l));
       await Promise.all(relatePromises);
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
-      reply.redirect('/tasks');
+      reply.redirect(app.reverse('tasks'));
     } catch (e) {
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
-      reply.redirect(`/tasks/edit/${request.params.id}`);
+      reply.redirect(app.reverse('editTask', { id: request.params.id }));
     }
   });
 
-  app.delete('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const targetTask = await app.objection.models.task.query().findById(request.params.id);
     if (request.currentUser.id !== targetTask.creatorId) {
       request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));
-      reply.redirect('/tasks');
+      reply.redirect(app.reverse('tasks'));
       return;
     }
     try {
@@ -130,10 +130,10 @@ export default (app) => {
         .query()
         .deleteById(request.params.id);
       request.flash('success', i18next.t('views.pages.tasks.delete.success'));
-      reply.redirect('/tasks');
+      reply.redirect(app.reverse('tasks'));
     } catch {
       request.flash('error', i18next.t('views.pages.tasks.delete.error'));
-      reply.redirect('/tasks');
+      reply.redirect(app.reverse('tasks'));
     }
   });
 };

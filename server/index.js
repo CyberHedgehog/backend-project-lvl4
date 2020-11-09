@@ -53,6 +53,9 @@ const setupFrontEnd = (app) => {
       _,
       isSigned: app.isSigned,
       currentUser: app.currentUser,
+      urlFor(...args) {
+        return app.reverse(...args);
+      },
     },
     options: {
       basedir: path.join(__dirname, 'views'),
@@ -95,7 +98,7 @@ const addHooks = (app) => {
   app.decorate('authCheck', async (request, reply) => {
     if (!request.isSigned) {
       request.flash('error', i18next.t('views.messages.notLogged'));
-      reply.redirect('/');
+      reply.redirect(app.reverse('root'));
     }
   });
   app.addHook('preHandler', async (request) => {
