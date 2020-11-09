@@ -30,13 +30,13 @@ describe('Label', () => {
   });
 
   it('Create', async () => {
-    await server.inject({
+    const response = await server.inject({
       method: 'POST',
       url: '/labels',
       payload: { name: labelName },
       cookies,
     });
-
+    expect(response.statusCode).toBe(302);
     const [result] = await server.objection.models.label.query();
     expect(result.name).toBe(labelName);
   });
@@ -46,7 +46,7 @@ describe('Label', () => {
     const label = await server.objection.models.label
       .query()
       .insert({ name: labelName });
-    await server.inject({
+    const response = await server.inject({
       method: 'PATCH',
       url: `/labels/${label.id}`,
       payload: { name: newLabelName },
@@ -55,6 +55,7 @@ describe('Label', () => {
     const result = await server.objection.models.label
       .query()
       .findById(label.id);
+    expect(response.statusCode).toBe(302);
     expect(result.name).toBe(newLabelName);
   });
 
@@ -62,7 +63,7 @@ describe('Label', () => {
     const label = await server.objection.models.label
       .query()
       .insert({ name: labelName });
-    await server.inject({
+    const response = await server.inject({
       method: 'DELETE',
       url: `/labels/${label.id}`,
       cookies,
@@ -70,6 +71,7 @@ describe('Label', () => {
     const result = await server.objection.models.label
       .query()
       .findById(label.id);
+    expect(response.statusCode).toBe(302);
     expect(result).toBeUndefined();
   });
 

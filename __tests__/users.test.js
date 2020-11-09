@@ -124,22 +124,24 @@ describe('Delete user', () => {
     await user.query().insert(firstUserData);
     const secondUser = await user.query().insert(secondUserData);
     const cookies = await getCookies(server, firstUserData);
-    await server.inject({
+    const response = await server.inject({
       method: 'DELETE',
       url: `/users/${secondUser.id}`,
       cookies,
     });
     const result = await user.query().findById(secondUser.id);
+    expect(response.statusCode).toBe(302);
     expect(result).toBeUndefined();
   });
 
   it('Delete without signed user', async () => {
     const newUser = await user.query().insert(secondUserData);
-    await server.inject({
+    const response = await server.inject({
       method: 'DELETE',
       url: `/users/${newUser.id}`,
     });
     const result = await user.query().findById(newUser.id);
+    expect(response.statusCode).toBe(302);
     expect(result.email).toBe(newUser.email);
   });
 
@@ -166,21 +168,23 @@ describe('Update user', () => {
     const newUser = await user.query().insert(userData);
     const cookies = await getCookies(server, userData);
     const { firstName, lastName } = dataToUpdate;
-    await server.inject({
+    const response = await server.inject({
       method: 'PATCH',
       url: '/users',
       cookies,
       payload: { firstName, lastName },
     });
     const patсhedUser = await user.query().findById(newUser.id);
+    expect(response.statusCode).toBe(302);
     expect(patсhedUser.firstName).toBe(firstName);
   });
 
   it('Update without auth', async () => {
     const newUser = await user.query().insert(userData);
     const { firstName, lastName } = dataToUpdate;
-    await server.inject().patch('/users').body({ firstName, lastName });
+    const response = await server.inject().patch('/users').body({ firstName, lastName });
     const result = await user.query().findById(newUser.id);
+    expect(response.statusCode).toBe(302);
     expect(result.firstName).toBe(newUser.firstName);
   });
 

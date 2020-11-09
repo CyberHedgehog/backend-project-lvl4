@@ -30,13 +30,14 @@ describe('Status', () => {
   });
 
   it('Create', async () => {
-    await server.inject({
+    const response = await server.inject({
       method: 'POST',
       url: '/statuses',
       payload: { name: statusName },
       cookies,
     });
     const [result] = await server.objection.models.status.query();
+    expect(response.statusCode).toBe(302);
     expect(result.name).toBe(statusName);
   });
 
@@ -45,7 +46,7 @@ describe('Status', () => {
     const status = await server.objection.models.status
       .query()
       .insert({ name: statusName });
-    await server.inject({
+    const response = await server.inject({
       method: 'PATCH',
       url: `/statuses/${status.id}`,
       body: { name: newStatusName },
@@ -54,6 +55,7 @@ describe('Status', () => {
     const result = await server.objection.models.status
       .query()
       .findById(status.id);
+    expect(response.statusCode).toBe(302);
     expect(result.name).toBe(newStatusName);
   });
 
@@ -61,13 +63,14 @@ describe('Status', () => {
     const status = await server.objection.models.status
       .query()
       .insert({ name: statusName });
-    await server
+    const response = await server
       .inject()
       .delete(`/statuses/${status.id}`)
       .cookies(cookies);
     const result = await server.objection.models.status
       .query()
       .findById(status.id);
+    expect(response.statusCode).toBe(302);
     expect(result).toBeUndefined();
   });
 

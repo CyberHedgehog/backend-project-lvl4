@@ -49,13 +49,14 @@ describe('Tasks', () => {
       statusId: status.id,
       executorId: secondUser.id,
     };
-    await server.inject({
+    const response = await server.inject({
       method: 'POST',
       url: '/tasks',
       payload,
       cookies,
     });
     const [result] = await task.query().where({ name: payload.name });
+    expect(response.statusCode).toBe(302);
     expect(result.description).toBe(payload.description);
   });
 
@@ -69,13 +70,14 @@ describe('Tasks', () => {
     };
     const newTask = await task.query().insert(taskData);
     const newDescription = faker.lorem.words();
-    await server.inject({
+    const response = await server.inject({
       method: 'PATCH',
       url: `/tasks/${newTask.id}`,
       payload: { ...taskData, description: newDescription },
       cookies,
     });
     const result = await task.query().findById(newTask.id);
+    expect(response.statusCode).toBe(302);
     expect(result.description).toBe(newDescription);
   });
 
@@ -88,12 +90,13 @@ describe('Tasks', () => {
       executor: secondUser.id,
     };
     const newTask = await task.query().insert(taskData);
-    await server.inject({
+    const response = await server.inject({
       method: 'DELETE',
       url: `/tasks/${newTask.id}`,
       cookies,
     });
     const result = await task.query().findById(newTask.id);
+    expect(response.statusCode).toBe(302);
     expect(result).toBeUndefined();
   });
 
@@ -108,13 +111,14 @@ describe('Tasks', () => {
 
     const newTask = await task.query().insert(taskData);
 
-    await server.inject({
+    const response = await server.inject({
       method: 'DELETE',
       url: `/tasks/${newTask.id}`,
       cookies,
     });
 
     const result = await task.query().findById(newTask.id);
+    expect(response.statusCode).toBe(302);
     expect(result).toBeDefined();
   });
 
