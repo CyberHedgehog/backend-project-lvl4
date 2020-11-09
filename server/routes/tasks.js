@@ -118,7 +118,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/tasks/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const targetTask = await app.objection.models.task.query().findById(request.params.id);
     if (request.currentUser.id !== targetTask.creatorId) {
       request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));
