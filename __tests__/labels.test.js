@@ -82,5 +82,5 @@ describe('Label', () => {
     expect(result).toBeUndefined();
   });
 
-  afterAll(async () => server.close());
+  afterAll(() => server.close());
 });

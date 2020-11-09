@@ -25,7 +25,7 @@ export default (app) => {
       }
     } catch {
       request.flash('error', 'Login error!');
-      reply.redirect(app.reverse('/login'));
+      reply.redirect(app.reverse('login'));
     }
   });
 

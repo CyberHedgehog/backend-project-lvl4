@@ -2,7 +2,7 @@ import getApp from '../server/index';
 
 describe('Requests', () => {
   let server;
-  beforeEach(() => {
+  beforeAll(() => {
     server = getApp();
   });
 
@@ -22,5 +22,5 @@ describe('Requests', () => {
     expect(response.statusCode).toBe(404);
   });
 
-  afterAll(async () => server.close());
+  afterAll(() => server.close());
 });

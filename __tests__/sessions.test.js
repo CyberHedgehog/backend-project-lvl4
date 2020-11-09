@@ -60,5 +60,5 @@ describe('Sessions', () => {
     expect(result.cookies[0].value).toBe('');
   });
 
-  afterAll(async () => server.close());
+  afterAll(() => server.close());
 });

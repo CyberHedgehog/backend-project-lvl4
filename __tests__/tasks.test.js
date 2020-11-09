@@ -112,5 +112,5 @@ describe('Tasks', () => {
     expect(result).toBeDefined();
   });
 
-  afterAll(async () => server.close());
+  afterAll(() => server.close());
 });

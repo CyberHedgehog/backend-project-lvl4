@@ -2,18 +2,21 @@ import getApp from '../server/index';
 import generateFakeUser from '../server/lib/fakeUser';
 import getCookies from '../server/lib/getCookies';
 
+const userData = generateFakeUser();
+const secondUserData = generateFakeUser();
+let server;
+let cookies;
+let user;
+
+beforeAll(async () => {
+  server = await getApp().ready();
+  await server.objection.knex.migrate.latest();
+  await server.objection.models.user.query().insert(userData);
+  user = server.objection.models.user;
+  cookies = await getCookies(server, userData);
+});
+
 describe('Views', () => {
-  const userData = generateFakeUser();
-  let server;
-  let cookies;
-
-  beforeAll(async () => {
-    server = await getApp().ready();
-    await server.objection.knex.migrate.latest();
-    await server.objection.models.user.query().insert(userData);
-    cookies = await getCookies(server, userData);
-  });
-
   it('List logged', async () => {
     const result = await server.inject().get('/users').cookies(cookies);
     expect(result.statusCode).toBe(200);
@@ -34,19 +37,12 @@ describe('Views', () => {
     expect(result.statusCode).toBe(200);
   });
 
-  afterAll(async () => server.close());
+  // afterAll(() => server.close());
 });
 
 describe('New user', () => {
-  let server;
-  const userData = generateFakeUser();
   const url = '/users';
   const method = 'POST';
-
-  beforeAll(async () => {
-    server = await getApp().ready();
-    await server.objection.knex.migrate.latest();
-  });
 
   beforeEach(async () => {
     await server.objection.knex('users').truncate();
@@ -55,7 +51,7 @@ describe('New user', () => {
   it('Registration form', async () => {
     const response = await server.inject({
       method: 'GET',
-      url: '/users',
+      url,
     });
     expect(response.statusCode).toBe(302);
   });
@@ -102,30 +98,16 @@ describe('New user', () => {
     });
     expect(result.statusCode).toBe(200);
   });
-
-  afterAll(async () => server.close());
 });
 
 describe('Delete user', () => {
-  let server;
-  const firstUserData = generateFakeUser();
-  const secondUserData = generateFakeUser();
-  let user;
-
-  beforeAll(async () => {
-    server = await getApp().ready();
-    user = server.objection.models.user;
-    await server.objection.knex.migrate.latest();
-  });
-
   beforeEach(async () => {
     await server.objection.knex('users').truncate();
   });
 
   it('Delete with signed user', async () => {
-    await user.query().insert(firstUserData);
+    await user.query().insert(userData);
     const secondUser = await user.query().insert(secondUserData);
-    const cookies = await getCookies(server, firstUserData);
     const response = await server.inject({
       method: 'DELETE',
       url: `/users/${secondUser.id}`,
@@ -146,21 +128,10 @@ describe('Delete user', () => {
     expect(response.statusCode).toBe(302);
     expect(result.email).toBe(newUser.email);
   });
-
-  afterAll(async () => server.close());
 });
 
 describe('Update user', () => {
-  let server;
-  let user;
-  const userData = generateFakeUser();
   const dataToUpdate = generateFakeUser();
-
-  beforeAll(async () => {
-    server = await getApp().ready();
-    user = server.objection.models.user;
-    await server.objection.knex.migrate.latest();
-  });
 
   beforeEach(async () => {
     await server.objection.knex('users').truncate();
@@ -168,7 +139,6 @@ describe('Update user', () => {
 
   it('Update user', async () => {
     const newUser = await user.query().insert(userData);
-    const cookies = await getCookies(server, userData);
     const { firstName, lastName } = dataToUpdate;
     const response = await server.inject({
       method: 'PATCH',
@@ -189,6 +159,6 @@ describe('Update user', () => {
     expect(response.statusCode).toBe(302);
     expect(result.firstName).toBe(newUser.firstName);
   });
-
-  afterAll(async () => server.close());
 });
+
+afterAll(() => server.close());

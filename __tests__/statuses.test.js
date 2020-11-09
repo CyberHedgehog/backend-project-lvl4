@@ -81,5 +81,5 @@ describe('Status', () => {
     expect(result).toBeUndefined();
   });
 
-  afterAll(async () => server.close());
+  afterAll(() => server.close());
 });
