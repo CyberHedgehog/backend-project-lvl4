@@ -1,37 +1,30 @@
 import faker from 'faker';
 import getApp from '../server/index';
 import generateFakeUser from '../server/lib/fakeUser';
+import getCookies from '../server/lib/getCookies';
 
 describe('Status', () => {
   let server;
   const userData = generateFakeUser();
-  let sessionCookie;
+  let cookies;
   const statusName = faker.lorem.word();
 
   beforeAll(async () => {
     server = await getApp().ready();
     await server.objection.knex.migrate.latest();
     await server.objection.models.user.query().insert(userData);
+    cookies = await getCookies(server, userData);
   });
 
   beforeEach(async () => {
     await server.objection.knex('statuses').truncate();
-    const login = await server.inject({
-      method: 'POST',
-      url: '/login',
-      payload: {
-        email: userData.email,
-        password: userData.password,
-      },
-    });
-    [sessionCookie] = login.cookies;
   });
 
   it('List', async () => {
     const result = await server.inject({
       method: 'GET',
       url: '/statuses',
-      cookies: { session: sessionCookie.value },
+      cookies,
     });
     expect(result.statusCode).toBe(200);
   });
@@ -41,7 +34,7 @@ describe('Status', () => {
       method: 'POST',
       url: '/statuses',
       payload: { name: statusName },
-      cookies: { session: sessionCookie.value },
+      cookies,
     });
     const [result] = await server.objection.models.status.query();
     expect(result.name).toBe(statusName);
@@ -56,7 +49,7 @@ describe('Status', () => {
       method: 'PATCH',
       url: `/statuses/${status.id}`,
       body: { name: newStatusName },
-      cookies: { session: sessionCookie.value },
+      cookies,
     });
     const result = await server.objection.models.status
       .query()
@@ -71,7 +64,7 @@ describe('Status', () => {
     await server
       .inject()
       .delete(`/statuses/${status.id}`)
-      .cookies({ session: sessionCookie.value });
+      .cookies(cookies);
     const result = await server.objection.models.status
       .query()
       .findById(status.id);

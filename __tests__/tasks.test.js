@@ -1,6 +1,7 @@
 import faker from 'faker';
 import getApp from '../server/index';
 import generateFakeUser from '../server/lib/fakeUser';
+import getCookies from '../server/lib/getCookies';
 
 describe('Tasks', () => {
   const firstUserData = generateFakeUser();
@@ -25,15 +26,7 @@ describe('Tasks', () => {
       .query()
       .insert({ name: 'in progress' });
     task = server.objection.models.task;
-    const login = await server.inject({
-      method: 'POST',
-      url: '/login',
-      body: {
-        email: firstUserData.email,
-        password: firstUserData.password,
-      },
-    });
-    cookies = { session: login.cookies[0].value };
+    cookies = await getCookies(server, firstUserData);
   });
 
   beforeEach(async () => {

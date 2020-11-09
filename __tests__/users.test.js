@@ -1,14 +1,17 @@
 import getApp from '../server/index';
 import generateFakeUser from '../server/lib/fakeUser';
+import getCookies from '../server/lib/getCookies';
 
 describe('List users', () => {
   const userData = generateFakeUser();
   let server;
+  let cookies;
 
   beforeAll(async () => {
     server = await getApp().ready();
     await server.objection.knex.migrate.latest();
     await server.objection.models.user.query().insert(userData);
+    cookies = await getCookies(server, userData);
   });
 
   it('Not logged', async () => {
@@ -21,18 +24,10 @@ describe('List users', () => {
   });
 
   it('Logged', async () => {
-    const login = await server.inject({
-      method: 'POST',
-      url: '/login',
-      payload: {
-        email: userData.email,
-        password: userData.password,
-      },
-    });
     const result = await server.inject({
       method: 'GET',
       url: '/users',
-      cookies: { session: login.cookies[0].value },
+      cookies,
     });
     expect(result.statusCode).toBe(200);
   });
@@ -128,17 +123,11 @@ describe('Delete user', () => {
   it('Delete with signed user', async () => {
     await user.query().insert(firstUserData);
     const secondUser = await user.query().insert(secondUserData);
-    const { email, password } = firstUserData;
-    const loginResponse = await server.inject({
-      method: 'POST',
-      url: '/login',
-      payload: { email, password },
-    });
-    const resCookies = loginResponse.cookies[0];
+    const cookies = await getCookies(server, firstUserData);
     await server.inject({
       method: 'DELETE',
       url: `/users/${secondUser.id}`,
-      cookies: { session: resCookies.value },
+      cookies,
     });
     const result = await user.query().findById(secondUser.id);
     expect(result).toBeUndefined();
@@ -175,18 +164,12 @@ describe('Update user', () => {
 
   it('Update user', async () => {
     const newUser = await user.query().insert(userData);
-    const { email, password } = userData;
-    const loginResponse = await server.inject({
-      method: 'POST',
-      url: '/login',
-      payload: { email, password },
-    });
-    const [resCookies] = loginResponse.cookies;
+    const cookies = await getCookies(server, userData);
     const { firstName, lastName } = dataToUpdate;
     await server.inject({
       method: 'PATCH',
       url: '/users',
-      cookies: { session: resCookies.value },
+      cookies,
       payload: { firstName, lastName },
     });
     const patсhedUser = await user.query().findById(newUser.id);
