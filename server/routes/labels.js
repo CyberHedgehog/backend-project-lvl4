@@ -14,6 +14,9 @@ export default (app) => {
   app.get('/labels/:id/edit', { name: 'editLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
       const label = await app.objection.models.label.query().findById(req.params.id);
+      if (!label) {
+        reply.callNotFound();
+      }
       reply.render('labels/edit', { label });
     } catch {
       req.flash('error', i18next.t('views.pages.labels.edit.error'));

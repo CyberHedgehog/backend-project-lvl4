@@ -20,8 +20,11 @@ export default (app) => {
       const status = await app.objection.models.status
         .query()
         .findById(request.params.id);
+      if (!status) {
+        reply.callNotFound();
+      }
       reply.render('statuses/edit', { status });
-    } catch {
+    } catch (e) {
       request.flash('error', i18next.t('views.pages.statuses.edit.error'));
       reply.redirect(app.reverse('statuses'));
     }

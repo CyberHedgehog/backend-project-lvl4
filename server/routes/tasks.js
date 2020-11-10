@@ -57,6 +57,9 @@ export default (app) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
+    if (!task) {
+      reply.callNotFound();
+    }
     const labels = await app.objection.models.label.query();
     const taskLabels = await task.$relatedQuery('labels');
     const users = await app.objection.models.user.query();

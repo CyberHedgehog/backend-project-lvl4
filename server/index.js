@@ -15,6 +15,7 @@ import pointOfView from 'point-of-view';
 import Pug from 'pug';
 import Rollbar from 'rollbar';
 import fastifyAuth from 'fastify-auth';
+import createError from 'http-errors';
 import en from './locales/en';
 import addRoutes from './routes';
 import knexConfig from '../knexfile';
@@ -93,6 +94,7 @@ const registerPlugins = (app) => {
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
+  app.decorateRequest('createError', createError);
   app.addHook('preHandler', async (request) => {
     const userId = request.session.get('userId');
     if (userId) {
@@ -118,7 +120,12 @@ export default () => {
     }
   })
     .register(fastifyAuth)
-    .after(() => addRoutes(app));
+    .after(() => {
+      addRoutes(app);
+      app.setNotFoundHandler('preHandler', (request, reply) => {
+        reply.code(404).render('notFound');
+      });
+    });
   if (mode === 'production') {
     app.setErrorHandler((error, req, reply) => {
       rollbar.error(error);
