@@ -30,7 +30,7 @@ block main
               option(value="null" selected=_.get(filter, 'executorId') === 'null')
               each u in users
                 - const isSelected = _.get(filter, 'executorId', null) == u.id;
-                option(value=u.id selected=isSelected)= getUserName(u)
+                option(value=u.id selected=isSelected)= u.fullName()
           .form-group.mr-4
             label.mr-2(for="label-filter")= t('views.pages.tasks.label')
             select.custom-select(type="number" class="form-control" id="label-filter" name="labelId")

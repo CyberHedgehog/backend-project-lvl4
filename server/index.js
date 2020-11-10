@@ -48,9 +48,6 @@ const setupFrontEnd = (app) => {
       t(key) {
         return i18next.t(key);
       },
-      getUserName(user) {
-        return `${user.firstName} ${user.lastName}`;
-      },
       _,
       isSigned: app.isSigned,
       currentUser: app.currentUser,

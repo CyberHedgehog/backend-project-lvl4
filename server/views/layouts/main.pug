@@ -21,7 +21,7 @@ body(class="bg-dark text-light")
           if reply.request.isSigned
             div
               .my-2.my-lg-0
-                a.navbar-brand(href= urlFor('editUser'))= `${reply.request.currentUser.firstName} ${reply.request.currentUser.lastName}`
+                a.navbar-brand(href= urlFor('editUser'))= reply.request.currentUser.fullName()
                 a(href= urlFor('deleteSession') data-method='delete' rel="nofollow" class="btn btn-light ml-2")= t('views.layouts.main.logOut')
     - flash = reply.flash() || []
     +alert(flash)

@@ -23,6 +23,10 @@ export default class User extends unique(Model) {
     };
   }
 
+  fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
   set password(value) {
     this.passwordDigest = ecnrypt(value);
   }

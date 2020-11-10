@@ -7,7 +7,7 @@ block main
     - const user = reply.request.currentUser
     .row.justify-content-center
       .p-3
-        h1= `${t('views.pages.users.edit.header')} ${getUserName(user)}`
+        h1= `${t('views.pages.users.edit.header')} ${user.fullName()}`
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
         form(action= urlFor('updateUser') method="POST")
