@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
-  app.get('/tasks', { name: 'tasks', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks', { name: 'tasks', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const filter = request.session.get('filter');
     const tasks = await app.objection.models.task
       .query()
@@ -46,14 +46,14 @@ export default (app) => {
     });
   });
 
-  app.get('/tasks/new', { name: 'newTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks/new', { name: 'newTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     reply.render('tasks/new', { users, statuses, labels });
   });
 
-  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/tasks/:id/edit', { name: 'editTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
       .findById(request.params.id);
@@ -70,7 +70,7 @@ export default (app) => {
     });
   });
 
-  app.post('/tasks', { name: 'addTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.post('/tasks', { name: 'addTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const { body } = request;
     const labels = _.has(body, 'labels') ? [...body.labels] : [];
     const data = {
@@ -93,7 +93,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/tasks/:id', { name: 'updateTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
     const labels = _.has(request.body, 'labels') ? [...request.body.labels] : [];
     const data = {
@@ -118,7 +118,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.delete('/tasks/:id', { name: 'deleteTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const targetTask = await app.objection.models.task.query().findById(request.params.id);
     if (request.currentUser.id !== targetTask.creatorId) {
       request.flash('error', i18next.t('views.pages.tasks.delete.notOwnerError'));

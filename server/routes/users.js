@@ -5,7 +5,7 @@ export default (app) => {
     reply.render('users/signup');
   });
 
-  app.get('/users', { name: 'users', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.get('/users', { name: 'users', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const users = await app.objection.models.user.query();
     reply.render('users/list', { users });
   });
@@ -29,7 +29,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/users/:id', { name: 'deleteUser', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.delete('/users/:id', { name: 'deleteUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     if (!request.isSigned) {
       reply.render('startPage');
       return;
@@ -44,7 +44,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/users', { name: 'updateUser', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.patch('/users', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const data = _.omitBy(request.body, (e) => e === 'PATCH' || e === '');
     try {
       const user = await app.objection.models.user

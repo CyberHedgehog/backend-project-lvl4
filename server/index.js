@@ -14,6 +14,7 @@ import path from 'path';
 import pointOfView from 'point-of-view';
 import Pug from 'pug';
 import Rollbar from 'rollbar';
+import fastifyAuth from 'fastify-auth';
 import en from './locales/en';
 import addRoutes from './routes';
 import knexConfig from '../knexfile';
@@ -95,12 +96,6 @@ const registerPlugins = (app) => {
 const addHooks = (app) => {
   app.decorateRequest('currentUser', null);
   app.decorateRequest('isSigned', false);
-  app.decorate('authCheck', async (request, reply) => {
-    if (!request.isSigned) {
-      request.flash('error', i18next.t('views.messages.notLogged'));
-      reply.redirect(app.reverse('root'));
-    }
-  });
   app.addHook('preHandler', async (request) => {
     const userId = request.session.get('userId');
     if (userId) {
@@ -118,11 +113,20 @@ export default () => {
   });
   setupFrontEnd(app);
   registerPlugins(app);
-  addRoutes(app);
   addHooks(app);
-  app.setErrorHandler((error, req, reply) => {
-    rollbar.error(error);
-    reply.send(error);
-  });
+  app.decorate('authCheck', async (request, reply) => {
+    if (!request.isSigned) {
+      request.flash('error', i18next.t('views.messages.notLogged'));
+      reply.redirect(app.reverse('root'));
+    }
+  })
+    .register(fastifyAuth)
+    .after(() => addRoutes(app));
+  if (mode === 'production') {
+    app.setErrorHandler((error, req, reply) => {
+      rollbar.error(error);
+      reply.send(error);
+    });
+  }
   return app;
 };

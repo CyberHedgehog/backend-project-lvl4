@@ -2,16 +2,16 @@ import i18next from 'i18next';
 import _ from 'lodash';
 
 export default (app) => {
-  app.get('/labels', { name: 'labels', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.get('/labels', { name: 'labels', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     const labels = await app.objection.models.label.query();
     reply.render('labels/list', { labels });
   });
 
-  app.get('/labels/new', { name: 'newLabel', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.get('/labels/new', { name: 'newLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     reply.render('labels/new');
   });
 
-  app.get('/labels/:id/edit', { name: 'editLabel', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.get('/labels/:id/edit', { name: 'editLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
       const label = await app.objection.models.label.query().findById(req.params.id);
       reply.render('labels/edit', { label });
@@ -21,7 +21,7 @@ export default (app) => {
     }
   });
 
-  app.post('/labels', { name: 'addLabel', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.post('/labels', { name: 'addLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
       await app.objection.models.label.query().insert(req.body);
       req.flash('success', i18next.t('views.pages.labels.add.success'));
@@ -32,7 +32,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/labels/:id', { name: 'updateLabel', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.patch('/labels/:id', { name: 'updateLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     const data = _.omitBy(req.body, (e) => e === 'PATCH');
     try {
       const label = await app.objection.models.label
@@ -48,7 +48,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/labels/:id', { name: 'deleteLabel', preHandler: (...args) => app.authCheck(...args) }, async (req, reply) => {
+  app.delete('/labels/:id', { name: 'deleteLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
       await app.objection.models.label.query().deleteById(req.params.id);
       req.flash('success', i18next.t('views.pages.labels.delete.success'));

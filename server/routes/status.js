@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 
 export default (app) => {
-  app.get('/statuses', { name: 'statuses' }, async (request, reply) => {
+  app.get('/statuses', { name: 'statuses', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     if (!request.isSigned) {
       reply.redirect(app.reverse('root'));
       return;
@@ -11,11 +11,11 @@ export default (app) => {
     reply.render('statuses/list', { statuses });
   });
 
-  app.get('/statuses/new', { name: 'newStatus' }, async (request, reply) => {
+  app.get('/statuses/new', { name: 'newStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     reply.render('statuses/new');
   });
 
-  app.get('/statuses/:id/edit', { name: 'editStatus' }, async (request, reply) => {
+  app.get('/statuses/:id/edit', { name: 'editStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()
@@ -27,7 +27,7 @@ export default (app) => {
     }
   });
 
-  app.post('/statuses', { name: 'addStatus' }, async (request, reply) => {
+  app.post('/statuses', { name: 'addStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     try {
       await app.objection.models.status.query().insert(request.body);
       request.flash('success', i18next.t('views.pages.statuses.add.success'));
@@ -38,7 +38,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/statuses/:id', { name: 'deleteStatus' }, async (request, reply) => {
+  app.delete('/statuses/:id', { name: 'deleteStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     try {
       await app.objection.models.status.query().deleteById(request.params.id);
       request.flash('success', i18next.t('views.pages.statuses.delete.success'));
@@ -48,7 +48,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/statuses/:id', { name: 'updateStatus' }, async (request, reply) => {
+  app.patch('/statuses/:id', { name: 'updateStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const data = _.omitBy(request.body, (e) => e === 'PATCH');
     try {
       const status = await app.objection.models.status
