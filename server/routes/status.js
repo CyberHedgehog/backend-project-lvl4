@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 
 export default (app) => {
-  app.get('/statuses', async (request, reply) => {
+  app.get('/statuses', { name: 'statuses' }, async (request, reply) => {
     if (!request.isSigned) {
       reply.redirect(app.reverse('root'));
       return;
@@ -11,11 +11,11 @@ export default (app) => {
     reply.render('statuses/list', { statuses });
   });
 
-  app.get('/statuses/new', async (request, reply) => {
+  app.get('/statuses/new', { name: 'newStatus' }, async (request, reply) => {
     reply.render('statuses/new');
   });
 
-  app.get('/statuses/:id/edit', async (request, reply) => {
+  app.get('/statuses/:id/edit', { name: 'editStatus' }, async (request, reply) => {
     try {
       const status = await app.objection.models.status
         .query()
@@ -23,32 +23,32 @@ export default (app) => {
       reply.render('statuses/edit', { status });
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.edit.error'));
-      reply.redirect('/statuses');
+      reply.redirect(app.reverse('statuses'));
     }
   });
 
-  app.post('/statuses', async (request, reply) => {
+  app.post('/statuses', { name: 'addStatus' }, async (request, reply) => {
     try {
       await app.objection.models.status.query().insert(request.body);
       request.flash('success', i18next.t('views.pages.statuses.add.success'));
-      reply.redirect('/statuses');
+      reply.redirect(app.reverse('statuses'));
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.add.error'));
-      reply.redirect('/statuses');
+      reply.redirect(app.reverse('statuses'));
     }
   });
 
-  app.delete('/statuses/:id', async (request, reply) => {
+  app.delete('/statuses/:id', { name: 'deleteStatus' }, async (request, reply) => {
     try {
       await app.objection.models.status.query().deleteById(request.params.id);
       request.flash('success', i18next.t('views.pages.statuses.delete.success'));
-      reply.redirect('/statuses');
+      reply.redirect(app.reverse('statuses'));
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.delete.error'));
     }
   });
 
-  app.patch('/statuses/:id', async (request, reply) => {
+  app.patch('/statuses/:id', { name: 'updateStatus' }, async (request, reply) => {
     const data = _.omitBy(request.body, (e) => e === 'PATCH');
     try {
       const status = await app.objection.models.status
@@ -56,10 +56,10 @@ export default (app) => {
         .findById(request.params.id);
       await status.$query().update(data);
       request.flash('success', i18next.t('views.pages.statuses.edit.success'));
-      reply.redirect('/statuses');
+      reply.redirect(app.reverse('statuses'));
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.edit.error'));
-      reply.redirect(`/statuses/edit/${request.params.id}`);
+      reply.redirect(app.reverse('editStatus', { id: request.params.id }));
     }
   });
 };

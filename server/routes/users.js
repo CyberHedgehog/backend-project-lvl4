@@ -18,7 +18,7 @@ export default (app) => {
     reply.redirect(app.reverse('root'));
   });
 
-  app.post('/users', async (request, reply) => {
+  app.post('/users', { name: 'addUser' }, async (request, reply) => {
     try {
       const user = await app.objection.models.user.fromJson(request.body);
       await app.objection.models.user.query().insert(user);
@@ -29,7 +29,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/users/:id', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.delete('/users/:id', { name: 'deleteUser', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     if (!request.isSigned) {
       reply.render('startPage');
       return;
@@ -44,7 +44,7 @@ export default (app) => {
     }
   });
 
-  app.patch('/users', { preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
+  app.patch('/users', { name: 'updateUser', preHandler: (...args) => app.authCheck(...args) }, async (request, reply) => {
     const data = _.omitBy(request.body, (e) => e === 'PATCH' || e === '');
     try {
       const user = await app.objection.models.user

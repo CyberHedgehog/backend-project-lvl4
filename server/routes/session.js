@@ -16,7 +16,7 @@ export default (app) => {
       const password = encrypt(request.body.password);
       if (!user || password !== user.passwordDigest) {
         request.flash('error', 'Bad username or password');
-        reply.redirect(app.reverse('/login'));
+        reply.redirect(app.reverse('login'));
       }
       if (password === user.passwordDigest) {
         request.session.set('userId', user.id);
