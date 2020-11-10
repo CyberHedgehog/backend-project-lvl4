@@ -9,10 +9,10 @@ block main
           h1= t('views.pages.statuses.edit.title')
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
-        form(action= `/statuses/${status.id}` method="POST")
+        form(action= urlFor('updateStatus', { id: status.id }) method="POST")
           input(name="_method", type="hidden", value="PATCH")
           .form-group
             label(for="name")= t('views.pages.statuses.form.name')
             input(type="text" value= status.name class="form-control" name="name" id="name" placeholder= t('views.pages.statuses.form.placeholderName'))
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
-          a(href="/statuses" class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')
+          a(href= urlFor('statuses') class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

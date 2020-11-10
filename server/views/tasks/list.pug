@@ -9,7 +9,7 @@ block main
       .p-3
         h1= t('views.pages.tasks.header')
     .row.justify-content-center.mb-2
-        a(class="btn btn-primary" href="/tasks/new")= t('views.pages.tasks.buttonCreate')
+        a(class="btn btn-primary" href= urlFor('newTask'))= t('views.pages.tasks.buttonCreate')
     .row.justify-content-center
       .col-10.shadow-sm.p-3.mb-2.bg-white.rounded
         - const filter = reply.request.session.get('filter'); 
@@ -68,5 +68,5 @@ block main
                     a(href=urlFor('editTask', { id: task.id }) class="btn btn-secondary")
                       = t('buttons.edit')
                   td
-                    a(href=`/tasks/${task.id}` data-method="delete" class="btn btn-danger")
+                    a(href= urlFor('deleteTask', { id: task.id }) data-method="delete" class="btn btn-danger")
                       = t('buttons.delete')

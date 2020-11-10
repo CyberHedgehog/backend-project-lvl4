@@ -8,7 +8,7 @@ block main
       .p-3
         h1= t('views.pages.statuses.header')
     .row.justify-content-center
-        a(href='/statuses/new' class="btn btn-primary")= t('views.pages.statuses.buttonCreate')
+        a(href= urlFor('newStatus') class="btn btn-primary")= t('views.pages.statuses.buttonCreate')
     .row.justify-content-center
       .col-5.shadow-sm.p-3.mb-5.bg-white.rounded
         .table-responsive-sm
@@ -23,6 +23,6 @@ block main
                 tr
                   td.col= stat.name
                   td.col-1
-                    a(href=`/statuses/${stat.id}/edit` class="btn btn-secondary")= t('buttons.edit')
+                    a(href= urlFor('editStatus', { id: stat.id }) class="btn btn-secondary")= t('buttons.edit')
                   td.col-1
-                    a(href=`/statuses/${stat.id}` data-method="delete" class="btn btn-danger")= t('buttons.delete')
+                    a(href= urlFor('deleteStatus', { id: stat.id }) data-method="delete" class="btn btn-danger")= t('buttons.delete')

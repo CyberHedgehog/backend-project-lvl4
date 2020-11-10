@@ -33,4 +33,4 @@ block main
                               h5= t('views.pages.users.warning')
                             .modal-footer
                               button(type="button" class="btn btn-secondary" data-dismiss="modal")= t('buttons.cancel')
-                              a(href=`/users/${user.id}` data-method="delete" class="btn btn-danger")= t('buttons.delete')
+                              a(href= urlFor('deleteUser', { id: user.id}) data-method="delete" class="btn btn-danger")= t('buttons.delete')

@@ -8,6 +8,6 @@ block main
       h1= t('views.pages.startPage.greeting')
       p= t('views.pages.startPage.text')
       if reply.request.isSigned
-        a(href="/tasks" class="btn btn-light")= t('views.pages.startPage.loggedButton')
+        a(href= urlFor('tasks') class="btn btn-light")= t('views.pages.startPage.loggedButton')
       else
-        a(href="/login" class="btn btn-light mr-2")= t('views.pages.startPage.notLoggedButton')
+        a(href= urlFor('login') class="btn btn-light mr-2")= t('views.pages.startPage.notLoggedButton')

@@ -10,7 +10,7 @@ block main
         h1= `${t('views.pages.users.edit.header')} ${getUserName(user)}`
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
-        form(action="/users" method="POST")
+        form(action= urlFor('updateUser') method="POST")
           input(type="hidden" name="_method" value="PATCH")
           .form-group
             label(for="firstName")= t('views.pages.signup.firstName')
@@ -25,4 +25,4 @@ block main
             label(for="password")= t('views.pages.signup.password')
             input(type="password" class="form-control" name="password" id="firstName" placeholder="New password")
           input(type="submit" class="btn btn-primary mr-2" data-method="PATCH" value=t('buttons.submit'))
-          a(href="/users" class="btn btn-light mr-2" value="Cancel")= t('buttons.cancel')
+          a(href= urlFor('users') class="btn btn-light mr-2" value="Cancel")= t('buttons.cancel')

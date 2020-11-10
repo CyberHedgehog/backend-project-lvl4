@@ -11,7 +11,7 @@ block main
     .row.justify-content-center
       .col-md-5
         .shadow-sm.p-3.mb-5.bg-white.rounded
-          form(action="/tasks" method="POST")
+          form(action= urlFor('addTask') method="POST")
             .form-group
               label(for="name")= t('views.pages.tasks.name')
               input(type="text" class="form-control" name="name" id="name")
@@ -37,4 +37,4 @@ block main
             
             .form-group
               button(type="submit" class="btn btn-primary")= t('buttons.submit')
-              a(class="ml-2 btn btn-secondary" href="/tasks" role="button")= t('buttons.cancel')
+              a(class="ml-2 btn btn-secondary" href= urlFor('tasks') role="button")= t('buttons.cancel')

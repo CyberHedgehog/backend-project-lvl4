@@ -2,4 +2,4 @@
 mixin innerNav()
   each link in links
     li.nav-item
-      a(class='nav-link active' href=`/${link.toLowerCase()}`)= link
+      a(class='nav-link active' href= urlFor(link.toLowerCase()))= link

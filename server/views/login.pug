@@ -7,7 +7,7 @@ block main
   div(class="col-md-4 mx-auto")
     .text-center
       h2= t('views.pages.login.title')
-    form(action="/login" method="POST") 
+    form(action= urlFor('newSession') method="POST") 
       .form-group
         label(for="email")= t('views.pages.login.email')
         input(type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Enter email")
@@ -17,4 +17,4 @@ block main
       button(type="submit" class="btn btn-light")= t('views.pages.login.title')
     .text-center
       p(class="pt-3")
-        a(class="text-light" href="/users/new")= t('views.pages.login.notRegistered')
+        a(class="text-light" href= urlFor('signup'))= t('views.pages.login.notRegistered')

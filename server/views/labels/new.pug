@@ -9,9 +9,9 @@ block main
           h1= t('views.pages.labels.add.title')
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
-        form(action="/labels" method="POST")
+        form(action= urlFor('addLabel') method="POST")
           .form-group
             label(for="name")= t('views.pages.labels.name')
             input(type="text" class="form-control" name="name" id="name")
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
-          a(href="/labels" class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')
+          a(href= urlFor('labels') class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

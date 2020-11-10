@@ -5,7 +5,7 @@ export default (app) => {
     reply.render('login');
   });
 
-  app.post('/login', async (request, reply) => {
+  app.post('/login', { name: 'newSession' }, async (request, reply) => {
     try {
       const [user] = await app.objection.models.user
         .query()
@@ -29,7 +29,7 @@ export default (app) => {
     }
   });
 
-  app.delete('/session', async (request, reply) => {
+  app.delete('/session', { name: 'deleteSession' }, async (request, reply) => {
     request.session.delete();
     reply.redirect(app.reverse('root'));
   });

@@ -6,7 +6,7 @@ block main
   div(class="col-md-4 mx-auto")
     .text-center 
       h2= t('views.pages.signup.title')
-    form(action="/users" method="POST")
+    form(action= urlFor('addUser') method="POST")
       .form-group
         label(for="firstName")= t('views.pages.signup.firstName')
         input(type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name")
@@ -22,4 +22,4 @@ block main
       input(type="submit" class="btn btn-light" value="Register")
     .text-center
       p(class="pt-3")
-        a(class="text-light" href="/login")= t('views.pages.signup.registered')
+        a(class="text-light" href= urlFor('login'))= t('views.pages.signup.registered')
