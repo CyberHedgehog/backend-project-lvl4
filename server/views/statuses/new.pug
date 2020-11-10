@@ -12,6 +12,6 @@ block main
         form(action= urlFor('addStatus') method="POST")
           .form-group
             label(for="name")= t('views.pages.statuses.form.name')
-            input(type="text" class="form-control" name="name" id="name" placeholder= t('views.pages.statuses.form.placeholderName'))
+            input(type="text" class="form-control" name="name" id="name" placeholder= t('views.pages.statuses.form.placeholderName') value= _.get(status, 'name'))
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
           a(href= urlFor('statuses') class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

@@ -21,7 +21,7 @@ export default (app) => {
         .query()
         .findById(request.params.id);
       if (!status) {
-        reply.callNotFound();
+        reply.code(404).render('notFound');
       }
       reply.render('statuses/edit', { status });
     } catch (e) {
@@ -37,7 +37,7 @@ export default (app) => {
       reply.redirect(app.reverse('statuses'));
     } catch {
       request.flash('error', i18next.t('views.pages.statuses.add.error'));
-      reply.redirect(app.reverse('statuses'));
+      reply.render('statuses/new', { status: request.body });
     }
   });
 

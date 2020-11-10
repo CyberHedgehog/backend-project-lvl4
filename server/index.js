@@ -122,9 +122,6 @@ export default () => {
     .register(fastifyAuth)
     .after(() => {
       addRoutes(app);
-      app.setNotFoundHandler('preHandler', (request, reply) => {
-        reply.code(404).render('notFound');
-      });
     });
   if (mode === 'production') {
     app.setErrorHandler((error, req, reply) => {

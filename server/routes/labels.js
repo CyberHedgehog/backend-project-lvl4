@@ -15,7 +15,7 @@ export default (app) => {
     try {
       const label = await app.objection.models.label.query().findById(req.params.id);
       if (!label) {
-        reply.callNotFound();
+        reply.code(404).render('notFound');
       }
       reply.render('labels/edit', { label });
     } catch {
@@ -31,7 +31,7 @@ export default (app) => {
       reply.redirect(app.reverse('labels'));
     } catch {
       req.flash('error', i18next.t('views.pages.labels.add.error'));
-      reply.redirect(app.reverse('labels'));
+      reply.render('labels/new', { label: req.body });
     }
   });
 

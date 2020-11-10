@@ -14,7 +14,7 @@ block main
           form(action= urlFor('addTask') method="POST")
             .form-group
               label(for="name")= t('views.pages.tasks.name')
-              input(type="text" class="form-control" name="name" id="name")
+              input(type="text" class="form-control" name="name" id="name" value= task)
             .form-group
               label(for="status")= t('views.pages.tasks.status')
               select(class="form-control" id="statusId" name="statusId")
@@ -27,7 +27,7 @@ block main
                   option(value=user.id)=`${user.firstName} ${user.lastName}`
             .form-group
               label(for="description")= t('views.pages.tasks.description')
-              textarea(class="form-control" id="description" name="description" rows="5")
+              textarea(class="form-control" id="description" name="description" rows="5" value= _.get(task, 'description', ''))
             
             .form-group
               label(for="labels")= t('views.pages.tasks.labels')

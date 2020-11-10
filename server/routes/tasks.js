@@ -58,7 +58,7 @@ export default (app) => {
       .query()
       .findById(request.params.id);
     if (!task) {
-      reply.callNotFound();
+      reply.code(404).render('notFound');
     }
     const labels = await app.objection.models.label.query();
     const taskLabels = await task.$relatedQuery('labels');

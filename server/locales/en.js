@@ -74,8 +74,8 @@ export default {
           add: {
             title: 'New status',
             success: 'Status successfully added',
-            error: 'Error adding status',
             header: 'Create new status',
+            error: 'Incorrect data entered',
           },
           delete: {
             success: 'Status delete successfully',
@@ -125,6 +125,7 @@ export default {
             title: 'New label',
             success: 'Label created successfully',
             delete: 'Label adding error',
+            error: 'Incorrect data entered',
           },
           delete: {
             success: 'Label delete successfully',
