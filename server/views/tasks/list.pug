@@ -13,33 +13,33 @@ block main
     .row.justify-content-center
       .col-10.shadow-sm.p-3.mb-2.bg-white.rounded
         - const filter = reply.request.session.get('filter'); 
-        form.form-inline(action="/filter" method="POST")
-          .form-group.mr-4
+        form.form-inline(action="/tasks" method="GET")
+          .form-group.mr-5
             label.mr-2(for="my-tasks")= t('views.pages.tasks.filter.myTasks')
             input(type="checkbox" id="my-tasks" name="creatorId" value=reply.request.currentUser.id checked= _.has(filter, 'creatorId'))
-          .form-group.mr-4
+          .form-group.mr-5
             label.mr-2(for="status-filter")= t('views.pages.tasks.status')
             select.custom-select(type="number" class="form-control" id="status-filter" name="statusId")
               option(value="null" selected=_.get(filter, 'statusId') === 'null')
               each s in statuses
                 - const isSelected = _.get(filter, 'statusId', 'null') == s.id;
                 option(value=s.id selected=isSelected)= s.name 
-          .form-group.mr-4
+          .form-group.mr-5
             label.mr-2(for="executor-filter")= t('views.pages.tasks.executor')
             select.custom-select(type="number" class="form-control" id="executor-filter" name="executorId")
               option(value="null" selected=_.get(filter, 'executorId') === 'null')
               each u in users
                 - const isSelected = _.get(filter, 'executorId', null) == u.id;
                 option(value=u.id selected=isSelected)= u.fullName()
-          .form-group.mr-4
+          .form-group.mr-5
             label.mr-2(for="label-filter")= t('views.pages.tasks.label')
             select.custom-select(type="number" class="form-control" id="label-filter" name="labelId")
               option(value='null' selected=_.get(filter, 'labelId') === 'null')
               each l in labels
                 - const isSelected = _.get(filter, 'labelId', null) == l.id;
                 option(value=l.id selected=isSelected)= l.name
-          input(type="submit" class="btn btn-primary mr-2" value= t('views.pages.tasks.filter.filter'))
-          a(href="/filter" data-method="delete" class="btn btn-secondary mr-2" value="Cancel")= t('views.pages.tasks.filter.clear')
+          input(type="submit" class="btn btn-primary col-md align-self-end" value= t('views.pages.tasks.filter.filter'))
+          //- a(href="/filter" data-method="delete" class="btn btn-secondary mr-2" value="Cancel")= t('views.pages.tasks.filter.clear')
     .row.justify-content-center
       .col-10.shadow-sm.p-3.mb-5.bg-white.rounded
         .table-responsice-sm
@@ -68,5 +68,5 @@ block main
                     a(href=urlFor('editTask', { id: task.id }) class="btn btn-secondary")
                       = t('buttons.edit')
                   td
-                    a(href= urlFor('deleteTask', { id: task.id }) data-method="delete" class="btn btn-danger")
+                    a(href= urlFor('deleteTask', { id: task.id }) data-method="delete" class="btn btn-danger col")
                       = t('buttons.delete')

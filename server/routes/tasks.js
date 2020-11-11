@@ -4,7 +4,7 @@ import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
   app.get('/tasks', { name: 'tasks', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const filter = request.session.get('filter');
+    const filter = _.get(request, 'query', null);
     const tasks = await app.objection.models.task
       .query()
       .select(
