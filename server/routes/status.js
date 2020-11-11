@@ -1,5 +1,4 @@
 import i18next from 'i18next';
-import _ from 'lodash';
 
 export default (app) => {
   app.get('/statuses', { name: 'statuses', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
@@ -32,7 +31,7 @@ export default (app) => {
 
   app.post('/statuses', { name: 'addStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     try {
-      await app.objection.models.status.query().insert(request.body);
+      await app.objection.models.status.query().insert(request.body.status);
       request.flash('success', i18next.t('views.pages.statuses.add.success'));
       reply.redirect(app.reverse('statuses'));
     } catch {
@@ -62,12 +61,11 @@ export default (app) => {
   });
 
   app.patch('/statuses/:id', { name: 'updateStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const data = _.omitBy(request.body, (e) => e === 'PATCH');
     try {
       const status = await app.objection.models.status
         .query()
         .findById(request.params.id);
-      await status.$query().update(data);
+      await status.$query().update(request.body.status);
       request.flash('success', i18next.t('views.pages.statuses.edit.success'));
       reply.redirect(app.reverse('statuses'));
     } catch {

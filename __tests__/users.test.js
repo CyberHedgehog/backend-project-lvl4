@@ -60,7 +60,7 @@ describe('New user', () => {
     const response = await server.inject({
       method,
       url,
-      payload: userData,
+      payload: { user: userData },
     });
     const users = await server.objection.models.user.query()
       .select('email')
@@ -73,12 +73,12 @@ describe('New user', () => {
     await server.inject({
       method,
       url,
-      payload: userData,
+      payload: { user: userData },
     });
     const result = await server.inject({
       method,
       url,
-      payload: userData,
+      payload: { user: userData },
     });
     expect(result.statusCode).toBe(200);
   });
@@ -94,7 +94,7 @@ describe('New user', () => {
     const result = await server.inject({
       method,
       url,
-      payload: wrongUserData,
+      payload: { user: wrongUserData },
     });
     expect(result.statusCode).toBe(200);
   });
@@ -144,7 +144,7 @@ describe('Update user', () => {
       method: 'PATCH',
       url: '/users',
       cookies,
-      payload: { firstName, lastName },
+      payload: { user: { firstName, lastName } },
     });
     const patсhedUser = await user.query().findById(newUser.id);
     expect(response.statusCode).toBe(302);
@@ -154,7 +154,7 @@ describe('Update user', () => {
   it('Update without auth', async () => {
     const newUser = await user.query().insert(userData);
     const { firstName, lastName } = dataToUpdate;
-    const response = await server.inject().patch('/users').body({ firstName, lastName });
+    const response = await server.inject().patch('/users').body({ user: { firstName, lastName } });
     const result = await user.query().findById(newUser.id);
     expect(response.statusCode).toBe(302);
     expect(result.firstName).toBe(newUser.firstName);

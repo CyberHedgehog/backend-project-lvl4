@@ -26,7 +26,7 @@ export default (app) => {
 
   app.post('/labels', { name: 'addLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
-      await app.objection.models.label.query().insert(req.body);
+      await app.objection.models.label.query().insert(req.body.label);
       req.flash('success', i18next.t('views.pages.labels.add.success'));
       reply.redirect(app.reverse('labels'));
     } catch {
@@ -36,13 +36,12 @@ export default (app) => {
   });
 
   app.patch('/labels/:id', { name: 'updateLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
-    const data = _.omitBy(req.body, (e) => e === 'PATCH');
     try {
       const label = await app.objection.models.label
         .query()
         .findById(req.params.id);
 
-      await label.$query().patch(data);
+      await label.$query().patch(req.body.label);
       req.flash('success', i18next.t('views.pages.labels.edit.success'));
       reply.redirect(app.reverse('labels'));
     } catch (e) {

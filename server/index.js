@@ -8,6 +8,7 @@ import fastifyFlash from 'fastify-flash';
 import fastifyMethodOverride from 'fastify-method-override';
 import fastifyObjectionjs from 'fastify-objectionjs';
 import fastifyReverseRoutes from 'fastify-reverse-routes';
+import qs from 'qs';
 import dotenv from 'dotenv';
 import i18next from 'i18next';
 import path from 'path';
@@ -74,7 +75,7 @@ const setupFrontEnd = (app) => {
 
 const registerPlugins = (app) => {
   app.register(fastifyReverseRoutes.plugin);
-  app.register(fastifyFormbody);
+  app.register(fastifyFormbody, { parser: qs.parse });
   app.register(fastifySecureSession, {
     cookieName: 'session',
     secret: process.env.APPKEY,

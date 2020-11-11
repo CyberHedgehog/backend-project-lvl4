@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default (app) => {
   app.get('/users/new', { name: 'signup' }, (request, reply) => {
     reply.render('users/signup');
@@ -20,7 +18,7 @@ export default (app) => {
 
   app.post('/users', { name: 'addUser' }, async (request, reply) => {
     try {
-      const user = await app.objection.models.user.fromJson(request.body);
+      const user = await app.objection.models.user.fromJson(request.body.user);
       await app.objection.models.user.query().insert(user);
       reply.redirect(app.reverse('root'));
     } catch (e) {
@@ -45,12 +43,11 @@ export default (app) => {
   });
 
   app.patch('/users', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const data = _.omitBy(request.body, (e) => e === 'PATCH' || e === '');
     try {
       const user = await app.objection.models.user
         .query()
         .findById(request.currentUser.id);
-      await user.$query().update(data);
+      await user.$query().update(request.body.user);
       request.flash('success', 'User updated successfuly');
       reply.redirect(app.reverse('editUser'));
     } catch (e) {

@@ -14,15 +14,15 @@ block main
           input(type="hidden" name="_method" value="PATCH")
           .form-group
             label(for="firstName")= t('views.pages.signup.firstName')
-            input(type="text" class="form-control" name="firstName" id="firstName" value= user.firstName)
+            input(type="text" class="form-control" name="user[firstName]" id="firstName" value= user.firstName)
           .form-group
             label(for="lastName")= t('views.pages.signup.lastName')
-            input(type="text" class="form-control" name="lastName" id="lastName" value= user.lastName)
+            input(type="text" class="form-control" name="user[lastName]" id="lastName" value= user.lastName)
           .form-group
             label(for="email")= t('views.pages.signup.email')
-            input(type="text" class="form-control" name="email" id="email" value= user.email)
+            input(type="text" class="form-control" name="user[email]" id="email" value= user.email)
           .form-group
             label(for="password")= t('views.pages.signup.password')
-            input(type="password" class="form-control" name="password" id="firstName" placeholder="New password")
+            input(type="password" class="form-control" name="user[password]" id="firstName" placeholder="New password")
           input(type="submit" class="btn btn-primary mr-2" data-method="PATCH" value=t('buttons.submit'))
           a(href= urlFor('users') class="btn btn-light mr-2" value="Cancel")= t('buttons.cancel')

@@ -12,6 +12,6 @@ block main
         form(action= urlFor('addLabel') method="POST")
           .form-group
             label(for="name")= t('views.pages.labels.name')
-            input(type="text" class="form-control" name="name" id="name" value= _.get(label, 'name', ''))
+            input(type="text" class="form-control" name="label[name]" id="name" value= _.get(label, 'name', ''))
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
           a(href= urlFor('labels') class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')

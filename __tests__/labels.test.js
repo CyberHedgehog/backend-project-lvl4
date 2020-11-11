@@ -40,7 +40,7 @@ describe('Label', () => {
     const response = await server.inject({
       method: 'POST',
       url: '/labels',
-      payload: { name: labelName },
+      payload: { label: { name: labelName } },
       cookies,
     });
     expect(response.statusCode).toBe(302);
@@ -56,7 +56,7 @@ describe('Label', () => {
     const response = await server.inject({
       method: 'PATCH',
       url: `/labels/${label.id}`,
-      payload: { name: newLabelName },
+      payload: { label: { name: newLabelName } },
       cookies,
     });
     const result = await server.objection.models.label

@@ -58,7 +58,7 @@ describe('Tasks', () => {
   });
 
   it('Create', async () => {
-    const payload = {
+    const taskData = {
       name: faker.lorem.word(),
       description: faker.lorem.words(),
       statusId: status.id,
@@ -67,12 +67,12 @@ describe('Tasks', () => {
     const response = await server.inject({
       method: 'POST',
       url: '/tasks',
-      payload,
+      payload: { task: taskData },
       cookies,
     });
-    const [result] = await task.query().where({ name: payload.name });
+    const [result] = await task.query().where({ name: taskData.name });
     expect(response.statusCode).toBe(302);
-    expect(result.description).toBe(payload.description);
+    expect(result.description).toBe(taskData.description);
   });
 
   it('Update', async () => {
@@ -80,7 +80,7 @@ describe('Tasks', () => {
     const response = await server.inject({
       method: 'PATCH',
       url: `/tasks/${newTask.id}`,
-      payload: { ...newTask, description: newDescription },
+      payload: { task: { ...newTask, description: newDescription } },
       cookies,
     });
     const result = await task.query().findById(newTask.id);

@@ -40,7 +40,7 @@ describe('Status', () => {
     const response = await server.inject({
       method: 'POST',
       url: '/statuses',
-      payload: { name: statusName },
+      payload: { status: { name: statusName } },
       cookies,
     });
     const [result] = await server.objection.models.status.query();
@@ -56,7 +56,7 @@ describe('Status', () => {
     const response = await server.inject({
       method: 'PATCH',
       url: `/statuses/${status.id}`,
-      body: { name: newStatusName },
+      body: { status: { name: newStatusName } },
       cookies,
     });
     const result = await server.objection.models.status

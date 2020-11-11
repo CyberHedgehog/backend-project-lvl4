@@ -74,14 +74,14 @@ export default (app) => {
   });
 
   app.post('/tasks', { name: 'addTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const { body } = request;
-    const labels = _.has(body, 'labels') ? [...body.labels] : [];
+    const taskBody = request.body.task;
+    const labels = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
     const data = {
-      name: body.name,
-      description: body.description,
+      name: taskBody.name,
+      description: taskBody.description,
       creatorId: request.currentUser.id,
-      statusId: parseInt(body.statusId, 10),
-      executorId: parseInt(body.executorId, 10),
+      statusId: parseInt(taskBody.statusId, 10),
+      executorId: parseInt(taskBody.executorId, 10),
     };
     try {
       const task = await app.objection.models.task.query().insert(data);
@@ -97,12 +97,12 @@ export default (app) => {
   });
 
   app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const filteredData = _.omitBy(request.body, (e) => e === 'PATCH' || '');
-    const labels = _.has(request.body, 'labels') ? [...request.body.labels] : [];
+    const taskBody = request.body.task;
+    const labels = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
     const data = {
-      ...filteredData,
-      executorId: _.parseInt(filteredData.executorId),
-      statusId: _.parseInt(filteredData.statusId),
+      ...taskBody,
+      executorId: _.parseInt(taskBody.executorId),
+      statusId: _.parseInt(taskBody.statusId),
     };
     try {
       const task = await app.objection.models.task

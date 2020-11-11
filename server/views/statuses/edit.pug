@@ -13,6 +13,6 @@ block main
           input(name="_method", type="hidden", value="PATCH")
           .form-group
             label(for="name")= t('views.pages.statuses.form.name')
-            input(type="text" value= status.name class="form-control" name="name" id="name" placeholder= t('views.pages.statuses.form.placeholderName'))
+            input(type="text" value= status.name class="form-control" name="status[name]" id="name" placeholder= t('views.pages.statuses.form.placeholderName'))
           input(type="submit" class="btn btn-primary mr-2" value= t('buttons.save'))
           a(href= urlFor('statuses') class="btn btn-secondary mr-2" value="Cancel")= t('buttons.cancel')
