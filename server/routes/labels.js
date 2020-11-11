@@ -53,10 +53,16 @@ export default (app) => {
 
   app.delete('/labels/:id', { name: 'deleteLabel', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
     try {
-      await app.objection.models.label.query().deleteById(req.params.id);
-      req.flash('success', i18next.t('views.pages.labels.delete.success'));
+      const relatedTasks = await app.objection.models.label.relatedQuery('tasks').for(req.params.id);
+      if (relatedTasks.length > 0) {
+        req.flash('error', i18next.t('views.pages.labels.delete.errUsed'));
+      } else {
+        await app.objection.models.label.query().deleteById(req.params.id);
+        req.flash('success', i18next.t('views.pages.labels.delete.success'));
+      }
       reply.redirect(app.reverse('labels'));
-    } catch {
+    } catch (e) {
+      req.log.error(e);
       req.flash('error', i18next.t('views.pages.labels.delete.error'));
       reply.redirect(app.reverse('labels'));
     }

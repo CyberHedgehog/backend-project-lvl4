@@ -1,5 +1,6 @@
 import { Model } from 'objection';
 import objectionUnique from 'objection-unique';
+import path from 'path';
 
 const unique = objectionUnique({ fields: ['name'] });
 
@@ -19,18 +20,18 @@ export default class Label extends unique(Model) {
     };
   }
 
-  // static relationMappings = {
-  //   tasks: {
-  //     relation: Model.ManyToManyRelation,
-  //     modelClass: 'Task',
-  //     join: {
-  //       from: 'labels.id',
-  //       through: {
-  //         from: 'tasks_labels.labelId',
-  //         to: 'tasks_labels.taskId',
-  //       },
-  //       to: 'tasks.id',
-  //     },
-  //   },
-  // s
+  static relationMappings = {
+    tasks: {
+      relation: Model.ManyToManyRelation,
+      modelClass: path.join(__dirname, 'Task'),
+      join: {
+        from: 'labels.id',
+        through: {
+          from: 'tasks_labels.labelId',
+          to: 'tasks_labels.taskId',
+        },
+        to: 'tasks.id',
+      },
+    },
+  }
 }

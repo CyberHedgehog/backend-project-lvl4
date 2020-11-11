@@ -80,6 +80,7 @@ export default {
           delete: {
             success: 'Status delete successfully',
             error: 'Error deleting status',
+            errUsed: 'Error: status is used',
           },
           buttonCreate: 'Create new status',
         },
@@ -130,6 +131,7 @@ export default {
           delete: {
             success: 'Label delete successfully',
             error: 'Error deleting label',
+            errUsed: 'Error: label is used',
           },
           edit: {
             header: 'Edit label',
