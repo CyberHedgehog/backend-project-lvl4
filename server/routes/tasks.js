@@ -7,42 +7,16 @@ export default (app) => {
     const filter = _.get(request, 'query', null);
     const tasks = await app.objection.models.task
       .query()
-      .select(
-        'tasks.*',
-        'status.name as statusName',
-        'description',
-        'creator.firstName as creatorFirstName',
-        'creator.lastName as creatorLastName',
-        'executor.firstName as executorFirstName',
-        'executor.lastName as executorLastName',
-      )
-      .join('statuses as status', 'tasks.statusId', 'status.id')
-      .join('users as creator', 'tasks.creatorId', 'creator.id')
-      .join('users as executor', 'tasks.executorId', 'executor.id')
-      .leftJoin('tasks_labels', 'tasks.id', 'tasks_labels.task_id')
-      .modify(makeModifiers(filter))
-      .groupBy(
-        'tasks.id',
-        'statusName',
-        'creatorFirstName',
-        'creatorLastName',
-        'executorFirstName',
-        'executorLastName',
-      )
-      .orderBy('tasks.id');
-    const addLabels = tasks.map(async (t) => {
-      const labels = await t.$relatedQuery('labels');
-      return { ...t, labels };
-    });
-    const tasksWithLabels = await Promise.all(addLabels);
+      .withGraphJoined('[creator, executor, status, labels]')
+      .modify(makeModifiers(filter, app));
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     const users = await app.objection.models.user.query();
     reply.render('tasks/list', {
-      tasks: tasksWithLabels,
+      tasks,
       statuses,
-      users,
       labels,
+      users,
     });
   });
 

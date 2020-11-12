@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default (filterObject) => {
+export default (filterObject, app) => {
   const keys = _.keys(filterObject);
   const modifiers = keys.reduce((acc, key) => {
     if (filterObject[key] === 'null') {
@@ -8,7 +8,10 @@ export default (filterObject) => {
     }
     let modifier;
     if (key === 'labelId') {
-      modifier = (query) => query.where('tasks_labels.label_id', '=', filterObject.labelId);
+      modifier = (query) => query.whereIn('tasks.id', app.objection
+        .knex('tasks_labels')
+        .select('task_id')
+        .where('label_id', filterObject[key]));
     } else {
       modifier = (query) => query.where(key, '=', filterObject[key]);
     }

@@ -58,9 +58,9 @@ block main
                 tr
                   td= task.name
                   td= task.description
-                  td= task.statusName
-                  td= `${task.creatorFirstName} ${task.creatorLastName}`
-                  td= `${task.executorFirstName} ${task.executorLastName}`
+                  td= task.status.name
+                  td= task.creator.fullName()
+                  td= task.executor.fullName()
                   td.d-flex.flex-wrap
                     each l in task.labels
                       .badge.badge-primary.text-wrap.m-1=l.name
