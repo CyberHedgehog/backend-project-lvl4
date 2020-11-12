@@ -1,5 +1,4 @@
 import i18next from 'i18next';
-import _ from 'lodash';
 
 export default (app) => {
   app.get('/labels', { name: 'labels', preHandler: app.auth([app.authCheck]) }, async (req, reply) => {
