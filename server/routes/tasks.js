@@ -58,9 +58,11 @@ export default (app) => {
       executorId: parseInt(taskBody.executorId, 10),
     };
     try {
+      const trx = await app.objection.models.task.startTransaction();
       const task = await app.objection.models.task.query().insert(data);
       const relations = labels.map((l) => task.$relatedQuery('labels').relate(l));
       await Promise.all(relations);
+      trx.commit();
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
