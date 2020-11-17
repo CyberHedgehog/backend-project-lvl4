@@ -38,11 +38,8 @@ export default (app) => {
 
   app.delete('/statuses/:id', { name: 'deleteStatus', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     try {
-      const relatedStatuses = await app.objection.models.task
-        .query()
-        .select()
-        .where('status_id', '=', request.params.id);
-      if (relatedStatuses.length > 0) {
+      const relatedTasks = await app.objection.models.status.relatedQuery('tasks').for(request.params.id);
+      if (relatedTasks.length > 0) {
         request.flash('error', i18next.t('views.pages.statuses.delete.errUsed'));
       } else {
         await app.objection.models.status.query().deleteById(request.params.id);
