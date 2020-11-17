@@ -75,20 +75,25 @@ export default (app) => {
 
   app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const taskBody = request.body.task;
-    const labels = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
+    const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
+    console.log(taskBody);
     const data = {
       ...taskBody,
+      id: _.parseInt(request.params.id),
       executorId: _.parseInt(taskBody.executorId),
       statusId: _.parseInt(taskBody.statusId),
+      creatorId: _.parseInt(taskBody.creatorId),
     };
     try {
-      const task = await app.objection.models.task
+      const trx = await app.objection.models.task.startTransaction();
+      const labels = await app.objection.models.label.query().findByIds(labelsId);
+      await app.objection.models.task
         .query()
-        .findById(request.params.id);
-      await task.$query().patch(data);
-      await task.$relatedQuery('labels').unrelate();
-      const relatePromises = labels.map((l) => task.$relatedQuery('labels').relate(l));
-      await Promise.all(relatePromises);
+        .upsertGraph({
+          ...data,
+          labels,
+        }, { relate: true, unrelate: true, noUpdate: ['labels'] });
+      trx.commit();
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {

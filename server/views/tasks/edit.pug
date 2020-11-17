@@ -36,6 +36,9 @@ block main
                 - const activeLabels = taskLabels.map((l) => l.name)
                 each label in labels
                   option(value=label.id selected=activeLabels.includes(label.name))= label.name
+            
+            .form-group  
+              input(type="hidden" name="task[creatorId]" value=task.creatorId)
 
             .form-group
               button(type="submit" class="btn btn-primary")= t('buttons.submit')
