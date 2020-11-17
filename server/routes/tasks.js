@@ -93,7 +93,7 @@ export default (app) => {
         await Task.query().upsertGraph({
           ...data,
           labels,
-        }, { relate: true, unrelate: true });
+        }, { relate: true, unrelate: true, noUpdate: ['labels'] });
       });
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect(app.reverse('tasks'));
