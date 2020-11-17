@@ -57,6 +57,13 @@ export default {
             success: 'Successful registration',
             error: 'Invalid data',
           },
+          delete: {
+            error: {
+              hasTasks: 'User has tasks',
+              deleteError: 'Delete error',
+            },
+            success: 'User deleted successfully',
+          },
         },
         statuses: {
           title: 'Statuses',

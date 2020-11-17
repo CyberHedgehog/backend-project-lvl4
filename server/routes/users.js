@@ -1,3 +1,5 @@
+import i18next from 'i18next';
+
 export default (app) => {
   app.get('/users/new', { name: 'signup' }, (request, reply) => {
     reply.render('users/signup');
@@ -28,18 +30,19 @@ export default (app) => {
   });
 
   app.delete('/users/:id', { name: 'deleteUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    if (!request.isSigned) {
-      reply.render('startPage');
-      return;
-    }
     try {
-      await app.objection.models.user.query().deleteById(request.params.id);
-      request.flash('success', 'User deleted successfully');
-      reply.redirect(app.reverse('users'));
+      const assignedTasks = await app.objection.models.user.relatedQuery('assignedTasks').for(request.params.id);
+      const createdTasks = await app.objection.models.user.relatedQuery('createdTasks').for(request.params.id);
+      if (createdTasks.length > 0 || assignedTasks.length > 0) {
+        request.flash('error', i18next.t('views.pages.users.delete.error.hasTasks'));
+      } else {
+        await app.objection.models.user.query().deleteById(request.params.id);
+        request.flash('success', i18next.t('views.pages.users.delete.success'));
+      }
     } catch (e) {
-      request.flash('error', 'Delete error!');
-      reply.render('startPage');
+      request.flash('error', i18next.t('views.pages.users.delete.error.deleteError'));
     }
+    reply.redirect(app.reverse('users'));
   });
 
   app.patch('/users', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
