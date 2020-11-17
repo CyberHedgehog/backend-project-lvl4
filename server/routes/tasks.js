@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import i18next from 'i18next';
+import { transaction } from 'objection';
 import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
@@ -58,12 +59,13 @@ export default (app) => {
       executorId: parseInt(taskBody.executorId, 10),
     };
     try {
-      const trx = await app.objection.models.task.startTransaction();
-      const labels = await app.objection.models.label.query().findByIds(labelsId);
-      await app.objection.models.task
-        .query()
-        .insertGraph({ ...data, labels }, { relate: true });
-      trx.commit();
+      const { task, label } = app.objection.models;
+      await transaction(task, label, async (Task, Label) => {
+        const labels = await Label.query().findByIds(labelsId);
+        await Task
+          .query()
+          .insertGraph({ ...data, labels }, { relate: true });
+      });
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
@@ -85,15 +87,14 @@ export default (app) => {
       creatorId: _.parseInt(taskBody.creatorId),
     };
     try {
-      const trx = await app.objection.models.task.startTransaction();
-      const labels = await app.objection.models.label.query().findByIds(labelsId);
-      await app.objection.models.task
-        .query()
-        .upsertGraph({
+      const { task, label } = app.objection.models;
+      await transaction(task, label, async (Task, Label) => {
+        const labels = await Label.query().findByIds(labelsId);
+        await Task.query().upsertGraph({
           ...data,
           labels,
-        }, { relate: true, unrelate: true, noUpdate: ['labels'] });
-      trx.commit();
+        }, { relate: true, unrelate: true });
+      });
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
