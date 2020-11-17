@@ -49,7 +49,7 @@ export default (app) => {
 
   app.post('/tasks', { name: 'addTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const taskBody = request.body.task;
-    const labels = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
+    const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
     const data = {
       name: taskBody.name,
       description: taskBody.description,
@@ -59,9 +59,10 @@ export default (app) => {
     };
     try {
       const trx = await app.objection.models.task.startTransaction();
-      const task = await app.objection.models.task.query().insert(data);
-      const relations = labels.map((l) => task.$relatedQuery('labels').relate(l));
-      await Promise.all(relations);
+      const labels = await app.objection.models.label.query().findByIds(labelsId);
+      await app.objection.models.task
+        .query()
+        .insertGraph({ ...data, labels }, { relate: true });
       trx.commit();
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
       reply.redirect(app.reverse('tasks'));
