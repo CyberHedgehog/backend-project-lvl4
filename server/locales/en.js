@@ -116,6 +116,7 @@ export default {
           delete: {
             success: 'Task delete successfully',
             error: 'Error deleting task',
+            notOwnerError: 'You are not the creator of this task',
           },
           filter: {
             filter: 'Filter',

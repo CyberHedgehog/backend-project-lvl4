@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import i18next from 'i18next';
-import { transaction } from 'objection';
 import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
@@ -58,17 +57,22 @@ export default (app) => {
       statusId: parseInt(taskBody.statusId, 10),
       executorId: parseInt(taskBody.executorId, 10),
     };
+    const { task, label } = app.objection.models;
+    const insert = async (taskModel, labelModel, db) => {
+      const labels = await labelModel.query(db).findByIds(labelsId);
+      await taskModel
+        .query(db)
+        .insertGraph({ ...data, labels }, { relate: true });
+    };
+    const trx = await task.startTransaction();
     try {
-      const { task, label } = app.objection.models;
-      await transaction(task, label, async (Task, Label) => {
-        const labels = await Label.query().findByIds(labelsId);
-        await Task
-          .query()
-          .insertGraph({ ...data, labels }, { relate: true });
-      });
+      await insert(task, label, trx);
+      await trx.commit();
       request.flash('success', i18next.t('views.pages.tasks.add.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
+      await trx.rollback();
+      console.log(e);
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.add.error'));
       reply.redirect(app.reverse('newTask'));
@@ -86,18 +90,22 @@ export default (app) => {
       statusId: _.parseInt(taskBody.statusId),
       creatorId: _.parseInt(taskBody.creatorId),
     };
+    const { task, label } = app.objection.models;
+    const update = async (taskModel, labelModel, db) => {
+      const labels = await label.query(db).findByIds(labelsId);
+      await task.query(db).upsertGraph({
+        ...data,
+        labels,
+      }, { relate: true, unrelate: true, noUpdate: ['labels'] });
+    };
+    const trx = await task.startTransaction();
     try {
-      const { task, label } = app.objection.models;
-      await transaction(task, label, async (Task, Label) => {
-        const labels = await Label.query().findByIds(labelsId);
-        await Task.query().upsertGraph({
-          ...data,
-          labels,
-        }, { relate: true, unrelate: true, noUpdate: ['labels'] });
-      });
+      await update(task, label, trx);
+      await trx.commit();
       request.flash('success', i18next.t('views.pages.tasks.edit.success'));
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
+      trx.rollback();
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
       reply.redirect(app.reverse('editTask', { id: request.params.id }));

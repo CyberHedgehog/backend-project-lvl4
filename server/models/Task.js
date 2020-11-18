@@ -1,12 +1,9 @@
 import { Model } from 'objection';
-import objectionUnique from 'objection-unique';
 import Label from './Label';
 import Status from './Status';
 import User from './User';
 
-const unique = objectionUnique({ fields: ['name'] });
-
-export default class Task extends unique(Model) {
+export default class Task extends Model {
   static get tableName() {
     return 'tasks';
   }
@@ -17,7 +14,7 @@ export default class Task extends unique(Model) {
       required: ['name', 'statusId', 'creatorId'],
       properties: {
         id: { type: 'integer' },
-        name: { type: 'string' },
+        name: { type: 'string', minLength: 1 },
         description: { type: 'string' },
         statusId: { type: 'integer' },
         creatorId: { type: 'integer' },
