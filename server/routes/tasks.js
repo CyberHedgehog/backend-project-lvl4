@@ -92,8 +92,8 @@ export default (app) => {
     };
     const { task, label } = app.objection.models;
     const update = async (taskModel, labelModel, db) => {
-      const labels = await label.query(db).findByIds(labelsId);
-      await task.query(db).upsertGraph({
+      const labels = await labelModel.query(db).findByIds(labelsId);
+      await taskModel.query(db).upsertGraph({
         ...data,
         labels,
       }, { relate: true, unrelate: true, noUpdate: ['labels'] });
