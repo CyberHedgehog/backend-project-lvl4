@@ -72,17 +72,26 @@ export default (app) => {
       reply.redirect(app.reverse('tasks'));
     } catch (e) {
       await trx.rollback();
-      console.log(e);
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.add.error'));
-      reply.redirect(app.reverse('newTask'));
+      const labels = await app.objection.models.label.query();
+      const taskLabels = labelsId.map(parseInt);
+      const users = await app.objection.models.user.query();
+      const statuses = await app.objection.models.status.query();
+      reply.render('tasks/new', {
+        task: data,
+        users,
+        statuses,
+        taskLabels,
+        labels,
+      });
     }
+    return reply;
   });
 
   app.patch('/tasks/:id', { name: 'updateTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const taskBody = request.body.task;
     const labelsId = _.has(taskBody, 'labels') ? [...taskBody.labels] : [];
-    console.log(taskBody);
     const data = {
       ...taskBody,
       id: _.parseInt(request.params.id),
@@ -108,8 +117,19 @@ export default (app) => {
       trx.rollback();
       request.log.error(e);
       request.flash('error', i18next.t('views.pages.tasks.edit.error'));
-      reply.redirect(app.reverse('editTask', { id: request.params.id }));
+      const labels = await app.objection.models.label.query();
+      const users = await app.objection.models.user.query();
+      const taskLabels = await label.query().findByIds(data.labels);
+      const statuses = await app.objection.models.status.query();
+      reply.render('tasks/edit', {
+        task: data,
+        users,
+        statuses,
+        labels,
+        taskLabels,
+      });
     }
+    return reply;
   });
 
   app.delete('/tasks/:id', { name: 'deleteTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
