@@ -7,11 +7,12 @@ const secondUserData = generateFakeUser();
 let server;
 let cookies;
 let user;
+let newUser;
 
 beforeAll(async () => {
   server = await getApp().ready();
   await server.objection.knex.migrate.latest();
-  await server.objection.models.user.query().insert(userData);
+  newUser = await server.objection.models.user.query().insert(userData);
   user = server.objection.models.user;
   cookies = await getCookies(server, userData);
 });
@@ -33,11 +34,9 @@ describe('Views', () => {
   });
 
   it('Edit', async () => {
-    const result = await server.inject().get('/users/edit').cookies(cookies);
+    const result = await server.inject().get(`/users/${newUser.id}/edit`).cookies(cookies);
     expect(result.statusCode).toBe(200);
   });
-
-  // afterAll(() => server.close());
 });
 
 describe('New user', () => {
@@ -106,6 +105,19 @@ describe('Delete user', () => {
   });
 
   it('Delete with signed user', async () => {
+    newUser = await user.query().insert(userData);
+    // const secondUser = await user.query().insert(secondUserData);
+    const response = await server.inject({
+      method: 'DELETE',
+      url: `/users/${newUser.id}`,
+      cookies,
+    });
+    const result = await user.query().findById(newUser.id);
+    expect(response.statusCode).toBe(302);
+    expect(result).toBeUndefined();
+  });
+
+  it('Delete another user', async () => {
     await user.query().insert(userData);
     const secondUser = await user.query().insert(secondUserData);
     const response = await server.inject({
@@ -115,18 +127,18 @@ describe('Delete user', () => {
     });
     const result = await user.query().findById(secondUser.id);
     expect(response.statusCode).toBe(302);
-    expect(result).toBeUndefined();
+    expect(result.name).toBe(secondUser.name);
   });
 
   it('Delete without signed user', async () => {
-    const newUser = await user.query().insert(secondUserData);
+    const userToDelete = await user.query().insert(secondUserData);
     const response = await server.inject({
       method: 'DELETE',
-      url: `/users/${newUser.id}`,
+      url: `/users/${userToDelete.id}`,
     });
-    const result = await user.query().findById(newUser.id);
+    const result = await user.query().findById(userToDelete.id);
     expect(response.statusCode).toBe(302);
-    expect(result.email).toBe(newUser.email);
+    expect(result.email).toBe(userToDelete.email);
   });
 });
 
@@ -138,11 +150,11 @@ describe('Update user', () => {
   });
 
   it('Update user', async () => {
-    const newUser = await user.query().insert(userData);
+    newUser = await user.query().insert(userData);
     const { firstName, lastName } = dataToUpdate;
     const response = await server.inject({
       method: 'PATCH',
-      url: '/users',
+      url: `/users/${newUser.id}`,
       cookies,
       payload: { user: { firstName, lastName } },
     });
@@ -152,9 +164,9 @@ describe('Update user', () => {
   });
 
   it('Update without auth', async () => {
-    const newUser = await user.query().insert(userData);
+    newUser = await user.query().insert(userData);
     const { firstName, lastName } = dataToUpdate;
-    const response = await server.inject().patch('/users').body({ user: { firstName, lastName } });
+    const response = await server.inject().patch(`/users/${newUser.id}`).body({ user: { firstName, lastName } });
     const result = await user.query().findById(newUser.id);
     expect(response.statusCode).toBe(302);
     expect(result.firstName).toBe(newUser.firstName);

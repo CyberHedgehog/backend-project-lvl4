@@ -17,13 +17,17 @@ block main
                 th(scope="col-1")= t('views.pages.users.lastName')
                 th(scope="col-1")= t('views.pages.users.email')
                 th(scope="col-1")
+                th(scope="col-1")
             tbody
               each user in users
                 tr
                   td= user.firstName
                   td= user.lastName
                   td= user.email
-                  td
+                  td.col-1
+                    a(href=urlFor('editUser', { id: user.id }) class="btn btn-secondary")
+                      = t('buttons.edit')
+                  td.col-1
                     .d-flex.justify-content-end
                       button(class="btn btn-danger" data-toggle="modal" data-target=`#delete-${user.id}` value="Delete profile")= t('buttons.delete')
                       .modal.fade(id=`delete-${user.id}` tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true")

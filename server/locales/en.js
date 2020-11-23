@@ -48,6 +48,7 @@ export default {
             cancel: 'Cancel',
             success: 'User successfully edited',
             error: 'User edit error',
+            notAllowed: 'Not allowed for current user',
           },
           firstName: 'Firstname',
           lastName: 'Lastname',
@@ -61,6 +62,7 @@ export default {
             error: {
               hasTasks: 'User has tasks',
               deleteError: 'Delete error',
+              notAllowed: 'Not allowed for current user',
             },
             success: 'User deleted successfully',
           },

@@ -10,12 +10,19 @@ export default (app) => {
     reply.render('users/list', { users });
   });
 
-  app.get('/users/edit', { name: 'editUser', preHandler: app.authCheck }, async (request, reply) => {
-    if (request.isSigned) {
-      reply.render('users/edit');
-      return;
+  app.get('/users/:id/edit', { name: 'editUser', preHandler: app.authCheck }, async (request, reply) => {
+    const userId = request.session.get('userId');
+    if (parseInt(request.params.id, 10) !== userId) {
+      request.flash('error', i18next.t('views.pages.users.edit.notAllowed'));
+      reply.redirect(app.reverse('users'));
     }
-    reply.redirect(app.reverse('root'));
+    try {
+      const user = await app.objection.models.user.query().findById(request.params.id);
+      reply.render('users/edit', { user });
+    } catch {
+      request.flash('error', i18next.t('views.pages.users.edit.error'));
+      reply.redirect(app.reverse('users'));
+    }
   });
 
   app.post('/users', { name: 'addUser' }, async (request, reply) => {
@@ -30,6 +37,11 @@ export default (app) => {
   });
 
   app.delete('/users/:id', { name: 'deleteUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+    const userId = request.session.get('userId');
+    if (parseInt(request.params.id, 10) !== userId) {
+      request.flash('error', i18next.t('views.pages.users.delete.error.notAllowed'));
+      reply.redirect(app.reverse('users'));
+    }
     try {
       const assignedTasks = await app.objection.models.user.relatedQuery('assignedTasks').for(request.params.id);
       const createdTasks = await app.objection.models.user.relatedQuery('createdTasks').for(request.params.id);
@@ -38,6 +50,8 @@ export default (app) => {
       } else {
         await app.objection.models.user.query().deleteById(request.params.id);
         request.flash('success', i18next.t('views.pages.users.delete.success'));
+        request.session.delete();
+        reply.redirect(app.reverse('root'));
       }
     } catch (e) {
       request.flash('error', i18next.t('views.pages.users.delete.error.deleteError'));
@@ -45,17 +59,23 @@ export default (app) => {
     reply.redirect(app.reverse('users'));
   });
 
-  app.patch('/users', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+  app.patch('/users/:id', { name: 'updateUser', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+    const userId = request.session.get('userId');
+    if (parseInt(request.params.id, 10) !== userId) {
+      request.flash('error', i18next.t('views.pages.users.edit.noAllowed'));
+      reply.redirect(app.reverse('users'));
+    }
+
     try {
       const user = await app.objection.models.user
         .query()
         .findById(request.currentUser.id);
       await user.$query().update(request.body.user);
       request.flash('success', 'User updated successfuly');
-      reply.redirect(app.reverse('editUser'));
+      reply.redirect(app.reverse('editUser', { id: request.params.id }));
     } catch (e) {
       request.flash('error', 'Invalid data');
-      reply.redirect(app.reverse('editUser'));
+      reply.redirect(app.reverse('editUser', { id: request.params.id }));
     }
   });
 };

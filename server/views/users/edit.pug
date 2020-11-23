@@ -4,13 +4,12 @@ block title
 
 block main
   .container
-    - const user = reply.request.currentUser
     .row.justify-content-center
       .p-3
         h1= `${t('views.pages.users.edit.header')} ${user.fullName()}`
     .row.justify-content-center
       .shadow-sm.p-3.mb-5.bg-white.rounded
-        form(action= urlFor('updateUser') method="POST")
+        form(action= urlFor('updateUser', { id: user.id }) method="POST")
           input(type="hidden" name="_method" value="PATCH")
           .form-group
             label(for="firstName")= t('views.pages.signup.firstName')
