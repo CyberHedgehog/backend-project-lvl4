@@ -37,16 +37,16 @@ export default class User extends unique(Model) {
       relation: Model.HasManyRelation,
       modelClass: path.join(__dirname, 'Task'),
       join: {
-        from: 'tasks.executor_id',
-        to: 'users.id',
+        from: 'users.id',
+        to: 'tasks.executor_id',
       },
     },
     createdTasks: {
       relation: Model.HasManyRelation,
       modelClass: path.join(__dirname, 'Task'),
       join: {
-        from: 'tasks.creator_id',
-        to: 'users.id',
+        from: 'users.id',
+        to: 'tasks.creator_id',
       },
     },
   }
