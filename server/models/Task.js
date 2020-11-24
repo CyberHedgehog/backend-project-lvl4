@@ -61,4 +61,37 @@ export default class Task extends Model {
       },
     },
   }
+
+  static modifiers = {
+    findByStatus(query, { statusId }) {
+      if (!statusId) {
+        return query;
+      }
+      return query.where({ statusId });
+    },
+    // findByLabel(query, labelId, app) {
+    //   query.whereIn('tasks.id', app.objection
+    //     .knex('tasks_labels')
+    //     .select('task_id')
+    //     .where('label_id', labelId));
+    // },
+    findByLabel(query, { labelId }) {
+      if (!labelId) {
+        return query;
+      }
+      return query.where({ labelId });
+    },
+    findByExecutor(query, { executorId }) {
+      if (!executorId) {
+        return query;
+      }
+      return query.where({ executorId });
+    },
+    findByCreator(query, { creatorId }) {
+      if (!creatorId) {
+        return query;
+      }
+      return query.where({ creatorId });
+    },
+  }
 }

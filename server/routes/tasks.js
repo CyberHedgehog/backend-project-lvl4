@@ -1,14 +1,19 @@
 import _ from 'lodash';
 import i18next from 'i18next';
-import makeModifiers from '../lib/makeModifiers';
 
 export default (app) => {
   app.get('/tasks', { name: 'tasks', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
-    const filter = _.get(request, 'query', null);
+    const query = _.get(request, 'query', null);
+    const filter = _.omitBy(query, (e) => e === 'null');
     const tasks = await app.objection.models.task
       .query()
       .withGraphJoined('[creator, executor, status, labels]')
-      .modify(makeModifiers(filter, app));
+      .modify([
+        'findByLabel',
+        'findByStatus',
+        'findByExecutor',
+        'findByCreator',
+      ], filter);
     const statuses = await app.objection.models.status.query();
     const labels = await app.objection.models.label.query();
     const users = await app.objection.models.user.query();
