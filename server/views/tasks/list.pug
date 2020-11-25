@@ -56,7 +56,8 @@ block main
                 th(scope="col")
               each task in tasks
                 tr
-                  td= task.name
+                  td
+                    a.text-reset(href= urlFor('viewTask', { id: task.id }))= task.name
                   td= task.description
                   td= task.status.name
                   td= task.creator.fullName()

@@ -1,0 +1,34 @@
+extends /layouts/inner.pug
+
+block title
+  title= `${t('views.pages.tasks.get.title')}: ${task.name}`
+
+block main
+  .container
+    .row.justify-content-center
+      .p-3
+        h1= task.name
+    .row.justify-content-center
+      .col-md-5
+        .shadow-sm.p-3.mb-5.bg-white.rounded
+          .row.p-1
+            .col= t('views.pages.tasks.description')
+            .col= task.description
+          .row.p-1
+            .col= t('views.pages.tasks.status')
+            .col= task.status.name
+          .row.p-1
+            .col= t('views.pages.tasks.creator')
+            .col= task.creator.fullName()
+          .row.p-1
+            .col= t('views.pages.tasks.executor')
+            .col= task.executor.fullName()
+          .row.p-1
+            .col
+              each label in task.labels
+                .badge.badge-primary.text-wrap.m-1=label.name
+          .row.p-1
+            .col
+              a(href=urlFor('tasks') class="btn btn-primary mr-2")= t('buttons.back')
+              a(href=urlFor('editTask', { id: task.id }) class="btn btn-secondary mr-2")= t('buttons.edit')
+              a(href= urlFor('deleteTask', { id: task.id }) data-method="delete" class="btn btn-danger mr-2")= t('buttons.delete')

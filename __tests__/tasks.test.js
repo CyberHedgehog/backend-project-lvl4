@@ -57,6 +57,11 @@ describe('Tasks', () => {
     expect(result.statusCode).toBe(200);
   });
 
+  it('Get task view', async () => {
+    const result = await server.inject().get(`/tasks/${newTask.id}`).cookies(cookies);
+    expect(result.statusCode).toBe(200);
+  });
+
   it('Create', async () => {
     const taskData = {
       name: faker.lorem.word(),

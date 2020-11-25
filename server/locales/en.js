@@ -104,6 +104,10 @@ export default {
           status: 'Status',
           creator: 'Creator',
           executor: 'Executor',
+          get: {
+            error: 'Task not found',
+            title: 'View task',
+          },
           add: {
             title: 'New task',
             success: 'Task created successfully',
@@ -161,6 +165,7 @@ export default {
       save: 'Save',
       submit: 'Submit',
       cancel: 'Cancel',
+      back: 'Go back',
     },
   },
 };

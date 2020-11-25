@@ -32,6 +32,19 @@ export default (app) => {
     reply.render('tasks/new', { users, statuses, labels });
   });
 
+  app.get('/tasks/:id', { name: 'viewTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
+    try {
+      const task = await app.objection.models.task
+        .query()
+        .findById(request.params.id)
+        .withGraphJoined('[creator, executor, status, labels]');
+      reply.render('tasks/task', { task });
+    } catch {
+      request.flash(i18next.t('views.pages.tasks.get.error'));
+      reply.redirect(app.reverse('tasks'));
+    }
+  });
+
   app.get('/tasks/:id/edit', { name: 'editTask', preHandler: app.auth([app.authCheck]) }, async (request, reply) => {
     const task = await app.objection.models.task
       .query()
