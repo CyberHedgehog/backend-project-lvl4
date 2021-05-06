@@ -81,7 +81,7 @@
     "postcss": "^8.1.1",
     "postcss-loader": "^4.0.2",
     "precss": "^4.0.0",
-    "pug": "^3.0.0",
+    "pug": "^3.0.1",
     "qs": "^6.9.4",
     "rollbar": "^2.19.4",
     "sass-loader": "^10.0.2",
