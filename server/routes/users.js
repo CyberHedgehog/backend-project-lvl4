@@ -31,6 +31,7 @@ export default (app) => {
       await app.objection.models.user.query().insert(user);
       reply.redirect(app.reverse('root'));
     } catch (e) {
+      app.log.info(e);
       request.flash('error', 'Invalid email or password');
       reply.render('users/signup');
     }
