@@ -71,7 +71,7 @@
     "jquery": "^3.5.1",
     "jquery-ujs": "^1.2.2",
     "knex": "^0.21.6",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "node-sass": "^4.14.1",
     "objection": "^2.2.3",
     "objection-unique": "^1.2.1",
